@@ -1,4 +1,4 @@
-def kilocalc(vol):
+def kiloCalc(vol):
     percentvol = vol/100.0
     kilo = (percentvol * 1000.0)
 
@@ -6,7 +6,7 @@ def kilocalc(vol):
 
 def purpleGlaze():
     print "Purple Glaze Recipe"
-    recipe = {  
+    recipe = {
         "pf" : 29.3,
         "sil" : 24.1,
         "wh" : 9.0,
@@ -19,7 +19,7 @@ def purpleGlaze():
         }
 
     for i in recipe:
-        result = kilocalc(recipe.get(i))
+        result = kiloCalc(recipe.get(i))
         print i, "=", result, "grams"
 
     return purpleGlaze
@@ -31,7 +31,7 @@ def howManyforBase():
 
     return num
 
-def GetIngredients(num):
+def getBaseClay(num):
     d = {}
     for i in range(num):
         print "Chem name: "
@@ -41,6 +41,14 @@ def GetIngredients(num):
         d[chem] = float(weight)
     return d
 
+def getKilo(glazelist):
+    kilos = {}
+    weight = 0
+    for i in glazelist:
+        volume = glazelist.get(i)
+        weight = kiloCalc(volume)
+        kilos[i] = (weight)
+    return kilos
 
 def main():
     #purpleGlaze()
@@ -48,7 +56,8 @@ def main():
     x = howManyforBase()
     print "%s" % x
     xint = int (x)
-    print GetIngredients(xint)
+    # print getBaseClay(xint)
+    print getKilo(getBaseClay(xint))
 
 
 
@@ -56,4 +65,3 @@ def main():
 
 if __name__ == "__main__":
     main()
- 
