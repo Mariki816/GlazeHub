@@ -8,8 +8,10 @@ def load_chems(session):
 		linereader = csv.reader(csvfile, delimiter = ',')
 		chem = model.Chem()
 		chem_list = []
+		i = 0;
 		for row in linereader:
-			chem.id = row[0]
+			chem.id = i;
+			chem.name = row[0]
 			chem.quarter = row[1]
 			chem.half = row[2]
 			chem.onelb = row[3]
@@ -20,6 +22,7 @@ def load_chems(session):
 			chem.onehundlb = row[8]
 			chem.fivehundlb = row[9]
 
+			i += 1
 			chem_list.append(chem.id)
 
 			# print "this is chem", chem.id
