@@ -5,14 +5,15 @@ from sqlalchemy import Column, Float, String, Integer
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.orm import relationship, backref
 
-ENGINE = None
-Session = None
+# ENGINE = None
+# Session = None
 
-
+engine = create_engine("sqlite:///glazehub.db", echo = False)
+session = scoped_session(sessionmaker(bind = engine, autocommit = False, autoflush = False))
 
 
 Base = declarative_base()
-# Base.query = session.query_property()
+Base.query = session.query_property()
 
 
 
@@ -50,20 +51,23 @@ class Recipe(Base):
 class Component(Base):
 	__tablename__ = "components"
 	id = Column(Integer, primary_key = True)
-	chem_id = Column(Integer, ForeignKey('chemicals.id'))
-	recipe_id = Column(Integer, ForeignKey('recipes.id'))
+	chem_id = Column(Integer, ForeignKey('chemicals.id'), nullable = False)
+	recipe_id = Column(Integer, ForeignKey('recipes.id'), nullable = False)
+	percentage = Column(Float, nullable = False)
 
 	chem = relationship("Chem", backref = backref("components", order_by=id))
 	recipe = relationship("Recipe", backref = backref("components", order_by=id))
 
 
-def connect():
-	global ENGINE
+# def connect():
+# 	global ENGINE
 
-	ENGINE = create_engine("sqlite:///chemicals.db", echo = True)
-	Session = sessionmaker(bind = ENGINE)
+# 	ENGINE = create_engine("sqlite:///chemicals.db", echo = True)
+# 	Session = sessionmaker(bind = ENGINE)
 
-	return Session()
+# 	return Session()
+
+
 
 def main():
 	"""In case we need this"""
