@@ -3,6 +3,7 @@
 import model
 import seedchem
 from flask import Flask, render_template, request
+import jinja2
 
 app = Flask(__name__)
 
@@ -14,45 +15,38 @@ app.secret_key = 'abcdefghijklmnop1234567890'
 @app.route("/")
 def index():
     """Return index page."""
-    return render_template("recipe.html")
+    return render_template("index.html")
 
-@app.route("/", methods=['POST'])
+@app.route("/addRecipe", methods=['POST'])
 def addRecipeName():
 
 	newRecipe = model.Recipe()
 	# print "This is newRecipe"
 	newRecipe.recipe_name = request.form.get('recipename')
 	newRecipe.user_id = 1
+	# model.session.add(newRecipe)
 
-
-
-	# newComp = model.Component()
-	# newComp.chem_id = request.form.get('componentChemID')
-	# newComp.percentage = request.form.get('componentPercentage')
-	# print "This is: ",newComp.chem_id, newComp.percentage
-	# newRecipe.components.append(newComp)
-	# print "This is chem_id", newRecipe.components[-1].chem_id
-	# return newRecipe.recipe_name
+	print newRecipe.recipe_name
 	newComp = model.Component()
 
 	newComp.chem_id = request.form.get('componentChemID')
 	newComp.percentage = request.form.get('componentPercentage')
 	print "This is: ", newComp.chem_id, newComp.percentage
 	newRecipe.components.append(newComp)
-	newComp.chem_id = request.form.get('componentChemID2')
-	newComp.percentage = request.form.get('componentPercentage2')
-	newRecipe.components.append(newComp)
-	print "This is newRecipe.components", newRecipe.components[0].percentage
-	return newRecipe.recipe_name
 
 
-	# model.session.add(newRecipe)
-	# model.session.commit()
-	# return "hello"
-	# return "This is", newRecipe.recipe_name
+	return newRecipe.components[-1].chem_id
+
+@app.route("/userRecipes")
+def listofUserRecipes():
 
 
 
+	return render_template("user_recipes.html")
+
+# @app.route("/addComponents")
+
+	#this will work later
 
 
 
