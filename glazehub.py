@@ -2,14 +2,67 @@
 
 import model
 import seedchem
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+app.secret_key = 'abcdefghijklmnop1234567890'
 
 # Base.metadata.create_all(engine)
+
+
+@app.route("/")
+def index():
+    """Return index page."""
+    return render_template("recipe.html")
+
+@app.route("/", methods=['POST'])
+def addRecipeName():
+
+	newRecipe = model.Recipe()
+	# print "This is newRecipe"
+	newRecipe.recipe_name = request.form.get('recipename')
+	newRecipe.user_id = 1
+
+
+
+	# newComp = model.Component()
+	# newComp.chem_id = request.form.get('componentChemID')
+	# newComp.percentage = request.form.get('componentPercentage')
+	# print "This is: ",newComp.chem_id, newComp.percentage
+	# newRecipe.components.append(newComp)
+	# print "This is chem_id", newRecipe.components[-1].chem_id
+	# return newRecipe.recipe_name
+	newComp = model.Component()
+
+	newComp.chem_id = request.form.get('componentChemID')
+	newComp.percentage = request.form.get('componentPercentage')
+	print "This is: ", newComp.chem_id, newComp.percentage
+	newRecipe.components.append(newComp)
+	newComp.chem_id = request.form.get('componentChemID2')
+	newComp.percentage = request.form.get('componentPercentage2')
+	newRecipe.components.append(newComp)
+	print "This is newRecipe.components", newRecipe.components[0].percentage
+	return newRecipe.recipe_name
+
+
+	# model.session.add(newRecipe)
+	# model.session.commit()
+	# return "hello"
+	# return "This is", newRecipe.recipe_name
+
+
+
+
+
+
+
 
 def getUserByID(userID):
 	#testing if I can get the user right
 
 	user = model.session.query(model.User).get(userID)
-	print user.user_name
+	# print user.user_name
 
 
 def getRecipesByUserID(userID):
@@ -18,7 +71,7 @@ def getRecipesByUserID(userID):
 	recipenames = model.session.query(model.Recipe).filter_by(user_id=userID).all()
 
 	for rname in recipenames:
-		print rname.recipe_name
+		# print rname.recipe_name
 		getComponentsByRecipeID(rname.id)
 
 
@@ -55,5 +108,5 @@ def main():
 
 
 if __name__ == "__main__":
-	main()
+	app.run(debug=True)
 
