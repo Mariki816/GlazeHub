@@ -17,18 +17,20 @@ def index():
     """Return index page."""
     return render_template("index.html")
 
-
+@app.route("/addRecipe", methods=['GET'])
+def showRecipeAddForm():
+	print "This is ShowRecipeAddForm"
+	return render_template("add_recipe.html")
 
 @app.route("/addRecipe", methods=['POST'])
 def addRecipeName():
-
-
+	print "This is addRecipeName"
 	newRecipe = model.Recipe()
 	# print "This is newRecipe"
 	newRecipe.recipe_name = request.form.get('recipename')
-	newRecipe.user_id = 1
+	newRecipe.user_id = request.form.get('userID')
 	model.session.add(newRecipe)
-	model.session.commit()
+	# model.session.commit()
 
 	print newRecipe.recipe_name
 	# newComp = model.Component()
@@ -39,7 +41,7 @@ def addRecipeName():
 	# newRecipe.components.append(newComp)
 
 
-	return render_template("emilys_purple_recipe.html")
+	return render_template("user_recipes.html")
 
 @app.route("/userRecipes")
 def listofUserRecipes():
