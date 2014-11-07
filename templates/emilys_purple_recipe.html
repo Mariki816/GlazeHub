@@ -1,0 +1,133 @@
+<html>
+<head>
+	<style>
+		.header_logo{
+			border:10px;
+			padding:10px;
+			width: 300px;
+			margin:10px;
+		}
+		div#header_section{
+			marginbottom:10px;
+			background-color:CCCCFF
+		}
+
+
+
+		body{
+			margin:10px;
+			font-family: "Helvetica Neue", Helvetica, "Segoe UI",
+			Arial, freesans, sans-serif;
+			}
+
+		div#recipe_trst{
+			margin:20px;
+		}
+
+		div#return_home{
+			margin:20px;
+		}
+
+		table#table_ofchems{
+			margin:20px;
+		}
+
+		div#send_email_to_CP{
+			margin:20px;
+		}
+
+	</style>
+
+</head>
+
+
+<body>
+	<div id = "header_section">
+		<img class = "header_logo" src="/static/img/ghlogo1114.svg"></br>
+	</div>
+
+	<div id = "recipe_trst">
+		<h1>Emily's Purple</h1>
+		<p>Upload a photo</p>
+		<input type = "file" name = "user_photo"/><br />
+		<input type = "submit" value = "Upload" />
+	</div>
+	<div id = "table_of_chems">
+		<table id = "table_of_chems">
+			<tr>
+				<th scope = "col">Chemical Name</th>
+				<th scope = "col">Percentage</th>
+
+				<th scope = "col"><label>Batch Size:
+					<input type = "text" id = "batchsize" name="batchsize" size = "3" maxlength = "4"/>
+					<input type = "radio" name= "weightsystem" value = "lbs" checked = "checked" />
+					<label for "pounds">lbs</label>
+					<input type = "radio" name= "weightsystem" value = "kg"/>
+					<label for "metric">kg</label></label>
+				</th>
+
+			<tr>
+				<td>Dolomite</td>
+				<td>7%</td>
+				<td><em>Amount needed</em></td>
+			</tr>
+			<tr>
+				<td>Gerstley Borate</td>
+				<td>12%</td>
+				<td><em>Amount needed</em></td>
+				</tr>
+			<tr>
+				<td>Talc</td>
+				<td>15%</td>
+				<td><em>Amount needed</em></td>
+				</tr>
+			<tr>
+				<td>Custer Feldspar</td>
+				<td>41%</td>
+				<td><em>Amount needed</em></td>
+				</tr>
+			<tr>
+				<td>Ball Clay</td>
+				<td>5%</td>
+				<td><em>Amount needed</em></td>
+			</tr>
+			<tr>
+				<td>Silica</td>
+				<td>20%</td>
+				<td><em>Amount needed</em></td>
+			</tr>
+			<tr>
+				<td>Bentonite</td>
+				<td>2%</td>
+				<td><em>Amount needed</em></td>
+			</tr>
+			<tr>
+				<td>Black Cobalt</td>
+				<td>2%</td>
+				<td><em>Amount needed</em></td>
+			</tr>
+			<tr>
+				<td>Tin Oxide</td>
+				<td>2%</td>
+				<td><em>Amount needed</em></td>
+			</tr>
+		</table>
+	</div>
+
+	<div id = "Notes">
+		<p>Notes about Glaze:</p>
+		<textarea name = "emailmsg" cols = "50" rows ="10"> Notes</textarea>
+	</div>
+		<div id = "send_email_to_CP">
+		<a href ="/sendEmailToCP">Order from Clay Planet</a>
+	</div>
+
+	<div id = "return_home">
+		<a href ="/returnHome">Home</a>
+	</div>
+
+
+
+
+	</body>
+</html>

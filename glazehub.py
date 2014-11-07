@@ -2,7 +2,7 @@
 
 import model
 import seedchem
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import jinja2
 
 app = Flask(__name__)
@@ -17,32 +17,47 @@ def index():
     """Return index page."""
     return render_template("index.html")
 
+
+
 @app.route("/addRecipe", methods=['POST'])
 def addRecipeName():
+
 
 	newRecipe = model.Recipe()
 	# print "This is newRecipe"
 	newRecipe.recipe_name = request.form.get('recipename')
 	newRecipe.user_id = 1
-	# model.session.add(newRecipe)
+	model.session.add(newRecipe)
+	model.session.commit()
 
 	print newRecipe.recipe_name
-	newComp = model.Component()
+	# newComp = model.Component()
 
-	newComp.chem_id = request.form.get('componentChemID')
-	newComp.percentage = request.form.get('componentPercentage')
-	print "This is: ", newComp.chem_id, newComp.percentage
-	newRecipe.components.append(newComp)
+	# newComp.chem_id = request.form.get('componentChemID')
+	# newComp.percentage = request.form.get('componentPercentage')
+	# print "This is: ", newComp.chem_id, newComp.percentage
+	# newRecipe.components.append(newComp)
 
 
-	return newRecipe.components[-1].chem_id
+	return render_template("emilys_purple_recipe.html")
 
 @app.route("/userRecipes")
 def listofUserRecipes():
 
-
-
 	return render_template("user_recipes.html")
+
+@app.route("/emilysPurpleRecipe")
+def emilyspurplerecipe():
+	return render_template("emilys_purple_recipe.html")
+
+@app.route("/returnHome")
+def returnHome():
+	return redirect(url_for("index"))
+
+
+@app.route("/sendEmailToCP")
+def emailCP():
+	return render_template("emailCP.html")
 
 # @app.route("/addComponents")
 
@@ -92,6 +107,15 @@ def getChemIDbyName(chemNAME):
 			chemID = c.id
 
 	return chemID
+
+def getRecipeIDByName(userID, recipename):
+	recipes = model.session.query(model.Recipe).filter_by(user_id = userID).all()
+
+	for recipe in recipes:
+		if recipes.recipe_name == recipename:
+			recipeID = recipes.id
+
+	return recipeID
 
 
 
