@@ -5,6 +5,8 @@ from sqlalchemy import Column, Float, String, Integer
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.orm import relationship, backref
 
+import model
+
 # ENGINE = None
 # Session = None
 
@@ -66,6 +68,59 @@ class Component(Base):
 # 	Session = sessionmaker(bind = ENGINE)
 
 # 	return Session()
+
+
+
+
+def getUserByID(userID):
+	#testing if I can get the user right
+
+	user = model.session.query(model.User).get(userID)
+	print user.user_name
+
+
+def getRecipesByUserID(userID):
+	# user = model.session.query(model.User).get(user_id)
+
+	recipenames = model.session.query(model.Recipe).filter_by(user_id=userID).all()
+
+	for rname in recipenames:
+		print rname.recipe_name
+		getComponentsByRecipeID(rname.id)
+
+
+def getComponentsByRecipeID(recipeID):
+	components = model.session.query(model.Component).filter_by(recipe_id = recipeID).all()
+
+	for comp in components:
+		compName = getChemNameByID(comp.chem_id)
+		compPercent = comp.percentage
+		compChemID= getChemIDbyName(compName)
+
+	return compName, compPercent, compChemID
+		# print "This is compChemID", compChemID, compName
+
+
+def getChemNameByID(chemID):
+	chemName = model.session.query(model.Chem).get(chemID).chem_name
+	return chemName
+
+def getChemIDbyName(chemNAME):
+	chems=model.session.query(model.Chem)
+	for c in chems:
+		if c.chem_name == chemNAME:
+			chemID = c.id
+
+	return chemID
+
+def getRecipeIDByName(userID, recipename):
+	recipes = model.session.query(model.Recipe).filter_by(user_id = userID).all()
+
+	for recipe in recipes:
+		if recipes.recipe_name == recipename:
+			recipeID = recipes.id
+
+	return recipeID
 
 
 

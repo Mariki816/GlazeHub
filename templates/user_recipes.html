@@ -39,9 +39,13 @@
 		<img class = "header_logo" src="/static/img/ghlogo1114.svg"></br>
 	</div>
 	<div id = "recipe_list">
-		<h1>User 1's recipe list</h1>
+		{% for key,value in display_recipes.iteritems() %}
+		<tr><td>{{value["recipe_name"]}}</td></tr>
+	{% endfor %}
+
+		<!-- <h1>User 1's recipe list</h1>
 		<h2><a href = "emilysPurpleRecipe">Emily's Purple<a></h2>
-		<h2>Naked Raku</h2>
+		<h2>Naked Raku</h2> -->
 	</div>
 
 	<div id = "return_home">

@@ -8,6 +8,7 @@ import jinja2
 app = Flask(__name__)
 
 app.secret_key = 'abcdefghijklmnop1234567890'
+app.jinja_env.undefined = jinja2.StrictUndefined
 
 # Base.metadata.create_all(engine)
 
@@ -45,8 +46,14 @@ def addRecipeName():
 
 @app.route("/userRecipes")
 def listofUserRecipes():
+	recipes = model.session["userRecipes"]
+	dict_of_recipes = {}
 
-	return render_template("user_recipes.html")
+	for recipe in recipes:
+		dict_of_recipes[recipe.recipe_name] = {"user_id":4, "recipe_name":recipe.recipe_name}
+
+	return render_template("user_recipes.html", display_recipes = dict_of_recipes)
+
 
 @app.route("/emilysPurpleRecipe")
 def emilyspurplerecipe():
@@ -69,55 +76,6 @@ def emailCP():
 
 
 
-def getUserByID(userID):
-	#testing if I can get the user right
-
-	user = model.session.query(model.User).get(userID)
-	# print user.user_name
-
-
-def getRecipesByUserID(userID):
-	# user = model.session.query(model.User).get(user_id)
-
-	recipenames = model.session.query(model.Recipe).filter_by(user_id=userID).all()
-
-	for rname in recipenames:
-		# print rname.recipe_name
-		getComponentsByRecipeID(rname.id)
-
-
-def getComponentsByRecipeID(recipeID):
-	components = model.session.query(model.Component).filter_by(recipe_id = recipeID).all()
-
-	for comp in components:
-		compName = getChemNameByID(comp.chem_id)
-		compPercent = comp.percentage
-		compChemID= getChemIDbyName(compName)
-
-	return compName, compPercent, compChemID
-		# print "This is compChemID", compChemID, compName
-
-
-def getChemNameByID(chemID):
-	chemName = model.session.query(model.Chem).get(chemID).chem_name
-	return chemName
-
-def getChemIDbyName(chemNAME):
-	chems=model.session.query(model.Chem)
-	for c in chems:
-		if c.chem_name == chemNAME:
-			chemID = c.id
-
-	return chemID
-
-def getRecipeIDByName(userID, recipename):
-	recipes = model.session.query(model.Recipe).filter_by(user_id = userID).all()
-
-	for recipe in recipes:
-		if recipes.recipe_name == recipename:
-			recipeID = recipes.id
-
-	return recipeID
 
 
 
