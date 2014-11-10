@@ -1,0 +1,80 @@
+
+	.header_logo{
+		border:10px;
+		padding:10px;
+		width: 300px;
+		margin:10px;
+	}
+	div#header_section{
+		marginbottom:10px;
+		background-color:CCCCFF
+	}
+
+	body{
+		margin:10px;
+		font-family: "Helvetica Neue", Helvetica, "Segoe UI",
+		Arial, freesans, sans-serif;
+
+		}
+
+	div#recipename{
+		margin:20px;
+	}
+
+	div#chemicals{
+		margin:20px;
+	}
+
+	div#return_home{
+		margin:20px;
+	}
+	input.submit:active{
+
+		background-color: #CCCCFF;
+	}
+
+	input.submit:hover {
+		background-color: purple;
+	}
+
+
+
+	div.left_side_section{
+		margin-top: 20px;
+		width: 200px;
+/*		border:solid #5240c6 2px;*/
+		height: 700px;
+		padding-right: 10px;
+		overflow: scroll;
+
+	}
+
+	ul#recipe_list{
+		margin-left:20px;
+		padding:0 10px;
+		}
+
+
+			div#return_home{
+				margin:20px;
+			}
+
+			div#recipe_list{
+
+
+		padding-right: 10px;
+		overflow: scroll;
+
+	}
+
+	ul#recipe_list{
+		margin-left:20px;
+		padding:0 10px;
+		}
+
+	div#return_home{
+		margin:20px;
+			}
+
+
+

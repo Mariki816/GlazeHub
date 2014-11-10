@@ -86,8 +86,13 @@ def getRecipesByUserID(userID):
 
 	for rname in recipenames:
 		print rname.recipe_name
-		getComponentsByRecipeID(rname.id)
+		# getComponentsByRecipeID(rname.id)
 
+	return recipenames
+
+def getChemNameByID(chemID):
+	chemName = model.session.query(model.Chem).get(chemID).chem_name
+	return chemName
 
 def getComponentsByRecipeID(recipeID):
 	components = model.session.query(model.Component).filter_by(recipe_id = recipeID).all()
@@ -101,9 +106,7 @@ def getComponentsByRecipeID(recipeID):
 		# print "This is compChemID", compChemID, compName
 
 
-def getChemNameByID(chemID):
-	chemName = model.session.query(model.Chem).get(chemID).chem_name
-	return chemName
+
 
 def getChemIDbyName(chemNAME):
 	chems=model.session.query(model.Chem)

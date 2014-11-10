@@ -2,7 +2,7 @@
 
 import model
 import seedchem
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, g, render_template, request, redirect, flash, url_for
 import jinja2
 
 app = Flask(__name__)
@@ -18,6 +18,20 @@ def index():
     """Return index page."""
     return render_template("index.html")
 
+@app.route("/userRecipes")
+def listofUserRecipes():
+	# print "This is list of UserRecipes"
+	# print "This is g.user", g.user
+
+
+	recipes = model.getRecipesByUserID(1)
+	print "This is recipes", recipes
+
+
+	return render_template("user_recipes.html", display_recipes = recipes)
+
+
+
 @app.route("/addRecipe", methods=['GET'])
 def showRecipeAddForm():
 	print "This is ShowRecipeAddForm"
@@ -25,34 +39,27 @@ def showRecipeAddForm():
 
 @app.route("/addRecipe", methods=['POST'])
 def addRecipeName():
-	print "This is addRecipeName"
+	# print "This is addRecipeName"
 	newRecipe = model.Recipe()
-	# print "This is newRecipe"
+
+
 	newRecipe.recipe_name = request.form.get('recipename')
 	newRecipe.user_id = request.form.get('userID')
+	print "This is userID", newRecipe.user_id
+	if newRecipe.user_id:
+		g.user = model.User.query.get(newRecipe.user_id)
+		print "This is g", g
+		print "This is g.user.id and user_name", g.user.id, g.user.user_name
+
+	else:
+		flash("Ooops, issue")
+		return redirect("/index")
 	model.session.add(newRecipe)
-	# model.session.commit()
+	model.session.commit()
 
 	print newRecipe.recipe_name
-	# newComp = model.Component()
+	return redirect("/userRecipes")
 
-	# newComp.chem_id = request.form.get('componentChemID')
-	# newComp.percentage = request.form.get('componentPercentage')
-	# print "This is: ", newComp.chem_id, newComp.percentage
-	# newRecipe.components.append(newComp)
-
-
-	return render_template("user_recipes.html")
-
-@app.route("/userRecipes")
-def listofUserRecipes():
-	recipes = model.session["userRecipes"]
-	dict_of_recipes = {}
-
-	for recipe in recipes:
-		dict_of_recipes[recipe.recipe_name] = {"user_id":4, "recipe_name":recipe.recipe_name}
-
-	return render_template("user_recipes.html", display_recipes = dict_of_recipes)
 
 
 @app.route("/emilysPurpleRecipe")
@@ -61,7 +68,7 @@ def emilyspurplerecipe():
 
 @app.route("/returnHome")
 def returnHome():
-	return redirect(url_for("index"))
+	return render_template("index.html")
 
 
 @app.route("/sendEmailToCP")
@@ -72,7 +79,12 @@ def emailCP():
 
 	#this will work later
 
+	# newComp = model.Component()
 
+	# newComp.chem_id = request.form.get('componentChemID')
+	# newComp.percentage = request.form.get('componentPercentage')
+	# print "This is: ", newComp.chem_id, newComp.percentage
+	# newRecipe.components.append(newComp)
 
 
 
@@ -80,9 +92,10 @@ def emailCP():
 
 
 def main():
-	user_id = 4
-	getUserByID(user_id)
-	getRecipesByUserID(user_id)
+	pass
+	# user_id = 4
+	# getUserByID(user_id)
+	# getRecipesByUserID(user_id)
 
 
 if __name__ == "__main__":

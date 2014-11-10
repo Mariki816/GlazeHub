@@ -1,56 +1,19 @@
-<html>
-<head>
-	<style>
-		.header_logo{
-			border:10px;
-			padding:10px;
-			width: 300px;
-			margin:10px;
-		}
-		div#header_section{
-			marginbottom:10px;
-			background-color:CCCCFF
-		}
+{% extends 'base.html' %}
+{% block body %}
 
+	<div class = "left_side_section">
+		{% for recipe in display_recipes %}
+		<ul id = "recipe_list">
+			<a href><li>{{ recipe.recipe_name }}</li></href>
+		</ul>
 
-
-		body{
-			margin:10px;
-			font-family: "Helvetica Neue", Helvetica, "Segoe UI",
-			Arial, freesans, sans-serif;
-			}
-
-		div#recipe_list{
-			margin:20px;
-		}
-
-		div#return_home{
-			margin:20px;
-		}
-
-
-	</style>
-
-</head>
-
-
-<body>
-	<div id = "header_section">
-		<img class = "header_logo" src="/static/img/ghlogo1114.svg"></br>
+		{% endfor %}
 	</div>
-	<div id = "recipe_list">
-		{% for key,value in display_recipes.iteritems() %}
-		<tr><td>{{value["recipe_name"]}}</td></tr>
-	{% endfor %}
 
-		<!-- <h1>User 1's recipe list</h1>
-		<h2><a href = "emilysPurpleRecipe">Emily's Purple<a></h2>
-		<h2>Naked Raku</h2> -->
-	</div>
 
 	<div id = "return_home">
 		<a href ="/returnHome">Home</a>
 	</div>
 
 
-</html>
+{% endblock %}
