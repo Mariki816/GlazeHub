@@ -30,7 +30,9 @@ def listofUserRecipes():
 
 	return render_template("user_recipes.html", display_recipes = recipes)
 
-
+@app.route("/login", methods=['GET'])
+def showLoginPage():
+	return render_template("login.html")
 
 @app.route("/addRecipe", methods=['GET'])
 def showRecipeAddForm():

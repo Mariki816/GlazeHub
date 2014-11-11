@@ -1,50 +1,5 @@
-<html>
-<head>
-	<style>
-		.header_logo{
-			border:10px;
-			padding:10px;
-			width: 300px;
-			margin:10px;
-		}
-		div#header_section{
-			marginbottom:10px;
-			background-color:CCCCFF
-		}
-
-
-
-		body{
-			margin:10px;
-			font-family: "Helvetica Neue", Helvetica, "Segoe UI",
-			Arial, freesans, sans-serif;
-			}
-
-		div#recipe_trst{
-			margin:20px;
-		}
-
-		div#return_home{
-			margin:20px;
-		}
-
-		table#table_ofchems{
-			margin:20px;
-		}
-
-		div#send_email_to_CP{
-			margin:20px;
-		}
-
-	</style>
-
-</head>
-
-
-<body>
-	<div id = "header_section">
-		<img class = "header_logo" src="/static/img/ghlogo1114.svg"></br>
-	</div>
+{% extends 'base.html' %}
+{% block body %}
 
 	<div id = "recipe_trst">
 		<h1>Emily's Purple</h1>
@@ -126,8 +81,4 @@
 		<a href ="/returnHome">Home</a>
 	</div>
 
-
-
-
-	</body>
-</html>
+{% endblock %}
