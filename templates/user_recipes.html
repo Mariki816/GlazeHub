@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
 {% block body %}
 
-	<div class = "left_side_section">
+<!-- 	<div class = "left_side_section"> -->
+	<div class ="left_side_section" id = "recipe_list">
 		{% for recipe in display_recipes %}
-		<ul id = "recipe_list">
-			<a href><li>{{ recipe.recipe_name }}</li></href>
+		<ul id="recipe_names">
+			<a id = "recipe_links" href><li>{{ recipe.recipe_name }}</li></href>
 		</ul>
 
 		{% endfor %}
 	</div>
 
+	<!-- </div> -->
 
 	<div id = "return_home">
 		<a href ="/returnHome">Home</a>
