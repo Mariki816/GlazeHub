@@ -17,46 +17,70 @@ app.jinja_env.undefined = jinja2.StrictUndefined
 #This is the index page. Later it will show the Calculator itself
 @app.route("/")
 def index():
-	session["logged_in"] = False
+	# session["logged_in"] = False
+	session["user_id"] =  None
 	return render_template("index.html")
 
 #This is the log in page.
 @app.route("/login", methods=['GET'])
 def showLoginPage():
-	session["logged_in"] = False
+	session["user_id"] = None
 	return render_template("login.html")
+
+def do_login(userID, userEmail):
+	session["user"] = userEmail
+	session["user_id"] = userID
+	pass
+	# user = model.User.getUserByEmail(userEmail)
+	# # Find the commonalities of the new user and returning user
+	# # maybe just add only the session stuff...
+	# # user = model.session.query(model.User).filter_by(email=email).first()
+	# # user_id = model.getUserIDByEmail(email)
+
+	# # user = model.session.query(model.User).get(user_id)
+
+	# if user:
+	# 	flash("Welcome, %s" % (user.user_name))
+	# 	if "user" in session:
+	# 		session ["logged_in"] = True
+	# 	else:
+	# 		session["user"] = userEmail
+	# 		session["logged_in"] = True
+
+	# else:
+	# 	flash("New User? Please create an account.")
+	# 	session["logged_in"] = False
+	# 	return render_template("login.html")
+
 
 
 #This processes a returning user
 @app.route("/process-login", methods = ['POST'])
 def processLogin():
-	session["logged_in"] = False
+	session["user_id"] = None
 	email = request.form.get("userEmail")
-	do_login(userEmail)
-
-
-
-def do_login(userEmail):
+	pword = request.form.get("password")
 	user = model.User.getUserByEmail(email)
-	# Find the commonalities of the new user and returning user
-	# maybe just add only the session stuff...
-	# user = model.session.query(model.User).filter_by(email=email).first()
-	# user_id = model.getUserIDByEmail(email)
+	pwordcheck = model.User.getUserPasswordByEmail(email)
 
-	# user = model.session.query(model.User).get(user_id)
+	if pword == pwordcheck:
+		if user:
+			flash("Welcome, %s" % (user.user_name))
+			if "user" in session:
+				session["user_id"] = user.id
+			else:
+				# session["user"] = email
+				do_login(user.id, email)
 
-	if user:
-		flash("Welcome, %s" % (user.user_name))
-		if "user" in session:
-			session ["logged_in"] = True
 		else:
-			session["user"] = email
-			session["logged_in"] = True
-
+			flash("New User? Please create an account.")
+			session["logged_in"] = False
+			return render_template("login.html")
+		return redirect("/userRecipes/%d" % user.id)
 	else:
-		flash("New User? Please create an account.")
-		session["logged_in"] = False
+		flash("Incorrect password. Please try again")
 		return render_template("login.html")
+
 
 #This creates a New user
 @app.route("/register", methods =['POST'])
@@ -65,20 +89,39 @@ def getNewUser():
 	newUser = model.User()
 	newUser.user_name = request.form.get("NewUserName")
 	newUser.email = request.form.get("NewUserEmail")
-	newUser.password = "password"
+	newUser.password = request.form.get("NewUserPassword")
 
 	print "This is newUser.email", newUser.email
 	model.session.add(newUser)
 	model.session.commit()
+
+
+	flash("Welcome, %s" % (newUser.user_name))
+
+	# session["newUser"] = newUser.email
+
+	do_login(newUser.id, newUser.email)
+
+
+	return redirect("/userRecipes/%d" % newUser.id)
+
+
 	return "Registered"
 
 
 
 #This is the list of recipes of the logged in user
-@app.route("/userRecipes/<int:userID>")
-def listofUserRecipes(userID):
-	recipes = model.getRecipesByUserID(userID)
-	return render_template("user_recipes.html", display_recipes = recipes)
+@app.route("/userRecipes/<int:userViewID>")
+def listofUserRecipes(userViewID):
+	userLoginID = session["user_id"]
+	if userLoginID != userViewID:
+		flash ("Invalid User ID. Here are your recipes.")
+		userViewID = userLoginID
+		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
+		return render_template("user_recipes.html", display_recipes = recipes)
+	else:
+		recipes = model.Recipe.getRecipeNamesByUserID(userViewID)
+		return render_template("user_recipes.html", display_recipes = recipes)
 
 #This is the function to render the Add Recipe page
 @app.route("/addRecipe", methods=['GET'])

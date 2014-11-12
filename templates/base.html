@@ -18,10 +18,6 @@
 		</ul>
 	</div>
 
-	{% block body %}
-
-	<div class = "left_side_section"></div>
-	<div class = "center_section">
 		{% with messages = get_flashed_messages() %}
             {% if messages %}
 	            {% for message in messages %}
@@ -31,6 +27,12 @@
 	            {% endfor %}
             {% endif %}
         {% endwith %}
+
+	{% block body %}
+
+	<div class = "left_side_section"></div>
+	<div class = "center_section">
+
 
     </div>
 	{% endblock %}

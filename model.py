@@ -55,12 +55,20 @@ class User(Base):
 	password = Column(String(64), nullable = False)
 
 	@classmethod
+	def getUserID(cls):
+		return session.query(User).get(id)
+
+	@classmethod
 	def getUserByEmail(cls, email):
 		return session.query(User).filter_by(email=email).first()
 
 	@classmethod
 	def getUserNameByID(cls, id):
 		return session.query(User).filter_by(id = id).first()
+
+	@classmethod
+	def getUserPasswordByEmail(cls,email):
+		return session.query(User).filter_by(email=email).first().password
 
 
 #This is the table of recipes.
@@ -74,7 +82,7 @@ class Recipe(Base):
 
 	@classmethod
 	def getRecipeNamesByUserID(cls, user_id):
-		return session.query(Recipe).filter_by(user_id = user_id).first()
+		return session.query(Recipe).filter_by(user_id = user_id).all()
 
 	@classmethod
 	def getRecipeIDByName(cls, recipe_name, user_id):
