@@ -72,11 +72,33 @@ class Component(Base):
 
 
 
-def getUserByID(userID):
+def getUserNameByID(userID):
 	#testing if I can get the user right
-
 	user = model.session.query(model.User).get(userID)
 	print user.user_name
+
+
+def getUserIDByEmail(userEmail):
+	print "This is userEmail", userEmail
+	user = model.session.query(model.User).filter_by(email=userEmail).all()
+	print "This is user", user
+	print "This is user.id", user[0].id
+	return user[0].id
+
+	#create function to add new User
+
+# def addNewUser(newUserName, newUserEmail, newUserPassword):
+# 	print "This is newUserEmail", newUserEmail
+# 	newUser = model.User()
+# 	newUser.user_name = newUserName
+# 	newUser.email = newUserEmail
+# 	newUser.password = newUserPassword
+
+# 	return newUser
+
+
+
+
 
 
 def getRecipesByUserID(userID):
@@ -84,8 +106,8 @@ def getRecipesByUserID(userID):
 
 	recipenames = model.session.query(model.Recipe).filter_by(user_id=userID).all()
 
-	for rname in recipenames:
-		print rname.recipe_name
+	# for rname in recipenames:
+		# print rname.recipe_name
 		# getComponentsByRecipeID(rname.id)
 
 	return recipenames

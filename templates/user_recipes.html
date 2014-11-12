@@ -11,13 +11,22 @@
 		{% endfor %}
 	</div>
 	<div class = "center_section">
+		{% with messages = get_flashed_messages() %}
+            {% if messages %}
+	            {% for message in messages %}
+	            <ul class="flashes">
+	                <li>{{message}}</li>
+	            </ul>
+	            {% endfor %}
+            {% endif %}
+        {% endwith %}
 	</div>
 
 	<!-- </div> -->
 
-	<div id = "return_home">
+<!-- 	<div id = "return_home">
 		<a href ="/returnHome">Home</a>
-	</div>
+	</div> -->
 
 
 {% endblock %}

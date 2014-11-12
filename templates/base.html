@@ -8,15 +8,22 @@
 	<div id = "header_section">
 		<img class = "header_logo" src="/static/img/ghlogo1114.svg"></br>
 		<ul id="header_links">
-			<li class = "header_item"><a href>Contact</a></li>
-			<li class = "header_item"><a href>Calculator</a></li>
-			<li class = "header_item"><a href>Log in<a></li>
+			<li class = "header_item"><a href="/">Contact</a></li>
+			<li class = "header_item"><a href="/">Calculator</a></li>
+			{% if session["logged_in"] %}
+				<li class = "header_item"><a href="/login"> {{"Log Out"}} </a></li>
+            {% else %}
+                <li class = "header_item"><a href="/login">{{"Log In"}}</a></li>
+            {% endif %}
 		</ul>
 	</div>
 
 	{% block body %}
+
 	<div class = "left_side_section"></div>
-	<div class = "center_section"></div>
+	<div class = "center_section">
+
+    </div>
 	{% endblock %}
 </body>
 </html>

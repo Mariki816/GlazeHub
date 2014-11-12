@@ -4,23 +4,26 @@
 
 <div class = "center_section">
 	<div id = "returning_user">
-		<h2>Returning user</h2>
-		<label for="userEmail" class = "title">User email:</label>
-		<input type = "text" id = "userID" name="userID" /></br>
-		<label for="password" class = "title">Enter Password:</label>
-		<input type = "text" id = "password" name="password" /></br>
-		<input type = "submit" id = "user" value = "Log on" class = "btn_submit">
+		<h2>Please Sign In</h2>
+		<form class = "form-signin" method="POST">
+			<label for="userEmail" class = "title">User email:</label>
+			<input type = "text" id = "userEmail" name="userEmail" /></br>
+			<!-- <label for="password" class = "title">Enter Password:</label>
+			<input type = "text" id = "password" name="password" /></br> -->
+			<input type = "submit" id = "user" value = "Log in" class = "btn_submit">
 	</div>
 
 	<div id = "new_user" class = "sign_in_up">
-		<h2>New User</h2>
+		<h2>New User? Please create an account</h2>
+		<label for="userName" class = "title">User name:</label>
+		<input type = "text" id = "userName" name="userName" /></br>
 		<label for="userEmail" class = "title">User email:</label>
-		<input type = "text" id = "userID" name="userID" /></br>
-		<label for="password" class = "title">Password:</label>
+		<input type = "text" id = "NewUserEmail" name="NewUserEmail" /></br>
+		<!-- <label for="password" class = "title">Password:</label>
 		<input type = "text" id = "password" name="password" /></br>
 		<label for="password" class = "title">Confirm Password:</label>
-		<input type = "text" id = "password" name="password" /></br>
-		<input type = "submit" id = "user" value = "Register" class = "btn_submit">
+		<input type = "text" id = "password" name="password" /></br> -->
+		<input type = "submit" id = "NewUser" value = "Register" class = "btn_submit">
 	</div>
 
 

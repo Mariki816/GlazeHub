@@ -2,8 +2,7 @@
 
 import model
 # import seedchem
-from flask import Flask, g, session, render_template, request
-from flask import redirect, flash, url_for
+from flask import Flask, g, session, render_template, request, redirect, flash, url_for
 import jinja2
 import os
 
@@ -17,57 +16,48 @@ app.jinja_env.undefined = jinja2.StrictUndefined
 #This is the index page. Later it will show the Calculator itself
 @app.route("/")
 def index():
-	session["logged_in"] = False
-	return render_template("index.html")
+    """Return index page."""
+    return render_template("index.html")
+
+
+#This is the list of recipes of the logged in user
+@app.route("/userRecipes")
+def listofUserRecipes():
+	# print "This is list of UserRecipes"
+	# print "This is g.user", g.user
+
+
+	recipes = model.getRecipesByUserID(1)
+	print "This is recipes", recipes
+
+
+	return render_template("user_recipes.html", display_recipes = recipes)
 
 #This is the log in page.
 @app.route("/login", methods=['GET'])
 def showLoginPage():
-	session["logged_in"] = False
 	return render_template("login.html")
 
-
-#This processes a returning user
 @app.route("/login", methods = ['POST'])
 def processLogin():
 	session["logged_in"] = False
-	email = request.form.get("userEmail")
-	user_id = model.getUserIDByEmail(email)
-
-	user = model.session.query(model.User).get(user_id)
+	email = request.form.get("email")
+	user = model.getUserByEmail(email)
 
 	if user:
-		flash("Welcome, %s" % (user.user_name))
+		flash ("Welcome, %s" % (user.user_name))
 		if "user" in session:
 			session ["logged_in"] = True
 		else:
 			session["user"] = email
 			session["logged_in"] = True
-		return redirect("/userRecipes/%d" % user_id)
+		return redirect("/index")
 	else:
 		flash("New User? Please create an account.")
 		session["logged_in"] = False
 		return render_template("login.html")
 
-#This creates a New user
-@app.route("/login", methods =['POST'])
-def getNewUser():
-	session["logged_in"] = False
 
-	user_name = request.form.get("userName")
-	email = request.form.get("NewUserEmail")
-	newUser = model.addNewUser(user_name, email)
-	print "This is newUser.email", newUser.email
-	model.session.add(newUser)
-	model.commit()
-	# return render_template("/addRecipe")
-
-
-#This is the list of recipes of the logged in user
-@app.route("/userRecipes/<int:userID>")
-def listofUserRecipes(userID):
-	recipes = model.getRecipesByUserID(userID)
-	return render_template("user_recipes.html", display_recipes = recipes)
 
 #This is the function to render the Add Recipe page
 @app.route("/addRecipe", methods=['GET'])
@@ -77,18 +67,28 @@ def showRecipeAddForm():
 
 
 #This function gets the recipe name from the form and adds it to the Recipes table
-@app.route("/addRecipe", methods=['POST'])
+@app.route("/addRecipe/<int:userID>", methods=['POST'])
 def addRecipeName(userID):
 	# print "This is addRecipeName"
 	newRecipe = model.Recipe()
-	newRecipe.user_id = userID
+
 
 	newRecipe.recipe_name = request.form.get('recipename')
+	newRecipe.user_id = userID
+	# print "This is userID", newRecipe.user_id
+	# if newRecipe.user_id:
+	# 	g.user = model.User.query.get(newRecipe.user_id)
+	# 	print "This is g", g
+	# 	print "This is g.user.id and user_name", g.user.id, g.user.user_name
 
+	# else:
+	# 	flash("Ooops, issue")
+	# 	return redirect("/index")
 	model.session.add(newRecipe)
 	model.session.commit()
 
-	return redirect("/userRecipes/%d" % newRecipe.user_id)
+	print newRecipe.recipe_name
+	return redirect("/userRecipes")
 
 
 #this it a tester route
