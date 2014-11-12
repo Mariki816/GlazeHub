@@ -28,13 +28,22 @@ def showLoginPage():
 
 
 #This processes a returning user
-@app.route("/login", methods = ['POST'])
+@app.route("/process-login", methods = ['POST'])
 def processLogin():
 	session["logged_in"] = False
 	email = request.form.get("userEmail")
-	user_id = model.getUserIDByEmail(email)
+	do_login(userEmail)
 
-	user = model.session.query(model.User).get(user_id)
+
+
+def do_login(userEmail):
+	user = model.User.getUserByEmail(email)
+	# Find the commonalities of the new user and returning user
+	# maybe just add only the session stuff...
+	# user = model.session.query(model.User).filter_by(email=email).first()
+	# user_id = model.getUserIDByEmail(email)
+
+	# user = model.session.query(model.User).get(user_id)
 
 	if user:
 		flash("Welcome, %s" % (user.user_name))
@@ -43,24 +52,26 @@ def processLogin():
 		else:
 			session["user"] = email
 			session["logged_in"] = True
-		return redirect("/userRecipes/%d" % user_id)
+
 	else:
 		flash("New User? Please create an account.")
 		session["logged_in"] = False
 		return render_template("login.html")
 
 #This creates a New user
-@app.route("/login", methods =['POST'])
+@app.route("/register", methods =['POST'])
 def getNewUser():
 	session["logged_in"] = False
+	newUser = model.User()
+	newUser.user_name = request.form.get("NewUserName")
+	newUser.email = request.form.get("NewUserEmail")
+	newUser.password = "password"
 
-	user_name = request.form.get("userName")
-	email = request.form.get("NewUserEmail")
-	newUser = model.addNewUser(user_name, email)
 	print "This is newUser.email", newUser.email
 	model.session.add(newUser)
-	model.commit()
-	# return render_template("/addRecipe")
+	model.session.commit()
+	return "Registered"
+
 
 
 #This is the list of recipes of the logged in user

@@ -22,6 +22,15 @@
 
 	<div class = "left_side_section"></div>
 	<div class = "center_section">
+		{% with messages = get_flashed_messages() %}
+            {% if messages %}
+	            {% for message in messages %}
+	            <ul class="flashes">
+	                <li>{{message}}</li>
+	            </ul>
+	            {% endfor %}
+            {% endif %}
+        {% endwith %}
 
     </div>
 	{% endblock %}
