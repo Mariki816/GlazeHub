@@ -61,10 +61,10 @@ def load_components(session):
 
 def main(session):
 # You'll call each of the load_* functions with the session as an argument
-	print load_chems(session)
-	print load_recipes(session)
-	print load_users(session)
-	print load_components(session)
+	load_chems(session)
+	load_recipes(session)
+	load_users(session)
+	load_components(session)
 
 
 

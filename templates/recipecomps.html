@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block body %}
+	<div class = "center_section">
+
+		<h1> {{ recipe_name }} </h1>
+
+		<table>
+			<tr>
+				<th scope = "col">Chemical Name</th>
+				<th scope = "col">Percentage</th>
+
+				<th scope = "col"><label>Batch Size:
+				<form action = "/batchSizeChange/{{user_id}}/{{recipe_name}}" method = "POST">
+					<input type = "text" id = "batchsize" name="batchsize" size = "3" maxlength = "4"/>
+					<input id = "hidethis" type = "hidden" name = "{{recipe_name}}">
+					<input type = "submit" id = "new" value = "Get Size" class = "btn_submit">
+				</form>
+
+
+					<input type = "radio" name= "weightsystem" value = "kg" checked = "checked"/>
+					<label for "metric">kg</label></label>
+				</th>
+			</tr>
+				{% for comp in components%}
+				<tr>
+					<td>{{comp.chem.chem_name}}</td><td>{{"%.2f" % comp.percentage}}</td>
+				</tr>
+				{% endfor %}
+				<tr>
+				{% for ncomp in newComp %}
+				<td> {{ "%.2f" % ncomp}}</td>
+				</tr>
+				{% endfor %}
+
+
+			</table>
+
+	<input type = "submit" id = "new" value = "Edit Recipe" class = "btn_submit">
+
+    </div>
+{% endblock %}

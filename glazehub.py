@@ -5,7 +5,8 @@ import model
 from flask import Flask, g, session, render_template, request
 from flask import redirect, flash, url_for
 import jinja2
-import os
+import converter
+# import os
 
 app = Flask(__name__)
 
@@ -25,67 +26,50 @@ def index():
 @app.route("/login", methods=['GET'])
 def showLoginPage():
 	session["user_id"] = None
+	# print "Init login This is session[user_id]", session["user_id"]
 	return render_template("login.html")
 
 def do_login(userID, userEmail):
 	session["user"] = userEmail
 	session["user_id"] = userID
 	pass
-	# user = model.User.getUserByEmail(userEmail)
-	# # Find the commonalities of the new user and returning user
-	# # maybe just add only the session stuff...
-	# # user = model.session.query(model.User).filter_by(email=email).first()
-	# # user_id = model.getUserIDByEmail(email)
-
-	# # user = model.session.query(model.User).get(user_id)
-
-	# if user:
-	# 	flash("Welcome, %s" % (user.user_name))
-	# 	if "user" in session:
-	# 		session ["logged_in"] = True
-	# 	else:
-	# 		session["user"] = userEmail
-	# 		session["logged_in"] = True
-
-	# else:
-	# 	flash("New User? Please create an account.")
-	# 	session["logged_in"] = False
-	# 	return render_template("login.html")
-
 
 
 #This processes a returning user
 @app.route("/process-login", methods = ['POST'])
 def processLogin():
 	session["user_id"] = None
+	# print "This is session[user_id]", session["user_id"]
 	email = request.form.get("userEmail")
 	pword = request.form.get("password")
 	user = model.User.getUserByEmail(email)
-	pwordcheck = model.User.getUserPasswordByEmail(email)
 
-	if pword == pwordcheck:
-		if user:
+
+	# if pword == pwordcheck:
+	if user:
+		pwordcheck = model.User.getUserPasswordByEmail(email)
+		if pword == pwordcheck:
 			flash("Welcome, %s" % (user.user_name))
 			if "user" in session:
 				session["user_id"] = user.id
 			else:
-				# session["user"] = email
 				do_login(user.id, email)
-
 		else:
-			flash("New User? Please create an account.")
-			session["logged_in"] = False
+			flash("Incorrect password. Please try again")
 			return render_template("login.html")
-		return redirect("/userRecipes/%d" % user.id)
+
 	else:
-		flash("Incorrect password. Please try again")
+		flash("New User? Please create an account.")
+		session["user_id"] = None
 		return render_template("login.html")
+	return redirect("/userRecipes/%d" % user.id)
+
 
 
 #This creates a New user
 @app.route("/register", methods =['POST'])
 def getNewUser():
-	session["logged_in"] = False
+	session["user_id"] = None
 	newUser = model.User()
 	newUser.user_name = request.form.get("NewUserName")
 	newUser.email = request.form.get("NewUserEmail")
@@ -94,20 +78,12 @@ def getNewUser():
 	print "This is newUser.email", newUser.email
 	model.session.add(newUser)
 	model.session.commit()
+	session["user_id"] = newUser.id
 
 
 	flash("Welcome, %s" % (newUser.user_name))
-
-	# session["newUser"] = newUser.email
-
 	do_login(newUser.id, newUser.email)
-
-
 	return redirect("/userRecipes/%d" % newUser.id)
-
-
-	return "Registered"
-
 
 
 #This is the list of recipes of the logged in user
@@ -132,10 +108,10 @@ def showRecipeAddForm():
 
 #This function gets the recipe name from the form and adds it to the Recipes table
 @app.route("/addRecipe", methods=['POST'])
-def addRecipeName(userID):
+def addRecipeName():
 	# print "This is addRecipeName"
 	newRecipe = model.Recipe()
-	newRecipe.user_id = userID
+	newRecipe.user_id = session["user_id"]
 
 	newRecipe.recipe_name = request.form.get('recipename')
 
@@ -145,10 +121,28 @@ def addRecipeName(userID):
 	return redirect("/userRecipes/%d" % newRecipe.user_id)
 
 
-#this it a tester route
+#this is a tester route
 @app.route("/emilysPurpleRecipe")
 def emilyspurplerecipe():
 	return render_template("emilys_purple_recipe.html")
+
+
+
+#this is the recipe page, checks user too
+@app.route("/recipecomps/<userViewID>/<recipeName>")
+def recipe(userViewID, recipeName):
+
+	userLoginID = session["user_id"]
+	if userLoginID != int(userViewID):
+		flash ("Invalid User ID. Here are your recipes.")
+		userViewID = userLoginID
+		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
+		return render_template("user_recipes.html", display_recipes = recipes)
+	else:
+		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
+		components = model.Component.getComponentsByRecipeID(recipe.id)
+		newComp = []
+		return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName, components = components, newComp = newComp)
 
 
 #This function returns the user to the homepage
@@ -160,6 +154,32 @@ def returnHome():
 @app.route("/sendEmailToCP")
 def emailCP():
 	return render_template("emailCP.html")
+
+@app.route("/batchSizeChange/<userViewID>/<recipeName>",  methods=['POST'])
+def batchsizechange(userViewID, recipeName):
+	size = request.form.get("batchsize")
+	# recipe_name = request.form.get("recipeName")
+	print "this is batchsize size", size
+	print "this is recipe_name", recipeName
+	recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
+	print "This is recipe_id", recipe.id
+	components = model.Component.getComponentsByRecipeID(recipe.id)
+	newComp = []
+
+	for comp in components:
+		print "This is comp percentage", comp.percentage
+		newComp.append(comp.percentage)
+
+	for i in range(len(newComp)):
+		newComp[i] = float(size) * newComp[i]
+		print "This is newComp.percentage", newComp[i]
+	for comp in components:
+		print "This is comp percentage", comp.percentage
+
+
+
+	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName, newComp = newComp, components = components)
+
 
 
 #Will add components to the recipe
@@ -181,9 +201,7 @@ def emailCP():
 
 def main():
 	pass
-	# user_id = 4
-	# getUserByID(user_id)
-	# getRecipesByUserID(user_id)
+
 
 
 if __name__ == "__main__":

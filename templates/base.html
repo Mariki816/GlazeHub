@@ -10,7 +10,7 @@
 		<ul id="header_links">
 			<li class = "header_item"><a href="/">Contact</a></li>
 			<li class = "header_item"><a href="/">Calculator</a></li>
-			{% if session["logged_in"] %}
+			{% if session["user_id"] %}
 				<li class = "header_item"><a href="/login"> {{"Log Out"}} </a></li>
             {% else %}
                 <li class = "header_item"><a href="/login">{{"Log In"}}</a></li>

@@ -17,9 +17,7 @@ session = scoped_session(sessionmaker(bind = engine, autocommit = False, autoflu
 Base = declarative_base()
 Base.query = session.query_property()
 
-
-
-
+3
 #Class declarations
 
 #This is the CP chemical database and a few functions for the class itself
@@ -81,12 +79,15 @@ class Recipe(Base):
 	user = relationship("User", backref = backref("recipes", order_by=id))
 
 	@classmethod
+	def getRecipeName(cls, recipe_name):
+		return session.query(Recipe).filter_by(recipe_name = recipe_name).first()
+	@classmethod
 	def getRecipeNamesByUserID(cls, user_id):
 		return session.query(Recipe).filter_by(user_id = user_id).all()
 
 	@classmethod
 	def getRecipeIDByName(cls, recipe_name, user_id):
-		return session.query(Recipe).filter_by(recipe_name=recipe_name).filter_by(user_id = user_id)
+		return session.query(Recipe).filter_by(recipe_name=recipe_name).filter_by(user_id = user_id).one()
 
 
 #This is the table of Components
@@ -100,16 +101,21 @@ class Component(Base):
 	chem = relationship("Chem", backref = backref("components", order_by=id))
 	recipe = relationship("Recipe", backref = backref("components", order_by=id))
 
+	@classmethod
+	def getComponentsByRecipeID(cls,recipe_id):
+		return session.query(Component).filter_by(recipe_id = recipe_id).all()
 
-def getComponentsByRecipeID(recipeID):
-	components = session.query(Component).filter_by(recipe_id = recipeID).all()
 
-	for comp in components:
-		compName = getChemNameByID(comp.chem_id)
-		compPercent = comp.percentage
-		compChemID= getChemIDbyName(compName)
 
-	return compName, compPercent, compChemID
+# def getComponentsByRecipeID(recipeID):
+# 	components = session.query(Component).filter_by(recipe_id = recipeID).all()
+# 	return components
+# # 	for comp in components:
+# # 		compName = getChemNameByID(comp.chem_id)
+# # 		compPercent = comp.percentage
+# # 		compChemID= getChemIDbyName(compName)
+
+
 
 # def connect():
 # 	global ENGINE
@@ -120,73 +126,6 @@ def getComponentsByRecipeID(recipeID):
 # 	return Session()
 
 
-
-
-# def getUserNameByID(userID):
-# 	#testing if I can get the user right
-# 	user = session.query(User).get(userID)
-# 	# print user.user_name
-
-
-# def getUserIDByEmail(userEmail):
-# 	print "This is userEmail", userEmail
-# 	user = session.query(User).filter_by(email=userEmail).first()
-# 	if not user:
-# 		print "List is empty"
-
-# 	else:
-# 		print "This is user", user
-# 		print "This is user.id", user.id
-# 		return user.id
-
-	#create function to add new User
-
-# def addNewUser(newUserName, newUserEmail, newUserPassword):
-# 	print "This is newUserEmail", newUserEmail
-# 	newUser = model.User()
-# 	newUser.user_name = newUserName
-# 	newUser.email = newUserEmail
-# 	newUser.password = newUserPassword
-
-# 	return newUser
-
-
-# def getRecipesByUserID(userID):
-# 	# user = model.session.query(model.User).get(user_id)
-
-# 	recipenames = session.query(Recipe).filter_by(user_id=userID).all()
-
-# 	# for rname in recipenames:
-# 		# print rname.recipe_name
-# 		# getComponentsByRecipeID(rname.id)
-
-# 	return recipenames
-
-# def getChemNameByID(chemID):
-# 	chemName = session.query(Chem).get(chemID).chem_name
-# 	return chemName
-
-
-
-# def getChemIDbyName(chemNAME):
-# 	chems=session.query(Chem)
-# 	for c in chems:
-# 		if c.chem_name == chemNAME:
-# 			chemID = c.id
-
-# 	return chemID
-
-# def getRecipeIDByName(userID, recipename):
-# 	recipes = session.query(Recipe).filter_by(user_id = userID).all()
-
-# 	for recipe in recipes:
-# 		if recipes.recipe_name == recipename:
-# 			recipeID = recipes.id
-
-# 	return recipeID
-
-
-		# print "This is compChemID", compChemID, compName
 
 
 
