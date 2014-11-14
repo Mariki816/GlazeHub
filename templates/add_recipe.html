@@ -5,7 +5,7 @@
 
 
 	<h1>Recipe</h1>
-	<form action="/addRecipe" method="POST">
+	<form action="/addRecipe/{{ user_id }} " method="POST">
 		<div><label for="recipename" id ="recipename">Recipe Name</label>
 		<input type = "text" id = "recipename" name="recipename" />
 		</div>
@@ -14,7 +14,61 @@
 	<div id = "chemicals">
 		<p>Add components here.</p>
 
-		<input type = "text" id = "numofcomps" name="numofcomps" size = "3" maxlength = "4"/>Number of Components(base and colorants)</br>
+
+		<form action="/addRecipe/{{ user_id }}" methods ="POST">
+
+		<select name="chem1">
+			{% for chem in chem_names %}
+				<option class = "chems" id = "chem1" name = "chem1" value="{{ chem }}">{{ chem }}</option>
+			{% endfor %}
+		</select>
+		<input type = "text" id = "percentage1" name="percentage1" size = "3" maxlength = "4"/>%
+		</br>
+
+
+		<select name="chem2">
+			{% for chem in chem_names %}
+				<option class = "chems" id = "chem2" name = "chem2" value="{{chem}}">{{ chem }}</option>
+			{% endfor %}
+		</select>
+		<input type = "text" id = "percentage2" name="percentage2" size = "3" maxlength = "4"/>%
+		</br>
+
+		<select name="chem3">
+			{% for chem in chem_names %}
+				<option class = "chems" id = "chem3" name = "chem3" value="{{chem}}">{{ chem }}</option>
+			{% endfor %}
+		</select>
+		<input type = "text" id = "percentage3" name="percentage3" size = "3" maxlength = "4"/>%
+		</br>
+
+		<select name="chem4">
+			{% for chem in chem_names %}
+				<option class = "chems" id = "chem4" name = "chem4" value="{{chem}}">{{ chem }}</option>
+			{% endfor %}
+		</select>
+		<input type = "text" id = "percentage4" name="percentage4" size = "3" maxlength = "4"/>%
+		</br>
+
+		<select name="chem5">
+			{% for chem in chem_names %}
+				<option class = "chems" id = "chem5" name = "chem5" value="{{chem}}">{{ chem }}</option></br>
+			{% endfor %}
+		</select>
+		<input type = "text" id = "percentage5" name="percentage5" size = "3" maxlength = "4"/>%
+		</br>
+
+		<select name="chem6">
+			{% for chem in chem_names %}
+				<option class = "chems" id = "chem6" name = "chem6" value="{{chem}}">{{ chem }}</option></br>
+			{% endfor %}
+		</select>
+		<input type = "text" id = "percentage6" name="percentage6" size = "3" maxlength = "4"/>%
+		</br>
+		</form>
+
+
+
 
 
 

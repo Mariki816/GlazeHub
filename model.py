@@ -17,7 +17,6 @@ session = scoped_session(sessionmaker(bind = engine, autocommit = False, autoflu
 Base = declarative_base()
 Base.query = session.query_property()
 
-3
 #Class declarations
 
 #This is the CP chemical database and a few functions for the class itself
@@ -36,12 +35,16 @@ class Chem(Base):
 	fivehundlb = Column(Float)
 
 	@classmethod
+	def getAllChemicals(cls):
+		return session.query(Chem).all()
+
+	@classmethod
 	def getChemNameByID(cls,chemID):
 		return session.query(Chem).get(chemID).chem_name
 
 	@classmethod
-	def getChemIDbyName(cls,chemNAME):
-		return session.query(Chem).get(chemNAME).id
+	def getChemIDByName(cls,chemNAME):
+		return session.query(Chem).filter_by(chem_name = chemNAME).first().id
 
 
 #This is the table of users

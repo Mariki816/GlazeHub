@@ -21,9 +21,10 @@
 					<label for "metric">kg</label></label>
 				</th>
 			</tr>
-				{% for comp in components%}
+				{% for comp in components %}
 				<tr>
-					<td>{{comp.chem.chem_name}}</td><td>{{"%.2f" % comp.percentage}}</td>
+					<td>{{comp.chem.chem_name}}</td><td>{{ comp.percentage }}</td>
+
 				</tr>
 				{% endfor %}
 				<tr>
@@ -39,3 +40,8 @@
 
     </div>
 {% endblock %}
+
+<!-- put this stuff below in a class somewhere so can keep it -->
+<!-- if batchsize
+
+	batchsize -->
