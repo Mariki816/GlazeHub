@@ -1,43 +1,77 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
 {% block body %}
-	<div class = "center_section">
+
+    <div class = "col-sm-1" id = "recipe_list" style="outline: 3px solid #ccccff">
+		{% for recipe in display_recipes %}
+		<ul style = "margin-top: 6px" id="recipe_names">
+			<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}"><li>{{ recipe.recipe_name }}</li></a>
+		</ul>
+
+		{% endfor %}
+	</div>
+
+
+	<div class = "col-sm-11" id = "recipe_section" style="margin-top:-2em">
 
 		<h1> {{ recipe_name }} </h1>
+		<div class = "col-sm-8" id = "recipe_list" style="outline: 3px solid #ccccff" >
+			<div class = "row" style = "color:#5551a2">
 
-		<table>
-			<tr>
-				<th scope = "col">Chemical Name</th>
-				<th scope = "col">Percentage</th>
+				<div class = "col-sm-3" id = "chem_name" >Chemical</div>
 
-				<th scope = "col"><label>Batch Size:
-				<form action = "/batchSizeChange/{{user_id}}/{{recipe_name}}" method = "POST">
-					<input type = "text" id = "batchsize" name="batchsize" size = "3" maxlength = "4"/>
-					<input id = "hidethis" type = "hidden" name = "{{recipe_name}}">
-					<input type = "submit" id = "new" value = "Get Size" class = "btn_submit">
-				</form>
+				<div class = "col-sm-1" id = "percentage">%</div>
+
+				<div class = "form-group" id = "amount_to_make">
+					<label class = "col-sm-1 control-label" for "amt">
+						Amt.
+					</label>
+
+					<div class ="col-sm-2">
+						<form action = "/batchSizeChange/{{user_id}}/{{recipe_name}}" method = "POST">
+							<input class = "form-control" type = "text" id = "batchsize" name="batchsize"/>
+					</div>
+
+					<div class = "col-sm-2">
+
+						<input id = "hidethis" type = "hidden" name = "{{recipe_name}}">
+						<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getSize">
+						<strong>Get Size</strong></button>
+					</div>
+
+					<div class = "col-sm-3 pull-right">
+
+						<input type = "radio" name= "weightsystem" value = "lbs" />
+						<label for "pounds">lbs</label>
+						<input type = "radio" name= "weightsystem" value = "kg" checked = "checked"/>
+						<label for "metric">kg</label>
+					</div>
+
+					<div class = "col-sm-8" id ="comp_percent_amt">
+
+					{% for comp in components %}
+						<div class = "row">
+							<div class = "col-sm-4" style = "margin-left:-1em">{{comp.chem.chem_name}}</div>
+							<div class = "col-sm-2">{{ comp.percentage }}</div>
+							<div class = "col-sm-2">{{batchComp[loop.index-1]}}</div>
+						</div>
+					{% endfor %}
+
+					</div>
+						</form>
+				</div>
+			</div>
 
 
-					<input type = "radio" name= "weightsystem" value = "kg" checked = "checked"/>
-					<label for "metric">kg</label></label>
-				</th>
-			</tr>
-				{% for comp in components %}
-				<tr>
-					<td>{{comp.chem.chem_name}}</td><td>{{ comp.percentage }}</td>
-
-				</tr>
-				{% endfor %}
-				<tr>
-				{% for ncomp in newComp %}
-				<td> {{ "%.2f" % ncomp}}</td>
-				</tr>
-				{% endfor %}
+		</div>
 
 
-			</table>
 
-	<input type = "submit" id = "new" value = "Edit Recipe" class = "btn_submit">
+	</div>
 
+
+ 	<div>
+	<button class ="btn btn-GH" type = "submit" id = "add_recipe">
+						<strong>Edit Recipe</strong></button>
     </div>
 {% endblock %}
 

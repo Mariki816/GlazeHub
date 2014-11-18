@@ -1,28 +1,29 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
 
 
 {% block body %}
 
-<!-- 	<div class = "left_side_section"> -->
-	<div class ="left_side_section" id = "recipe_list">
+
+    <div class = "col-sm-1" id = "recipe_list" style="outline: 3px solid #ccccff" >
+    	<label class = "control-label" for="userRecipes">
+			Recipes
+		</label>
 		{% for recipe in display_recipes %}
-		<ul id="recipe_names">
-			<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}"><li>{{ recipe.recipe_name }}</li></href>
+		<ul style = "margin-top: 6px" id="recipe_names">
+			<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}"><li>{{ recipe.recipe_name }}</li></a>
+
 		</ul>
 
 		{% endfor %}
 	</div>
-	<div class = "center_section">
+	<div class = "col-sm-11" id = "add_recipe_section">
 		<a href = "/addRecipe/{{user_id}}">
-			<input type = "submit" id = "add_recipe" value = "Add New Recipe?" class = "btn_submit">
+			<button class ="btn btn-GH" type = "submit" id = "add_recipe">
+						<strong>Add New Recipe?</strong></button>
+		</a>
 
 	</div>
 
-	<!-- </div> -->
-
-<!-- 	<div id = "return_home">
-		<a href ="/returnHome">Home</a>
-	</div> -->
 
 
 {% endblock %}

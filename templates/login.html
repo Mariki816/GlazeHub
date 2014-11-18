@@ -1,36 +1,71 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
 {% block body %}
 
+<div class="container">
+    <div class = "col-sm-1" id = "left_side_section" >
+    </div>
+	<div class = "col-sm-11" id = "center_section">
+		<div id = "returning_user">
+			<h2>Please Sign In</h2>
+			<form class ="form-horizontal" action="/process-login" method="POST">
+				<div class = "form-group">
+					<label class = "col-sm-4 control-label" for="userEmail">
+						User email:
+					</label>
+					<div class = "col-sm-8">
+						<input class = "form-control" type = "text" id = "userEmail" name="userEmail" />
+					</div>
+				</div>
+				<div class = "form-group">
+					<label class = "col-sm-4 control-label" for="password">
+						Password:
+					</label>
+					<div class = "col-sm-8">
+						<input class = "form-control" type = "text" id = "password" name="password" />
+					</div>
+				</div>
+					<button class ="btn btn-GH pull-right" type = "submit" id = "user"><strong>Log in</strong></button>
+				</div>
+			</form>
 
-<div class = "center_section">
-	<div id = "returning_user">
-		<h2>Please Sign In</h2>
-		<form action="/process-login" class = "form-signin" method="POST">
-			<label for="userEmail" class = "title">User email:</label>
-			<input type = "text" id = "userEmail" name="userEmail" /></br>
-			<label for="password" class = "title">Enter Password:</label>
-			<input type = "text" id = "password" name="password" /></br>
-			<input type = "submit" id = "user" value = "Log in" class = "btn_submit">
-		</form>
+
+		<div id = "new_user">
+			<h2>New User? Please create an account</h2>
+			<form action = "/register" class = "form-horizontal" method="POST">
+				<div class = "form-group">
+					<label class = "col-sm-4 control-label" for="userName" class = "title">
+						User name:
+					</label>
+					<div class = "col-sm-8">
+						<input class = "form-control" type = "text" id = "NewUserName" name="NewUserName" />
+					</div>
+				</div>
+
+				<div class = "form-group">
+					<label class = "col-sm-4 control-label" for="userEmail" class = "title">
+						User email:
+					</label>
+
+					<div class = "col-sm-8">
+						<input class = "form-control" type = "text" id = "NewUserEmail" name="NewUserEmail" />
+					</div>
+				</div>
+				<div class = "form-group">
+					<label class = "col-sm-4 control-label" for="password" class = "title">
+						Password:
+					</label>
+					<div class = "col-sm-8">
+					<input class = "form-control" type = "text" id = "NewUserPassword" name="NewUserPassword" />
+					</div>
+				</div>
+				<button class ="btn btn-GH pull-right" type = "submit" id = "user">
+						<strong>Create New User</strong></button>
+				</div>
+			</form>
+		</div>
+
+
 	</div>
-
-	<div id = "new_user" class = "sign_in_up">
-		<h2>New User? Please create an account</h2>
-		<form action = "/register" class = "form-signup" method="POST">
-		<label for="userName" class = "title">User name:</label>
-		<input type = "text" id = "NewUserName" name="NewUserName" /></br>
-		<label for="userEmail" class = "title">User email:</label>
-		<input type = "text" id = "NewUserEmail" name="NewUserEmail" /></br>
-		<label for="password" class = "title">Password:</label>
-		<input type = "text" id = "NewUserPassword" name="NewUserPassword" /></br>
-<!-- 		<label for="password" class = "title">Confirm Password:</label>
-		<input type = "text" id = "password" name="password" /></br> -->
-		<input type = "submit" id = "NewUser" value = "Register" class = "btn_submit">
-	</form>
-	</div>
-
-
-
 
 </div>
 

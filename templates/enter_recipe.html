@@ -1,0 +1,132 @@
+{% extends 'base2.html' %}
+{% block body %}
+
+	<title>Enter Recipe</title>
+<div class = "col-sm-1" id = "recipe_list" ></div>
+
+<div class = "col-sm-11" id = "recipe_section" style="margin-top:-2em">
+	<h1>Enter Recipe</h1>
+	<div class = "row">
+
+			<div class = "form-group" id = "recipename">
+				<label class = "col-sm-2 control-label" for="recipename" id ="recipename" style = "margin-top:1em">
+					Recipe Name
+				</label>
+				<div class = "col-sm-4" style= "margin-left:-3em">
+					<form action="/batchSizeChangeNoUser" method="POST">
+					<input class = "form-control" type = "text" id = "recipename" name="recipename" />
+				</div>
+			</div>
+	</div>
+
+	<div class = "row">
+		<div class = "col-sm-11">
+			<h3>Add components here</h3>
+		</div>
+	</div>
+	<div class = "row">
+		<div class = "col-sm-11" id = "add_component_chems">
+
+			<div class = "col-sm-2" id = "chem_name" style="margin-top:1em">Chemical</div>
+				<div class = "col-sm-1" id = "percentage" style="margin-top:1em">%</div>
+				<div class = "form-group" id = "amount_to_make">
+					<label class = "col-sm-1 control-label" for "amt" style="margin-top:1em">
+						Amt.
+					</label>
+					<div class ="col-sm-2">
+						<input class = "form-control" type = "text" id = "batchsize" name="batchsize"/>
+					</div>
+
+
+
+					<div class = "col-sm-3">
+
+						<input type = "radio" name= "weightsystem" value = "lbs" />
+						<label for "pounds">lbs</label>
+						<input type = "radio" name= "weightsystem" value = "kg" checked = "checked"/>
+						<label for "metric">kg</label>
+					</div>
+				</div>
+		</div>
+
+
+
+
+
+
+				<select name="chem1">
+					{% for chem in chem_names %}
+						<option class = "chems" id = "chem1" name = "chem1" value="{{ chem }}">{{ chem }}</option>
+					{% endfor %}
+				</select>
+				<input type = "text" step="any" id = "percentage1" name="percentage1" size = "3" maxlength = "4"/>%
+				</br>
+
+
+				<select name="chem2">
+					{% for chem in chem_names %}
+						<option class = "chems" id = "chem2" name = "chem2" value="{{chem}}">{{ chem }}</option>
+					{% endfor %}
+				</select>
+				<input type = "text" step="any" id = "percentage2" name="percentage2" size = "3" maxlength = "4"/>%
+				</br>
+
+				<select name="chem3">
+					{% for chem in chem_names %}
+						<option class = "chems" id = "chem3" name = "chem3" value="{{chem}}">{{ chem }}</option>
+					{% endfor %}
+				</select>
+				<input type = "text" step="any" id = "percentage3" name="percentage3" size = "3" maxlength = "4"/>%
+				</br>
+
+				<select name="chem4">
+					{% for chem in chem_names %}
+						<option class = "chems" id = "chem4" name = "chem4" value="{{chem}}">{{ chem }}</option>
+					{% endfor %}
+				</select>
+				<input type = "text" step="any" id = "percentage4" name="percentage4" size = "3" maxlength = "4"/>%
+				</br>
+
+				<select name="chem5">
+					{% for chem in chem_names %}
+						<option class = "chems" id = "chem5" name = "chem5" value="{{chem}}">{{ chem }}</option></br>
+					{% endfor %}
+				</select>
+				<input type = "text" step="any" id = "percentage5" name="percentage5" size = "3" maxlength = "4"/>%
+				</br>
+
+				<select name="chem6">
+					{% for chem in chem_names %}
+						<option class = "chems" id = "chem6" name = "chem6" value="{{chem}}">{{ chem }}</option></br>
+					{% endfor %}
+				</select>
+				<input type = "text" id = "percentage6" name="percentage6" size = "3" maxlength = "4"/>%
+				</br>
+
+			<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getSize">
+					<strong>Get Size</strong></button>
+			</form>
+	</div>
+
+			<tr>
+				{% for ncomp in batchComp %}
+				<td> {{ "%.2f" % ncomp}}</td>
+				{% endfor %}
+			</tr>
+
+
+
+
+
+			<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getSize">
+			<strong>Save</strong></button>
+
+<!-- 		<div id = "return_home">
+			<a href ="/returnHome">Home</a>
+		</div> -->
+
+
+
+
+
+{% endblock %}

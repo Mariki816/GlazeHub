@@ -17,7 +17,9 @@ app.jinja_env.undefined = jinja2.StrictUndefined
 
 #This is the index page. Later it will show the Calculator itself
 
-
+@app.route("/base2")
+def testBS():
+	return render_template("base2.html")
 
 @app.route("/")
 def index():
@@ -241,7 +243,7 @@ def addRecipeName(userViewID):
 
 	model.session.add(newRecipe)
 	model.session.commit()
-	batchComp=[]
+
 
 	newComp1 = model.Component()
 	newComp1.chem_name = request.form.get('chem1')
@@ -251,7 +253,6 @@ def addRecipeName(userViewID):
 	model.session.add(newComp1)
 	model.session.commit()
 
-
 	newComp2 = model.Component()
 	newComp2.chem_name = request.form.get('chem2')
 	newComp2.chem_id = model.Chem.getChemIDByName(newComp2.chem_name)
@@ -259,7 +260,6 @@ def addRecipeName(userViewID):
 	newComp2.recipe_id = newRecipe.id
 	model.session.add(newComp2)
 	model.session.commit()
-
 
 	newComp3 = model.Component()
 	newComp3.chem_name = request.form.get('chem3')
@@ -269,7 +269,6 @@ def addRecipeName(userViewID):
 	model.session.add(newComp3)
 	model.session.commit()
 
-
 	newComp4 = model.Component()
 	newComp4.chem_name = request.form.get('chem4')
 	newComp4.chem_id = model.Chem.getChemIDByName(newComp4.chem_name)
@@ -277,7 +276,6 @@ def addRecipeName(userViewID):
 	newComp4.recipe_id = newRecipe.id
 	model.session.add(newComp4)
 	model.session.commit()
-
 
 	newComp5 = model.Component()
 	newComp5.chem_name = request.form.get('chem5')
@@ -287,7 +285,6 @@ def addRecipeName(userViewID):
 	model.session.add(newComp5)
 	model.session.commit()
 
-
 	newComp6 = model.Component()
 	newComp6.chem_name = request.form.get('chem6')
 	newComp6.chem_id = model.Chem.getChemIDByName(newComp6.chem_name)
@@ -296,12 +293,11 @@ def addRecipeName(userViewID):
 	model.session.add(newComp6)
 	model.session.commit()
 
-
 	components = model.Component.getComponentsByRecipeID(newRecipe.id)
 
+	newComp = []
 
-
-	return render_template("recipecomps.html", user_id = userViewID, recipe_name = newRecipe.recipe_name, components = components, batchComp = batchComp, display_recipes = display_recipes)
+	return render_template("recipecomps.html", user_id = userViewID, recipe_name = newRecipe.recipe_name, components = components, newComp = newComp, display_recipes = display_recipes)
 
 
 # #this is my tester function to add a new component
@@ -333,10 +329,8 @@ def recipe(userViewID, recipeName):
 	else:
 		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
 		components = model.Component.getComponentsByRecipeID(recipe.id)
-		batchComp = []
-		for comp in components:
-			batchComp.append(comp.percentage/100)
-		return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName, components = components, batchComp = batchComp, display_recipes=display_recipes)
+		newComp.append[components.percentage]
+		return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName, components = components, newComp = newComp, display_recipes=display_recipes)
 
 
 
@@ -350,19 +344,19 @@ def batchsizechange(userViewID, recipeName):
 	recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
 	print "This is recipe_id", recipe.id
 	components = model.Component.getComponentsByRecipeID(recipe.id)
-	batchComp = []
+	newComp = []
 
 	for comp in components:
 		# print "This is comp percentage", comp.percentage
-		batchComp.append(comp.percentage/100)
+		newComp.append(comp.percentage)
 
-	for i in range(len(batchComp)):
-		batchComp[i] = float(size) * batchComp[i]
+	for i in range(len(newComp)):
+		newComp[i] = float(size) * newComp[i]
 	# 	print "This is newComp.percentage", newComp[i]
 	# for comp in components:
 	# 	print "This is comp percentage", comp.percentage
 
-	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName, batchComp = batchComp, components = components, display_recipes=display_recipes)
+	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName, newComp = newComp, components = components, display_recipes=display_recipes)
 
 
 

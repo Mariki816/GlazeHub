@@ -65,12 +65,14 @@
 		</select>
 		<input type = "text" id = "percentage6" name="percentage6" size = "3" maxlength = "4"/>%
 		</br>
+
 		</form>
 
 
 
-
-
+		<form action= "/addRecipe/{{ user_id }}/<chem>" methods ="GET">
+		<input type = "submit" id = "add_recipe" value = "Add Component" class = "btn_submit">
+		</form>
 
 		<input type = "submit" id = "add_recipe" value = "Add Recipe" class = "btn_submit">
 
