@@ -46,7 +46,7 @@ def processLogin():
 	email = request.form.get("userEmail")
 	pword = request.form.get("password")
 	user = model.User.getUserByEmail(email)
-
+	# print "This is user.id", (user.id, user.user_name)
 
 	# if pword == pwordcheck:
 	if user:
@@ -55,6 +55,8 @@ def processLogin():
 			flash("Welcome, %s" % (user.user_name))
 			if "user" in session:
 				session["user_id"] = user.id
+				# print "this is session user", session["user_id"]
+
 			else:
 				do_login(user.id, email)
 		else:
@@ -93,11 +95,13 @@ def getNewUser():
 @app.route("/userRecipes/<int:userViewID>")
 def listofUserRecipes(userViewID):
 	userLoginID = session["user_id"]
+	# print "This is userViewID", userViewID
+	# print "This is userLoginID", (type(userLoginID), userLoginID)
 	if userLoginID != userViewID:
 		flash ("Invalid User ID. Here are your recipes.")
 		userViewID = userLoginID
 		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
-		return render_template("user_recipes.html", display_recipes = recipes)
+		return render_template("user_recipes.html", display_recipes = recipes, user_id = userViewID)
 	else:
 		recipes = model.Recipe.getRecipeNamesByUserID(userViewID)
 		return render_template("user_recipes.html", display_recipes = recipes, user_id = userViewID)
@@ -213,6 +217,7 @@ def EnterRecipeForm():
 def showRecipeAddForm(userViewID):
 
 	userLoginID = session["user_id"]
+	print "This is user LoginID", userLoginID
 	if userLoginID != int(userViewID):
 		flash ("Invalid User ID. Here are your recipes.")
 		userViewID = userLoginID
@@ -247,6 +252,7 @@ def addRecipeName(userViewID):
 	newComp1.chem_name = request.form.get('chem1')
 	newComp1.chem_id = model.Chem.getChemIDByName(newComp1.chem_name)
 	newComp1.percentage = request.form.get('percentage1')
+	batchComp.append(newComp1.percentage)
 	newComp1.recipe_id = newRecipe.id
 	model.session.add(newComp1)
 	model.session.commit()
@@ -256,6 +262,7 @@ def addRecipeName(userViewID):
 	newComp2.chem_name = request.form.get('chem2')
 	newComp2.chem_id = model.Chem.getChemIDByName(newComp2.chem_name)
 	newComp2.percentage = request.form.get('percentage2')
+	batchComp.append(newComp2.percentage)
 	newComp2.recipe_id = newRecipe.id
 	model.session.add(newComp2)
 	model.session.commit()
@@ -265,6 +272,7 @@ def addRecipeName(userViewID):
 	newComp3.chem_name = request.form.get('chem3')
 	newComp3.chem_id = model.Chem.getChemIDByName(newComp3.chem_name)
 	newComp3.percentage = request.form.get('percentage3')
+	batchComp.append(newComp3.percentage)
 	newComp3.recipe_id = newRecipe.id
 	model.session.add(newComp3)
 	model.session.commit()
@@ -274,6 +282,7 @@ def addRecipeName(userViewID):
 	newComp4.chem_name = request.form.get('chem4')
 	newComp4.chem_id = model.Chem.getChemIDByName(newComp4.chem_name)
 	newComp4.percentage = request.form.get('percentage4')
+	batchComp.append(newComp4.percentage)
 	newComp4.recipe_id = newRecipe.id
 	model.session.add(newComp4)
 	model.session.commit()
@@ -283,6 +292,7 @@ def addRecipeName(userViewID):
 	newComp5.chem_name = request.form.get('chem5')
 	newComp5.chem_id = model.Chem.getChemIDByName(newComp5.chem_name)
 	newComp5.percentage = request.form.get('percentage5')
+	batchComp.append(newComp5.percentage)
 	newComp5.recipe_id = newRecipe.id
 	model.session.add(newComp5)
 	model.session.commit()
@@ -292,6 +302,7 @@ def addRecipeName(userViewID):
 	newComp6.chem_name = request.form.get('chem6')
 	newComp6.chem_id = model.Chem.getChemIDByName(newComp6.chem_name)
 	newComp6.percentage = request.form.get('percentage6')
+	batchComp.append(newComp6.percentage)
 	newComp6.recipe_id = newRecipe.id
 	model.session.add(newComp6)
 	model.session.commit()

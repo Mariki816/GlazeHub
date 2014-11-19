@@ -45,15 +45,15 @@
 						<label for "pounds">lbs</label>
 						<input type = "radio" name= "weightsystem" value = "kg" checked = "checked"/>
 						<label for "metric">kg</label>
+						<button class ="btn btn-GH" type = "submit" id = "getSize">
+							<strong>Get Size</strong></button>
+
 					</div>
+
+
 				</div>
 		</div>
-
-
-
-
-
-
+			<div class = "col-sm-8" id = "chems_list">
 				<select name="chem1">
 					{% for chem in chem_names %}
 						<option class = "chems" id = "chem1" name = "chem1" value="{{ chem }}">{{ chem }}</option>
@@ -102,17 +102,22 @@
 				</select>
 				<input type = "text" id = "percentage6" name="percentage6" size = "3" maxlength = "4"/>%
 				</br>
+			</div>
+			<div class = "col-sm-4">
+				{% for comp in batchComp %}
+					<div class = "row">
 
-			<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getSize">
-					<strong>Get Size</strong></button>
+						<div class = "col-sm-2">{{comp}}</div>
+					</div>
+				{% endfor %}
+			</div>
+
 			</form>
+
+
 	</div>
 
-			<tr>
-				{% for ncomp in batchComp %}
-				<td> {{ "%.2f" % ncomp}}</td>
-				{% endfor %}
-			</tr>
+
 
 
 

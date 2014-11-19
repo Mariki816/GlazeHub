@@ -90,7 +90,7 @@ class Recipe(Base):
 
 	@classmethod
 	def getRecipeIDByName(cls, recipe_name, user_id):
-		return session.query(Recipe).filter_by(recipe_name=recipe_name).filter_by(user_id = user_id).one()
+		return session.query(Recipe).filter_by(recipe_name=recipe_name).filter_by(user_id = user_id).first()
 
 
 #This is the table of Components

@@ -15,7 +15,7 @@
                         <li ><a href="mailto:marlenehirose@gmail.com">Contact</a></li>
                          <li ><a href="/enterRecipe">Calculator</a></li>
                         {% if session["user_id"] %}
-                            <li ><a href="/"> {{"Log Out"}} </a></li>
+                            <li ><a href="/enterRecipe"> {{"Log Out"}} </a></li>
                         {% else %}
                             <li ><a href="/login">{{"Log In"}}</a></li>
                         {% endif %}
@@ -23,6 +23,16 @@
                 </div>
             </div>
         </div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <ul class="flashes">
+                    <li>{{message}}</li>
+                </ul>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         {% block body %}
             <div class = "col-sm-2"></div>
         {% endblock %}

@@ -5,63 +5,66 @@
     <div class = "col-sm-1" id = "left_side_section" >
     </div>
 	<div class = "col-sm-11" id = "center_section">
-		<div id = "returning_user">
-			<h2>Please Sign In</h2>
-			<form class ="form-horizontal" action="/process-login" method="POST">
-				<div class = "form-group">
-					<label class = "col-sm-4 control-label" for="userEmail">
-						User email:
-					</label>
-					<div class = "col-sm-8">
-						<input class = "form-control" type = "text" id = "userEmail" name="userEmail" />
+		<div class = "row">
+			<div id = "returning_user">
+				<h3>Please Sign In</h3>
+				<form class ="form-horizontal" action="/process-login" method="POST">
+					<div class = "form-group">
+						<label class = "col-sm-4 control-label" for="userEmail">
+							User email:
+						</label>
+						<div class = "col-sm-8">
+							<input class = "form-control" type = "text" id = "userEmail" name="userEmail" />
+						</div>
 					</div>
-				</div>
-				<div class = "form-group">
-					<label class = "col-sm-4 control-label" for="password">
-						Password:
-					</label>
-					<div class = "col-sm-8">
-						<input class = "form-control" type = "text" id = "password" name="password" />
+					<div class = "form-group">
+						<label class = "col-sm-4 control-label" for="password">
+							Password:
+						</label>
+						<div class = "col-sm-8">
+							<input class = "form-control" type = "text" id = "password" name="password" />
+						</div>
 					</div>
-				</div>
-					<button class ="btn btn-GH pull-right" type = "submit" id = "user"><strong>Log in</strong></button>
-				</div>
-			</form>
+						<button class ="btn btn-GH pull-right" type = "submit" id = "user"><strong>Log in</strong></button>
+					</div>
+				</form>
+			</div>
 
-
-		<div id = "new_user">
-			<h2>New User? Please create an account</h2>
-			<form action = "/register" class = "form-horizontal" method="POST">
-				<div class = "form-group">
-					<label class = "col-sm-4 control-label" for="userName" class = "title">
-						User name:
-					</label>
-					<div class = "col-sm-8">
-						<input class = "form-control" type = "text" id = "NewUserName" name="NewUserName" />
+		<div class ="row">
+			<div id = "new_user">
+				<h3>New User? Please create an account</h3>
+				<form action = "/register" class = "form-horizontal" method="POST">
+					<div class = "form-group">
+						<label class = "col-sm-4 control-label" for="userName" class = "title">
+							User name:
+						</label>
+						<div class = "col-sm-8">
+							<input class = "form-control" type = "text" id = "NewUserName" name="NewUserName" />
+						</div>
 					</div>
-				</div>
 
-				<div class = "form-group">
-					<label class = "col-sm-4 control-label" for="userEmail" class = "title">
-						User email:
-					</label>
+					<div class = "form-group">
+						<label class = "col-sm-4 control-label" for="userEmail" class = "title">
+							User email:
+						</label>
 
-					<div class = "col-sm-8">
-						<input class = "form-control" type = "text" id = "NewUserEmail" name="NewUserEmail" />
+						<div class = "col-sm-8">
+							<input class = "form-control" type = "text" id = "NewUserEmail" name="NewUserEmail" />
+						</div>
 					</div>
-				</div>
-				<div class = "form-group">
-					<label class = "col-sm-4 control-label" for="password" class = "title">
-						Password:
-					</label>
-					<div class = "col-sm-8">
-					<input class = "form-control" type = "text" id = "NewUserPassword" name="NewUserPassword" />
+					<div class = "form-group">
+						<label class = "col-sm-4 control-label" for="password" class = "title">
+							Password:
+						</label>
+						<div class = "col-sm-8">
+						<input class = "form-control" type = "text" id = "NewUserPassword" name="NewUserPassword" />
+						</div>
 					</div>
-				</div>
-				<button class ="btn btn-GH pull-right" type = "submit" id = "user">
-						<strong>Create New User</strong></button>
-				</div>
-			</form>
+					<button class ="btn btn-GH pull-right" type = "submit" id = "user">
+							<strong>Create New User</strong></button>
+					</div>
+				</form>
+			</div>
 		</div>
 
 
