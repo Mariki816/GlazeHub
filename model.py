@@ -78,6 +78,7 @@ class Recipe(Base):
 	id = Column(Integer, primary_key = True)
 	recipe_name = Column(String (120))
 	user_id = Column(Integer, ForeignKey('users.id'))
+	user_notes = Column(String (3000), nullable = True)
 
 	user = relationship("User", backref = backref("recipes", order_by=id))
 

@@ -137,7 +137,6 @@ def renderEnterRecipeForm():
 @app.route("/batchSizeChangeNoUser", methods=['POST'])
 def EnterRecipeForm():
 
-
 	chems = model.session.query(model.Chem).all()
 	chemNames = [chem.chem_name for chem in chems]
 
@@ -315,17 +314,8 @@ def addRecipeName(userViewID):
 	return render_template("recipecomps.html", user_id = userViewID, recipe_name = newRecipe.recipe_name, components = components, batchComp = batchComp, display_recipes = display_recipes)
 
 
-# #this is my tester function to add a new component
-# @app.route("/addRecipe/<userViewID>/<new_Comp>", methods=['POST'])
-# def addRecipeComponent():
-# 	newComp = model.Component()
-# 	newComp.chem_name = request.form.get('chem')
-# 	newComp.chem_id = model.Chem.getChemIDByName(newComp.chem_name)
-# 	newComp.percentage = request.form.get('percentage')
-# 	# newComp.recipe_id = newRecipe_id
-# 	model.session.add(newComp)
 
-# 	return render_template("add_recipe.html", user_id = userViewID)
+
 
 
 

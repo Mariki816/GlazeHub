@@ -1,3 +1,5 @@
+
+
 {% extends 'base2.html' %}
 {% block body %}
 
@@ -12,6 +14,7 @@
 	{% endfor %}
 </div>
 
+
 <div class = "col-sm-11" id = "recipe_section" style="margin-top:-2em">
 	<h1>Recipe</h1>
 
@@ -22,86 +25,81 @@
 					Recipe Name
 			</label>
 			<div class = "col-sm-4" style= "margin-left:-3em">
-				<form action="/addRecipe/{{ user_id}}" method="POST">
+
 				<input class = "form-control" type = "text" id = "recipename" name="recipename" />
 			</div>
 		</div>
 	</div>
 
 
+
+
+
 		<div id = "chemicals">
+
 			<p>Add components here.</p>
+			<table id = "chems_percents">
+				<colgroup>
+					<col class = "Chemical" />
+					<col class = "Percentage" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th scope = "col">Chemical Name</th>
+						<th scope = "col">Percentage</th>
+					</tr>
+				</thead>
+
+				<tbody>
+
+			<div>
 
 
-			<form action="/addRecipe/{{ user_id }}" methods ="POST">
 
-			<select name="chem1">
-				{% for chem in chem_names %}
-					<option class = "chems" id = "chem1" name = "chem1" value="{{ chem }}">{{ chem }}</option>
-				{% endfor %}
-			</select>
-			<input type = "text" id = "percentage1" name="percentage1" size = "3" maxlength = "4"/>%
-			</br>
+			</div>
 
 
-			<select name="chem2">
-				{% for chem in chem_names %}
-					<option class = "chems" id = "chem2" name = "chem2" value="{{chem}}">{{ chem }}</option>
-				{% endfor %}
-			</select>
-			<input type = "text" id = "percentage2" name="percentage2" size = "3" maxlength = "4"/>%
-			</br>
 
-			<select name="chem3">
-				{% for chem in chem_names %}
-					<option class = "chems" id = "chem3" name = "chem3" value="{{chem}}">{{ chem }}</option>
-				{% endfor %}
-			</select>
-			<input type = "text" id = "percentage3" name="percentage3" size = "3" maxlength = "4"/>%
-			</br>
 
-			<select name="chem4">
-				{% for chem in chem_names %}
-					<option class = "chems" id = "chem4" name = "chem4" value="{{chem}}">{{ chem }}</option>
-				{% endfor %}
-			</select>
-			<input type = "text" id = "percentage4" name="percentage4" size = "3" maxlength = "4"/>%
-			</br>
+					<tr>
 
-			<select name="chem5">
-				{% for chem in chem_names %}
-					<option class = "chems" id = "chem5" name = "chem5" value="{{chem}}">{{ chem }}</option></br>
-				{% endfor %}
-			</select>
-			<input type = "text" id = "percentage5" name="percentage5" size = "3" maxlength = "4"/>%
-			</br>
+						<td>
+							<input class = "form-control" name="inputChemName" type="text" maxlength="50" id="inputChemName" tabindex="2" />
 
-			<select name="chem6">
-				{% for chem in chem_names %}
-					<option class = "chems" id = "chem6" name = "chem6" value="{{chem}}">{{ chem }}</option></br>
-				{% endfor %}
-			</select>
-			<input type = "text" id = "percentage6" name="percentage6" size = "3" maxlength = "4"/>%
-			</br>
+						    <select name="chem" id="chem"
+						        onchange="DropDownTextToBox(this,'inputChemName');">
 
-			<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "add_recipe">
-				<strong>Add Recipe</strong></button>
-			</form>
+								{% for chem in chem_names %}
+									<option class = "chems" id = "chem" name = "chem" value="{{ chem }}">{{ chem }}</option>
+								{% endfor %}
+			    				</select>
+
+						</td>
+						<td>
+							<input class = "form-control" type = "text" id = "percentage1"
+									name="percentage1"/>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+
+					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px" ><strong>Add Component</strong></button>
+
+
 
 	</div>
 
-		<form action= "/addRecipe/{{ user_id }}/<chem>" methods ="GET">
-			<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "add_recipe">
-				<strong>Add Component</strong></button>
-		</form>
+
 
 
 
 <!-- 		<div id = "return_home">
 			<a href ="/returnHome">Home</a>
 		</div> -->
+			<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "add_recipe">
+				<strong>Add Recipe</strong></button>
 
-	</form>
 
 </div>
 

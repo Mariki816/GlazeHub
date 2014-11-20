@@ -1,41 +1,5 @@
-<html>
-<head>
-	<style>
-		.header_logo{
-			border:10px;
-			padding:10px;
-			width: 300px;
-			margin:10px;
-		}
-		div#header_section{
-			marginbottom:10px;
-			background-color:CCCCFF
-		}
-
-
-
-		body{
-			margin:10px;
-			font-family: "Helvetica Neue", Helvetica, "Segoe UI",
-			Arial, freesans, sans-serif;
-			}
-
-		div#return_home{
-			margin:20px;
-		}
-
-		div#email_msg{
-			margin:20px;
-		}
-
-		div#submit_email{
-			margin-left:20px;
-			margin-top: 10px;
-			margin-bottom: 20px;
-		}
-
-
-	</style>
+{% extends 'base2.html' %}
+{% block body %}
 
 </head>
 <body>
@@ -54,4 +18,4 @@
 		<a href ="/returnHome">Home</a>
 	</div>
 
-</body>
+{% endblock %}

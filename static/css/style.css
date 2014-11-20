@@ -9,6 +9,13 @@ a:visited {
 	color:#8a8aff;
 }
 
+
+
+table td{
+	vertical-align: top;
+	padding-left:10px;
+}
+
 div#header_section{
 	height:200px;
 	margin-bottom:10px;

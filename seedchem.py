@@ -31,6 +31,7 @@ def load_recipes(session):
 			recipe = model.Recipe()
 			recipe.recipe_name = row[0]
 			recipe.user_id = row[1]
+			recipe.user_notes = row[2]
 			session.add(recipe)
 		session.commit()
 
