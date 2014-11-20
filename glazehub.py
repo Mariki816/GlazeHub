@@ -1,12 +1,13 @@
 #This is my controller script
 
 import model
+import api
 # import seedchem
 from flask import Flask, g, session, render_template, request
 from flask import redirect, flash, url_for
 import jinja2
 import converter
-# import os
+import json
 
 app = Flask(__name__)
 
@@ -381,8 +382,11 @@ def emailCP():
 	return render_template("emailCP.html")
 
 
-
-
+@app.route("/listChemNames")
+def listChemNames():
+	chems = model.session.query(model.Chem).all()
+	chemicalNames = [chem.chem_name for chem in chems]
+	return chemicalNames
 
 
 

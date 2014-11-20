@@ -1,5 +1,11 @@
 $(document).ready(function () {
 	$("#add_component").click(add_field);
+	$.get("/listChemNames", function(chemicalNames){
+		chem_names = chemicalNames;
+		console.log("These are chemicanlNames", chemicalNames);
+		});
+
+
 });
 var counter = 0;
 function add_field(){

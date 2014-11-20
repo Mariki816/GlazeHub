@@ -1,5 +1,3 @@
-
-
 {% extends 'base2.html' %}
 {% block body %}
 
@@ -31,10 +29,6 @@
 		</div>
 	</div>
 
-
-
-
-
 		<div id = "chemicals">
 
 			<p>Add components here.</p>
@@ -52,19 +46,9 @@
 
 				<tbody>
 
-			<div>
-
-
-
-			</div>
-
-
-
-
 					<tr>
-
 						<td>
-							<input class = "form-control" name="inputChemName" type="text" maxlength="50" id="inputChemName" tabindex="2" />
+							<input class = "form-control" name="inputChemName" type="text" maxlength="50" id="inputChemName"  />
 
 						    <select name="chem" id="chem"
 						        onchange="DropDownTextToBox(this,'inputChemName');">
@@ -83,24 +67,35 @@
 
 				</tbody>
 			</table>
-
+			<div class = "col-sm-8" style = "margin-left:10px">
+				<div class ="row">
 					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px" ><strong>Add Component</strong></button>
+				</div>
+			</div>
 
+		<div class = "row" id = "addNotes">
+		<label class = "col-sm-8 control-label" for="userCommentslbl" id ="userCommentslbl" style = "margin-top:1em">
+			Add Comments: (3000 char limit)
+		</label>
+	</div>
+	<div class = "row">
+		<div class = "col-sm-12" id = "userComments">
 
+			<textarea class = "form-control" name = "userComments" type = "text" maxlength = "3000", id = "userComments"></textarea>
+		</div>
 
 	</div>
+		<div class = "col-sm-8">
+			<div class = "row">
+					<button class ="btn btn-GH" style="margin-top:5px; margin-left:12px" type = "submit" id = "add_recipe">
+						<strong>Add Recipe</strong></button>
+			</div>
+		</div>
 
-
-
-
-
-<!-- 		<div id = "return_home">
-			<a href ="/returnHome">Home</a>
-		</div> -->
-			<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "add_recipe">
-				<strong>Add Recipe</strong></button>
+	</div>
 
 
 </div>
 
 {% endblock %}
+
