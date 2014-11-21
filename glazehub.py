@@ -161,44 +161,6 @@ def EnterRecipeForm():
 	batchComp.append(float(comp1.percentage))
 
 
-	comp2 = model.Component()
-	comp2.chem_name = request.form.get('chem2')
-	comp2.chem_id = model.Chem.getChemIDByName(comp2.chem_name)
-	comp2.percentage = request.form.get('percentage2')
-	comp2.recipe_id = recipe.id
-	batchComp.append(float(comp2.percentage))
-
-	comp3 = model.Component()
-	comp3.chem_name = request.form.get('chem3')
-	comp3.chem_id = model.Chem.getChemIDByName(comp3.chem_name)
-	comp3.percentage = request.form.get('percentage3')
-	comp3.recipe_id = recipe.id
-	batchComp.append(float(comp3.percentage))
-
-
-	comp4 = model.Component()
-	comp4.chem_name = request.form.get('chem4')
-	comp4.chem_id = model.Chem.getChemIDByName(comp4.chem_name)
-	comp4.percentage = request.form.get('percentage4')
-	comp4.recipe_id = recipe.id
-	batchComp.append(float(comp4.percentage))
-
-
-	comp5 = model.Component()
-	comp5.chem_name = request.form.get('chem5')
-	comp5.chem_id = model.Chem.getChemIDByName(comp5.chem_name)
-	comp5.percentage = request.form.get('percentage5')
-	comp5.recipe_id = recipe.id
-	batchComp.append(float(comp5.percentage))
-
-
-	comp6 = model.Component()
-	comp6.chem_name = request.form.get('chem6')
-	comp6.chem_id = model.Chem.getChemIDByName(comp6.chem_name)
-	comp6.percentage = request.form.get('percentage6')
-	comp6.recipe_id = recipe.id
-	batchComp.append(float(comp6.percentage))
-
 	for i in range(len(batchComp)):
 		print "This is batchComp[i]",batchComp[i]
 		print "this is type", type(batchComp[i])
@@ -217,7 +179,7 @@ def EnterRecipeForm():
 def showRecipeAddForm(userViewID):
 
 	userLoginID = session["user_id"]
-	print "This is user LoginID", userLoginID
+	# print "This is user LoginID", userLoginID
 	if userLoginID != int(userViewID):
 		flash ("Invalid User ID. Here are your recipes.")
 		userViewID = userLoginID
@@ -228,7 +190,8 @@ def showRecipeAddForm(userViewID):
 		chems = model.session.query(model.Chem).all()
 		chemNames = [chem.chem_name for chem in chems]
 
-	return render_template("add_recipe.html", chem_names = chemNames, user_id = userViewID, display_recipes= display_recipes)
+	return render_template("add_recipe.html", chem_names = chemNames, user_id = userViewID,
+			display_recipes= display_recipes)
 
 
 
@@ -243,76 +206,31 @@ def addRecipeName(userViewID):
 	newRecipe = model.Recipe()
 	newRecipe.user_id = session["user_id"]
 	newRecipe.recipe_name = request.form.get('recipename')
-
+	newRecipe.user_notes = request.form.get('usercomments')
 	model.session.add(newRecipe)
 	model.session.commit()
+
 	batchComp=[]
-
-	newComp1 = model.Component()
-	newComp1.chem_name = request.form.get('chem1')
-	newComp1.chem_id = model.Chem.getChemIDByName(newComp1.chem_name)
-	newComp1.percentage = request.form.get('percentage1')
-	batchComp.append(newComp1.percentage)
-	newComp1.recipe_id = newRecipe.id
-	model.session.add(newComp1)
-	model.session.commit()
-
-
-	newComp2 = model.Component()
-	newComp2.chem_name = request.form.get('chem2')
-	newComp2.chem_id = model.Chem.getChemIDByName(newComp2.chem_name)
-	newComp2.percentage = request.form.get('percentage2')
-	batchComp.append(newComp2.percentage)
-	newComp2.recipe_id = newRecipe.id
-	model.session.add(newComp2)
-	model.session.commit()
-
-
-	newComp3 = model.Component()
-	newComp3.chem_name = request.form.get('chem3')
-	newComp3.chem_id = model.Chem.getChemIDByName(newComp3.chem_name)
-	newComp3.percentage = request.form.get('percentage3')
-	batchComp.append(newComp3.percentage)
-	newComp3.recipe_id = newRecipe.id
-	model.session.add(newComp3)
-	model.session.commit()
-
-
-	newComp4 = model.Component()
-	newComp4.chem_name = request.form.get('chem4')
-	newComp4.chem_id = model.Chem.getChemIDByName(newComp4.chem_name)
-	newComp4.percentage = request.form.get('percentage4')
-	batchComp.append(newComp4.percentage)
-	newComp4.recipe_id = newRecipe.id
-	model.session.add(newComp4)
-	model.session.commit()
-
-
-	newComp5 = model.Component()
-	newComp5.chem_name = request.form.get('chem5')
-	newComp5.chem_id = model.Chem.getChemIDByName(newComp5.chem_name)
-	newComp5.percentage = request.form.get('percentage5')
-	batchComp.append(newComp5.percentage)
-	newComp5.recipe_id = newRecipe.id
-	model.session.add(newComp5)
-	model.session.commit()
-
-
-	newComp6 = model.Component()
-	newComp6.chem_name = request.form.get('chem6')
-	newComp6.chem_id = model.Chem.getChemIDByName(newComp6.chem_name)
-	newComp6.percentage = request.form.get('percentage6')
-	batchComp.append(newComp6.percentage)
-	newComp6.recipe_id = newRecipe.id
-	model.session.add(newComp6)
-	model.session.commit()
+	chem_list=request.values.getlist('chem')
+	percentages=request.values.getlist('percentage')
+	i = 0
+	for chem in chem_list:
+		comp = model.Component()
+		comp.chem_name = chem
+		comp.chem_id = model.Chem.getChemIDByName(comp.chem_name)
+		comp.percentage = float(percentages[i])
+		i += 1
+		comp.recipe_id = newRecipe.id
+		batchComp.append(float(comp.percentage))
+		model.session.add(comp)
+		model.session.commit()
 
 
 	components = model.Component.getComponentsByRecipeID(newRecipe.id)
 
-
-
-	return render_template("recipecomps.html", user_id = userViewID, recipe_name = newRecipe.recipe_name, components = components, batchComp = batchComp, display_recipes = display_recipes)
+	return render_template("recipecomps.html", user_id = userViewID, recipe_name = newRecipe.recipe_name,
+			components = components, batchComp = batchComp, display_recipes = display_recipes,
+			user_notes = newRecipe.user_notes)
 
 
 
@@ -338,7 +256,8 @@ def recipe(userViewID, recipeName):
 		batchComp = []
 		for comp in components:
 			batchComp.append(comp.percentage/100)
-		return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName, components = components, batchComp = batchComp, display_recipes=display_recipes)
+		return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName,
+			components = components, batchComp = batchComp, display_recipes=display_recipes, user_notes = recipe.user_notes)
 
 
 
@@ -357,14 +276,17 @@ def batchsizechange(userViewID, recipeName):
 	for comp in components:
 		# print "This is comp percentage", comp.percentage
 		batchComp.append(comp.percentage/100)
-
+	sizeflt = float(size)
+	print "sizeflt type", type(sizeflt)
 	for i in range(len(batchComp)):
-		batchComp[i] = float(size) * batchComp[i]
+		batchComp[i] = sizeflt * batchComp[i]
 	# 	print "This is newComp.percentage", newComp[i]
 	# for comp in components:
 	# 	print "This is comp percentage", comp.percentage
 
-	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName, batchComp = batchComp, components = components, display_recipes=display_recipes)
+	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName,
+		batchComp = batchComp, components = components, display_recipes=display_recipes,
+		user_notes = recipe.user_notes)
 
 
 
@@ -382,7 +304,7 @@ def emailCP():
 	return render_template("emailCP.html")
 
 
-@app.route("/listChemNames")
+
 def listChemNames():
 	chems = model.session.query(model.Chem).all()
 	chemicalNames = [chem.chem_name for chem in chems]

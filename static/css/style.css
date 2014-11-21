@@ -78,15 +78,8 @@ div#return_home{
 
 
 
-div.left_side_section{
-	position: absolute;
-	margin-top: 10px;
-	width: 150px;
-	border:solid #5240c6 2px;
-	height: 300px;
-	padding-left: 15px;
-	padding-top: 5px;
-
+#compTemplate{
+	visibility: hidden;
 }
 
 div#recipe_list{

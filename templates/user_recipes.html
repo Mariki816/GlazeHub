@@ -3,26 +3,35 @@
 
 {% block body %}
 
+<div class = "col-sm-2">
+	<div class = "col-sm-12" id = "recipe_list" style="outline: 3px solid #ccccff; margin-bottom:10px" >
 
-    <div class = "col-sm-1" id = "recipe_list" style="outline: 3px solid #ccccff" >
     	<label class = "control-label" for="userRecipes">
 			Recipes
 		</label>
 		{% for recipe in display_recipes %}
 		<ul style = "margin-top: 6px" id="recipe_names">
-			<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}"><li>{{ recipe.recipe_name }}</li></a>
-
+			<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}">
+				<li>{{ recipe.recipe_name }}</li></a>
 		</ul>
 
 		{% endfor %}
 	</div>
-	<div class = "col-sm-11" id = "add_recipe_section">
-		<a href = "/addRecipe/{{user_id}}">
+	<div class = "row" id = "add_recipe_button">
+		<div class = "col-sm-2">
+			<a href = "/addRecipe/{{user_id}}">
 			<button class ="btn btn-GH" type = "submit" id = "add_recipe">
-						<strong>Add New Recipe?</strong></button>
-		</a>
-
+					<strong>Add New Recipe?</strong></button>
+			</a>
+		</div>
 	</div>
+</div>
+
+
+<div class = "col-sm-10" id = "welcome_section">
+	<h1>Welcome Back!</h1>
+
+</div>
 
 
 

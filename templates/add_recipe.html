@@ -1,101 +1,130 @@
 {% extends 'base2.html' %}
+
 {% block body %}
+
+	<div id = "compTemplate">
+<!-- 		<input type = "hidden" id = "counter" name = "counter" > -->
+
+		<td>
+		    <select name="chem">
+				{% for chem in chem_names %}
+					<option value="{{ chem }}">{{ chem }}</option>
+				{% endfor %}
+			</select>
+
+		</td>
+		<td>
+
+			<input class = "form-control" type = "text" id = "percentage"
+					name="percentage"/>
+		</td>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 	<title>Add Recipe</title>
 
-<div class = "col-sm-1" id = "recipe_list" style="outline: 3px solid #ccccff">
-	{% for recipe in display_recipes %}
-	<ul style = "margin-top: 6px" id="recipe_names">
-		<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}"><li>{{ recipe.recipe_name }}</li></a>
-	</ul>
+<div class = "col-sm-2">
+	<div class = "col-sm-12" id = "recipe_list" style="outline: 3px solid #ccccff; margin-bottom:10px" >
 
-	{% endfor %}
+    	<label class = "control-label" for="userRecipes">
+			Recipes
+		</label>
+		{% for recipe in display_recipes %}
+		<ul style = "margin-top: 6px" id="recipe_names">
+			<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}">
+				<li>{{ recipe.recipe_name }}</li></a>
+		</ul>
+
+		{% endfor %}
+	</div>
+	<div class = "row" id = "add_recipe_button">
+		<div class = "col-sm-2">
+			<a href = "/addRecipe/{{user_id}}">
+			<button class ="btn btn-GH" type = "submit" id = "add_recipe">
+					<strong>Add New Recipe?</strong></button>
+			</a>
+		</div>
+	</div>
 </div>
 
 
-<div class = "col-sm-11" id = "recipe_section" style="margin-top:-2em">
+<div class = "col-sm-10" id = "recipe_section" style="margin-top:-2em">
 	<h1>Recipe</h1>
 
-	<div class = "row">
 
-		<div class = "form-group" id = "recipename">
-			<label class = "col-sm-2 control-label" for="recipename" id ="recipename" style = "margin-top:1em">
-					Recipe Name
-			</label>
-			<div class = "col-sm-4" style= "margin-left:-3em">
+	<form method=post>
+		<div class = "row">
+			<div class = "form-group" id = "recipename">
+				<label class = "col-sm-3 control-label" for="recipename" id ="recipename" style = "margin-top:1em">
+						Recipe Name
+				</label>
+				<div class = "col-sm-4" style= "margin-left:-7em">
 
-				<input class = "form-control" type = "text" id = "recipename" name="recipename" />
+					<input class = "form-control" type = "text" id = "recipename"
+						name="recipename" />
+				</div>
 			</div>
 		</div>
-	</div>
 
 		<div id = "chemicals">
 
 			<p>Add components here.</p>
-			<table id = "chems_percents">
-				<colgroup>
-					<col class = "Chemical" />
-					<col class = "Percentage" />
-				</colgroup>
+			<table id = "chems_percents_tbl">
+
 				<thead>
-					<tr>
-						<th scope = "col">Chemical Name</th>
-						<th scope = "col">Percentage</th>
-					</tr>
+					<th scope = "col">Chemical Name</th>
+					<th scope = "col">Percentage</th>
 				</thead>
 
-				<tbody>
+				<tbody id = "chem_prcnts_bdy">
 
-					<tr>
-						<td>
-							<input class = "form-control" name="inputChemName" type="text" maxlength="50" id="inputChemName"  />
 
-						    <select name="chem" id="chem"
-						        onchange="DropDownTextToBox(this,'inputChemName');">
-
-								{% for chem in chem_names %}
-									<option class = "chems" id = "chem" name = "chem" value="{{ chem }}">{{ chem }}</option>
-								{% endfor %}
-			    				</select>
-
-						</td>
-						<td>
-							<input class = "form-control" type = "text" id = "percentage1"
-									name="percentage1"/>
-						</td>
-					</tr>
 
 				</tbody>
 			</table>
 			<div class = "col-sm-8" style = "margin-left:10px">
 				<div class ="row">
-					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px" ><strong>Add Component</strong></button>
+					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px" ><strong>Add Component</strong>
+					</button>
 				</div>
 			</div>
 
-		<div class = "row" id = "addNotes">
-		<label class = "col-sm-8 control-label" for="userCommentslbl" id ="userCommentslbl" style = "margin-top:1em">
-			Add Comments: (3000 char limit)
-		</label>
-	</div>
-	<div class = "row">
-		<div class = "col-sm-12" id = "userComments">
-
-			<textarea class = "form-control" name = "userComments" type = "text" maxlength = "3000", id = "userComments"></textarea>
-		</div>
-
-	</div>
-		<div class = "col-sm-8">
-			<div class = "row">
-					<button class ="btn btn-GH" style="margin-top:5px; margin-left:12px" type = "submit" id = "add_recipe">
-						<strong>Add Recipe</strong></button>
+			<div class = "row" id = "addNotes">
+			<label class = "col-sm-8 control-label" for="userCommentslbl" id ="userCommentslbl" style = "margin-top:1em; margin-left:10px">
+				Add Comments: (3000 char limit)
+			</label>
 			</div>
+			<div class = "row">
+				<div class = "col-sm-12" id = "userComments">
+
+					<textarea class = "form-control" name = "usercomments" type = "text" maxlength = "3000", id = "usercomments" style = "margin-left:10px; margin-bottom:10px"></textarea>
+				</div>
+
+			</div>
+				<div class = "col-sm-8">
+					<div class = "row">
+							<button class ="btn btn-GH" style="margin-top:5px; margin-left:10px" type = "submit" id = "add_recipe" value="Add Recipe">
+							<strong>Add Recipe</strong>
+							</button>
+					</div>
+				</div>
+
 		</div>
-
-	</div>
-
+	</form>
 
 </div>
+
 
 {% endblock %}
 

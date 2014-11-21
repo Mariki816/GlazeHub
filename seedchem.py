@@ -4,7 +4,7 @@ import csv
 
 def load_chems(session):
 
-	with open('chemlist102414.csv', 'rb') as csvfile:
+	with open('chemlist112014.csv', 'rb') as csvfile:
 		linereader = csv.reader(csvfile, delimiter = ',')
 
 		for row in linereader:

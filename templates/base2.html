@@ -2,7 +2,8 @@
     <head>
         <link rel="stylesheet" href="/static/css/bootstrap.css" />
         <link rel="stylesheet" href="/static/css/style.css" />
-        <script src="/static/js/jquery-1.11.0.min.js"></script>
+<!--         // <script src="/static/js/jquery-1.11.0.min.js"></script> -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script src="/static/js/glazehub.js"></script>
 
 
@@ -19,7 +20,8 @@
                         <li ><a href="mailto:marlenehirose@gmail.com">Contact</a></li>
                          <li ><a href="/enterRecipe">Calculator</a></li>
                         {% if session["user_id"] %}
-                            <li ><a href="/enterRecipe"> {{"Log Out"}} </a>Welcome back!</li>
+                            <li ><a href="/"> {{"Log Out"}} </a></li>
+                            <li style = "margin-top:1.12em">Welcome back</li>
                         {% else %}
                             <li ><a href="/login">{{"Log In"}}</a></li>
                         {% endif %}

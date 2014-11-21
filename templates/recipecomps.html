@@ -1,17 +1,31 @@
 {% extends 'base2.html' %}
 {% block body %}
 
-    <div class = "col-sm-1" id = "recipe_list" style="outline: 3px solid #ccccff">
+<div class = "col-sm-2">
+	<div class = "col-sm-12" id = "recipe_list" style="outline: 3px solid #ccccff; margin-bottom:10px" >
+
+    	<label class = "control-label" for="userRecipes">
+			Recipes
+		</label>
 		{% for recipe in display_recipes %}
 		<ul style = "margin-top: 6px" id="recipe_names">
-			<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}"><li>{{ recipe.recipe_name }}</li></a>
+			<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}">
+				<li>{{ recipe.recipe_name }}</li></a>
 		</ul>
 
 		{% endfor %}
 	</div>
+	<div class = "row" id = "add_recipe_button">
+		<div class = "col-sm-2">
+			<a href = "/addRecipe/{{user_id}}">
+			<button class ="btn btn-GH" type = "submit" id = "add_recipe">
+					<strong>Add New Recipe?</strong></button>
+			</a>
+		</div>
+	</div>
+</div>
 
-
-	<div class = "col-sm-11" id = "recipe_section" style="margin-top:-2em">
+	<div class = "col-sm-10" id = "recipe_section" style="margin-top:-2em">
 
 		<h1>{{ recipe_name }}</h1>
 		<div class = "col-sm-8" id = "recipe_list" >
@@ -29,9 +43,9 @@
 					<label class = "col-sm-1 control-label" style = "margin-left: -2em" for "amt">
 						Amt.
 					</label>
-
+				<form action = "/batchSizeChange/{{user_id}}/{{recipe_name}}" method = "POST">
 					<div class ="col-sm-2">
-						<form action = "/batchSizeChange/{{user_id}}/{{recipe_name}}" method = "POST">
+
 							<input class = "form-control" type = "text" id = "batchsize" name="batchsize"/>
 					</div>
 					<input id = "hidethis" type = "hidden" name = "{{recipe_name}}">
@@ -59,19 +73,29 @@
 					{% endfor %}
 
 					</div>
-						</form>
+				</form>
+
+				</div>
+			</div>
+			<div class = "row">
+				<div class = "col-sm-8"
+					style="outline: 3px solid #ccccff; margin:20px">
+					{{user_notes}}
 				</div>
 			</div>
 			<div class = "row">
 				<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getSize">
 				<strong>Edit Recipe</strong></button>
 			</div>
-
-
 		</div>
 
 
+
+
 	</div>
+
+
+</div>
 
 
 
