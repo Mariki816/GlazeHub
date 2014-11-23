@@ -2,9 +2,9 @@
 {% block body %}
 
 	<title>Enter Recipe</title>
-<div class = "col-sm-1" id = "recipe_list" ></div>
+<div class = "col-sm-2" id = "recipe_list" ></div>
 
-<div class = "col-sm-11" id = "recipe_section" style="margin-top:-2em">
+<div class = "col-sm-10" id = "recipe_section" style="margin-top:-2em">
 	<h1>Enter Recipe</h1>
 	<div class = "row">
 
@@ -25,11 +25,9 @@
 		</div>
 	</div>
 	<div class = "row">
-		<div class = "col-sm-11" id = "add_component_chems">
+		<div class = "col-sm-10" id = "add_component_chems">
 
-			<div class = "col-sm-2" id = "chem_name" style="margin-top:1em">Chemical</div>
-				<div class = "col-sm-1" id = "percentage" style="margin-top:1em">%</div>
-				<div class = "form-group" id = "amount_to_make">
+		<div class = "form-group" id = "amount_to_make">
 					<label class = "col-sm-1 control-label" for "amt" style="margin-top:1em">
 						Amt.
 					</label>
@@ -53,66 +51,53 @@
 
 				</div>
 		</div>
-			<div class = "col-sm-8" id = "chems_list">
-				<select name="chem1">
-					{% for chem in chem_names %}
-						<option class = "chems" id = "chem1" name = "chem1" value="{{ chem }}">{{ chem }}</option>
-					{% endfor %}
-				</select>
-				<input type = "text" step="any" id = "percentage1" name="percentage1" size = "3" maxlength = "4"/>%
-				</br>
+	<form method=post>
 
 
-				<select name="chem2">
-					{% for chem in chem_names %}
-						<option class = "chems" id = "chem2" name = "chem2" value="{{chem}}">{{ chem }}</option>
-					{% endfor %}
-				</select>
-				<input type = "text" step="any" id = "percentage2" name="percentage2" size = "3" maxlength = "4"/>%
-				</br>
+		<div id = "chemicals">
 
-				<select name="chem3">
-					{% for chem in chem_names %}
-						<option class = "chems" id = "chem3" name = "chem3" value="{{chem}}">{{ chem }}</option>
-					{% endfor %}
-				</select>
-				<input type = "text" step="any" id = "percentage3" name="percentage3" size = "3" maxlength = "4"/>%
-				</br>
+			<table>
+				<thead>
+					<tr>
+					<th scope = "col">Chemical Name</th>
 
-				<select name="chem4">
-					{% for chem in chem_names %}
-						<option class = "chems" id = "chem4" name = "chem4" value="{{chem}}">{{ chem }}</option>
-					{% endfor %}
-				</select>
-				<input type = "text" step="any" id = "percentage4" name="percentage4" size = "3" maxlength = "4"/>%
-				</br>
+					<th scope = "col">Percentage</th>
+					</tr>
+				</thead>
+				<tr>
+					<td width ="397px" height="25px">
+					<div class = "col-sm-8"></div>
 
-				<select name="chem5">
-					{% for chem in chem_names %}
-						<option class = "chems" id = "chem5" name = "chem5" value="{{chem}}">{{ chem }}</option></br>
-					{% endfor %}
-				</select>
-				<input type = "text" step="any" id = "percentage5" name="percentage5" size = "3" maxlength = "4"/>%
-				</br>
+					</td>
+					<td height="25px">
+					<div class = "col-sm-3"><div>
+					</td>
+				</tr>
 
-				<select name="chem6">
-					{% for chem in chem_names %}
-						<option class = "chems" id = "chem6" name = "chem6" value="{{chem}}">{{ chem }}</option></br>
-					{% endfor %}
-				</select>
-				<input type = "text" id = "percentage6" name="percentage6" size = "3" maxlength = "4"/>%
-				</br>
-			</div>
-			<div class = "col-sm-4">
-				{% for comp in batchComp %}
-					<div class = "row">
+			</table>
+			<table id = "chems_percents_tbl">
 
-						<div class = "col-sm-2">{{comp}}</div>
-					</div>
-				{% endfor %}
+				<tbody id = "chem_prcnts_bdy">
+
+				</tbody>
+
+			</table>
+			<div class = "col-sm-8" style = "margin-left:10px">
+				<div class ="row">
+					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px" ><strong>Add Component</strong>
+					</button>
+				</div>
 			</div>
 
-			</form>
+
+
+
+				</div>
+
+		</div>
+	</form>
+
+</div>
 
 
 	</div>

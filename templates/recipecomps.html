@@ -43,18 +43,29 @@
 					<label class = "col-sm-1 control-label" style = "margin-left: -2em" for "amt">
 						Amt.
 					</label>
+
 				<form action = "/batchSizeChange/{{user_id}}/{{recipe_name}}" method = "POST">
 					<div class ="col-sm-2">
+						{% if batchsize %}
+							<input class = "form-control" type = "text" id = "batchsize"
+									  name="batchsize" value = "{{batchsize}}"
+									  style = "margin-left:-1em"/>
+						{% else %}
+							<input class = "form-control" type = "text" id = "batchsize"
+									  name="batchsize" style = "margin-left:-1em"
+									  value = ""/>
+						{% endif %}
 
-							<input class = "form-control" type = "text" id = "batchsize" name="batchsize"/>
 					</div>
-					<input id = "hidethis" type = "hidden" name = "{{recipe_name}}">
+
 
 					<div class = "col-sm-2">
 
-						<input type = "radio" name= "weightsystem" value = "lbs" />
+						<input type = "radio" name= "unitSys" value = "lbs"
+							{{lbschecked}}/>
 						<label for "pounds">lbs</label>
-						<input type = "radio" name= "weightsystem" value = "kg" checked = "checked"/>
+						<input type = "radio" name= "unitSys" value = "kg"
+							{{kgchecked}}/>
 						<label for "metric">kg</label>
 					</div>
 					<div class = "col-sm-1">
@@ -68,13 +79,37 @@
 						<div class = "row">
 							<div class = "col-sm-6" >{{comp.chem.chem_name}}</div>
 							<div class = "col-sm-2">{{ comp.percentage }}</div>
-							<div class = "col-sm-2">{{batchComp[loop.index-1]}}</div>
+
+							{% if batchComp and (unitSys == "kg") %}
+								{% if wholenumlist %}
+									<div class = "col-sm-2">
+										{{wholenumlist[loop.index-1]}} kg
+									</div>
+									<div class = "col-sm-2">
+										{{leftoverbitslist[loop.index-1]}} g
+									</div>
+								{%endif%}
+							{% else %}
+								{% if wholenumlist %}
+									<div class = "col-sm-2">
+										{{wholenumlist[loop.index-1]}} lbs
+									</div>
+									<div class = "col-sm-2">
+										{{leftoverbitslist[loop.index-1]}} oz
+									</div>
+								{%endif%}
+							{% endif %}
+
 						</div>
 					{% endfor %}
-
 					</div>
 				</form>
 
+				</div>
+				<div class = "col-sm-4">
+					{% if messageToUser %}
+						{{ messageToUser}}
+					{% endif %}
 				</div>
 			</div>
 			<div class = "row">
@@ -83,10 +118,7 @@
 					{{user_notes}}
 				</div>
 			</div>
-			<div class = "row">
-				<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getSize">
-				<strong>Edit Recipe</strong></button>
-			</div>
+
 		</div>
 
 

@@ -22,44 +22,54 @@ app.jinja_env.undefined = jinja2.StrictUndefined
 
 @app.route("/")
 def index():
-	# session["logged_in"] = False
 	session["user_id"] =  None
 	return render_template("index.html")
+
+@app.route("/logout", methods = ['GET'])
+def Logout():
+
+	session.clear()
+
+	return redirect("/")
+
 
 #This is the log in page.
 @app.route("/login", methods=['GET'])
 def showLoginPage():
 	session["user_id"] = None
-	# print "Init login This is session[user_id]", session["user_id"]
 	return render_template("login.html")
 
-def do_login(userID, userEmail):
+
+def do_login(userID, userEmail, userName):
 	session["user"] = userEmail
 	session["user_id"] = userID
-	pass
+	session["user_name"] = userName
+	return
 
 
 #This processes a returning user
 @app.route("/process-login", methods = ['POST'])
 def processLogin():
 	session["user_id"] = None
-	# print "This is session[user_id]", session["user_id"]
+	session["user_name"] = None
+
 	email = request.form.get("userEmail")
 	pword = request.form.get("password")
 	user = model.User.getUserByEmail(email)
-	# print "This is user.id", (user.id, user.user_name)
 
-	# if pword == pwordcheck:
+
 	if user:
 		pwordcheck = model.User.getUserPasswordByEmail(email)
 		if pword == pwordcheck:
 			flash("Welcome, %s" % (user.user_name))
+		# if the user is already logged in do the first part
 			if "user" in session:
 				session["user_id"] = user.id
-				# print "this is session user", session["user_id"]
+				session["user_name"] = user.user_name
+				print "This is username", session["user_name"]
 
 			else:
-				do_login(user.id, email)
+				do_login(user.id, email, user.user_name)
 		else:
 			flash("Incorrect password. Please try again")
 			return render_template("login.html")
@@ -67,6 +77,7 @@ def processLogin():
 	else:
 		flash("New User? Please create an account.")
 		session["user_id"] = None
+		session["user_name"] = None
 		return render_template("login.html")
 	return redirect("/userRecipes/%d" % user.id)
 
@@ -84,11 +95,9 @@ def getNewUser():
 	print "This is newUser.email", newUser.email
 	model.session.add(newUser)
 	model.session.commit()
-	session["user_id"] = newUser.id
-
 
 	flash("Welcome, %s" % (newUser.user_name))
-	do_login(newUser.id, newUser.email)
+	do_login(newUser.id, newUser.email, newUser.user_name)
 	return redirect("/userRecipes/%d" % newUser.id)
 
 
@@ -98,20 +107,26 @@ def listofUserRecipes(userViewID):
 	userLoginID = session["user_id"]
 	# print "This is userViewID", userViewID
 	# print "This is userLoginID", (type(userLoginID), userLoginID)
-	if userLoginID != userViewID:
-		flash ("Invalid User ID. Here are your recipes.")
+
+	lbschecked = ""
+	kgchecked = ""
+
+	if userLoginID != int(userViewID):
+		flash ("Invalid User ID. Here are your recipes.4")
 		userViewID = userLoginID
 		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
-		return render_template("user_recipes.html", display_recipes = recipes, user_id = userViewID)
+		return render_template("user_recipes.html", display_recipes = recipes, user_id = userViewID,
+			kgchecked = kgchecked, lbschecked=lbschecked)
 	else:
 		recipes = model.Recipe.getRecipeNamesByUserID(userViewID)
-		return render_template("user_recipes.html", display_recipes = recipes, user_id = userViewID)
+		return render_template("user_recipes.html", display_recipes = recipes,
+			lbschecked = lbschecked, kgchecked = kgchecked, user_id = userViewID)
 
 
 def showUserRecipeList(userViewID):
 	userLoginID = session["user_id"]
-	if userLoginID != userViewID:
-		flash ("Invalid User ID. Here are your recipes.")
+	if userLoginID != int(userViewID):
+		flash ("Invalid User ID. Here are your recipes. 3")
 		userViewID = userLoginID
 		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
 		return recipes
@@ -161,6 +176,16 @@ def EnterRecipeForm():
 	batchComp.append(float(comp1.percentage))
 
 
+	for chem in chem_list:
+		comp = model.Component()
+		comp.chem_name = chem
+		comp.chem_id = model.Chem.getChemIDByName(comp.chem_name)
+		comp.percentage = float(percentages[i])
+		i += 1
+		comp.recipe_id = newRecipe.id
+		batchComp.append(float(comp.percentage))
+
+
 	for i in range(len(batchComp)):
 		print "This is batchComp[i]",batchComp[i]
 		print "this is type", type(batchComp[i])
@@ -175,16 +200,16 @@ def EnterRecipeForm():
 
 
 #This is the function to render the Add Recipe page if logged in
-@app.route("/addRecipe/<userViewID>", methods=['GET'])
+@app.route("/addRecipe/<int:userViewID>", methods=['GET'])
 def showRecipeAddForm(userViewID):
 
 	userLoginID = session["user_id"]
-	# print "This is user LoginID", userLoginID
+
 	if userLoginID != int(userViewID):
-		flash ("Invalid User ID. Here are your recipes.")
+		flash ("Invalid User ID. Here are your recipes. 2")
 		userViewID = userLoginID
 		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
-		return render_template("user_recipes.html", display_recipes = recipes)
+		return render_template("user_recipes.html", user_id = userViewID, display_recipes = recipes)
 	else:
 		display_recipes = showUserRecipeList(userViewID)
 		chems = model.session.query(model.Chem).all()
@@ -198,19 +223,30 @@ def showRecipeAddForm(userViewID):
 
 
 #This function gets the recipe name from the form and adds it to the Recipes table
-@app.route("/addRecipe/<userViewID>", methods=['POST'])
+@app.route("/addRecipe/<int:userViewID>", methods=['POST'])
 def addRecipeName(userViewID):
 
 	display_recipes = showUserRecipeList(userViewID)
+	rname = request.form.get('recipename')
+	notes = request.form.get('usercomments')
+
+	dupe = model.session.query(model.Recipe).filter_by(recipe_name = rname)\
+	.filter_by(user_id = session["user_id"]).all()
+
+	if dupe != []:
+		flash("Duplicate Recipe Name")
+		return redirect ("/addRecipe/" + str(userViewID))
 
 	newRecipe = model.Recipe()
 	newRecipe.user_id = session["user_id"]
-	newRecipe.recipe_name = request.form.get('recipename')
-	newRecipe.user_notes = request.form.get('usercomments')
+	newRecipe.recipe_name = rname
+	newRecipe.user_notes = notes
+
 	model.session.add(newRecipe)
 	model.session.commit()
 
 	batchComp=[]
+	batchsize = None
 	chem_list=request.values.getlist('chem')
 	percentages=request.values.getlist('percentage')
 	i = 0
@@ -225,12 +261,21 @@ def addRecipeName(userViewID):
 		model.session.add(comp)
 		model.session.commit()
 
+	kgchecked = ""
+	lbschecked = ""
+	unitSys = "kg"
+	wholenumlist = []
+	leftoverbitslist = []
+	messageToUser = None
+
 
 	components = model.Component.getComponentsByRecipeID(newRecipe.id)
 
 	return render_template("recipecomps.html", user_id = userViewID, recipe_name = newRecipe.recipe_name,
-			components = components, batchComp = batchComp, display_recipes = display_recipes,
-			user_notes = newRecipe.user_notes)
+			components = components, batchComp = batchComp, batchsize = batchsize, display_recipes = display_recipes,
+			user_notes = newRecipe.user_notes, kgchecked = kgchecked, lbschecked = lbschecked,
+			unitSys = unitSys, wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist,
+			messageToUser = messageToUser)
 
 
 
@@ -245,6 +290,7 @@ def recipe(userViewID, recipeName):
 	display_recipes = showUserRecipeList(userViewID)
 
 	userLoginID = session["user_id"]
+
 	if userLoginID != int(userViewID):
 		flash ("Invalid User ID. Here are your recipes.")
 		userViewID = userLoginID
@@ -253,11 +299,23 @@ def recipe(userViewID, recipeName):
 	else:
 		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
 		components = model.Component.getComponentsByRecipeID(recipe.id)
-		batchComp = []
-		for comp in components:
-			batchComp.append(comp.percentage/100)
-		return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName,
-			components = components, batchComp = batchComp, display_recipes=display_recipes, user_notes = recipe.user_notes)
+
+	messageToUser = None
+
+	batchComp = []
+	wholenumlist = []
+	leftoverbitslist = []
+	batchsize = None
+
+	unit_sys = "unitSys"
+	lbschecked = ""
+	kgchecked = ""
+
+	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName,
+			components = components, batchComp = batchComp, display_recipes=display_recipes,
+			user_notes = recipe.user_notes, messageToUser = messageToUser, unitSys = unit_sys,
+			batchsize = batchsize, wholenumlist=wholenumlist, lbschecked =lbschecked,
+			kgchecked =kgchecked, leftoverbitslist=leftoverbitslist)
 
 
 
@@ -265,28 +323,53 @@ def recipe(userViewID, recipeName):
 def batchsizechange(userViewID, recipeName):
 	display_recipes = showUserRecipeList(userViewID)
 	size = request.form.get("batchsize")
-	# recipe_name = request.form.get("recipeName")
-	print "this is batchsize size", size
-	print "this is recipe_name", recipeName
+	units = request.form.get("unitSys")
+
+
 	recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
-	print "This is recipe_id", recipe.id
 	components = model.Component.getComponentsByRecipeID(recipe.id)
 	batchComp = []
 
+	percent_list = []
 	for comp in components:
-		# print "This is comp percentage", comp.percentage
+		percent_list.append(comp.percentage)
+	onehundred = converter.checkPercent(percent_list)
+	newPercent = converter.getPercentMult(percent_list)
+
+
+	if onehundred == False:
+		messageToUser = "Recipe does not add up to 100. Amount adjusted."
+	else:
+		messageToUser = None
+
+	for comp in components:
 		batchComp.append(comp.percentage/100)
 	sizeflt = float(size)
-	print "sizeflt type", type(sizeflt)
+	wholenumlist = []
+	leftoverbitslist = []
+	kgchecked = ""
+	lbschecked = ""
+
 	for i in range(len(batchComp)):
-		batchComp[i] = sizeflt * batchComp[i]
-	# 	print "This is newComp.percentage", newComp[i]
-	# for comp in components:
-	# 	print "This is comp percentage", comp.percentage
+		batchComp[i] = (sizeflt * batchComp[i])*newPercent
+
+		wholenumlist.append(int(batchComp[i]))
+		if units == "kg":
+			leftoverbitslist.append(int(converter.leftOverKilosToGrams(batchComp[i])))
+			kgchecked = 'checked = "checked"'
+		else:
+			leftoverbitslist.append(int(converter.leftOverPoundsToOunces(batchComp[i])))
+			lbschecked = 'checked = "checked"'
+			print "This is leftoverbitslist", leftoverbitslist
+
+		print "This is units", units
+
 
 	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName,
 		batchComp = batchComp, components = components, display_recipes=display_recipes,
-		user_notes = recipe.user_notes)
+		user_notes = recipe.user_notes, messageToUser = messageToUser, batchsize = size,
+		wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist, kgchecked = kgchecked,
+		lbschecked = lbschecked, unitSys = units)
 
 
 

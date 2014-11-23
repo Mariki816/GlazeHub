@@ -16,6 +16,10 @@ table td{
 	padding-left:10px;
 }
 
+table th#chemnames{
+	width:40px;
+}
+
 div#header_section{
 	height:200px;
 	margin-bottom:10px;
@@ -190,6 +194,7 @@ input.btn_submit:hover{
   background-color: #f0f0ff;
   background-position: 0 -15px;
 }
+
 
 
 
