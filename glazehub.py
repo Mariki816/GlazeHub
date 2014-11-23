@@ -151,10 +151,14 @@ def renderCalculateRecipeForm():
 
 	lbschecked = ""
 	kgchecked = ""
+	wholenumlist=[]
+	leftoverbitslist =[]
+	messageToUser = ""
 
 	return render_template("calculate_recipe.html", chem_names = chemNames,\
 		batchComp = batchComp, user_id = user_id, lbschecked=lbschecked,
-		kgchecked=kgchecked)
+		kgchecked=kgchecked, wholenumlist=wholenumlist, leftoverbitslist = leftoverbitslist,
+		messageToUser = messageToUser)
 
 
 
@@ -177,8 +181,8 @@ def EnterRecipeForm():
 
 	recipe = model.Recipe()
 	recipe.recipe_name = request.form.get('recipename')
-	chem_list = []
-	percentages =[]
+
+
 
 
 	chem_list=request.values.getlist('chem')
@@ -195,21 +199,53 @@ def EnterRecipeForm():
 
 		batchComp.append(float(comp.percentage))
 
+	units = request.form.get("unitSys")
+	print "This is unitSys", units
+	chem_list = []
+
+	wholenumlist = []
+	leftoverbitslist = []
+
+
+	onehundred = converter.checkPercent(batchComp)
+	newPercent = converter.getPercentMult(batchComp)
+
+	if onehundred == False:
+		messageToUser = "Recipe does not add up to 100. Amount adjusted."
+	else:
+		messageToUser = None
+
+	for i in range(len(batchComp)):
+		batchComp[i] = (sizeflt * batchComp[i])*newPercent
+
+		wholenumlist.append(int(batchComp[i]))
+		if units == "kg":
+			leftoverbitslist.append(int(converter.leftOverKilosToGrams(batchComp[i])))
+			kgchecked = 'checked = "checked"'
+		else:
+			leftoverbitslist.append(int(converter.leftOverPoundsToOunces(batchComp[i])))
+			lbschecked = 'checked = "checked"'
+			print "This is leftoverbitslist", leftoverbitslist
+
 
 	for i in range(len(batchComp)):
 		print "This is batchComp[i]",batchComp[i]
 		print "this is type", type(batchComp[i])
-		batchComp[i] = sizeflt * batchComp[i]
+		batchComp[i] = (sizeflt * batchComp[i])* newPercent
 
 		kgchecked = 'checked = "checked"'
 		lbschecked = 'checked = "checked"'
 
+		print "This is chem_list", chem_list
+		print "This is batchComp", batchComp
 
 
 
 
 	return render_template("calculate_recipe.html", chem_names = chemNames,\
-		batchComp = batchComp, user_id = user_id, lbschecked=lbschecked, kgchecked=kgchecked)
+		batchComp = batchComp, user_id = user_id, lbschecked=lbschecked, kgchecked=kgchecked,\
+		messageToUser=messageToUser, unitSys = units, wholenumlist=wholenumlist,
+		leftoverbitslist=leftoverbitslist)
 
 
 
@@ -300,7 +336,7 @@ def addRecipeName(userViewID):
 #this is the recipe page, checks user too
 @app.route("/recipecomps/<userViewID>/<recipeName>")
 def recipe(userViewID, recipeName):
-	print "this is recipecomps UserViewID", userViewID
+
 	display_recipes = showUserRecipeList(userViewID)
 
 	userLoginID = session["user_id"]
@@ -347,6 +383,7 @@ def batchsizechange(userViewID, recipeName):
 	percent_list = []
 	for comp in components:
 		percent_list.append(comp.percentage)
+
 	onehundred = converter.checkPercent(percent_list)
 	newPercent = converter.getPercentMult(percent_list)
 
@@ -376,7 +413,7 @@ def batchsizechange(userViewID, recipeName):
 			lbschecked = 'checked = "checked"'
 			print "This is leftoverbitslist", leftoverbitslist
 
-		print "This is units", units
+
 
 
 	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName,
