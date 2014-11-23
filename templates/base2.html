@@ -16,13 +16,16 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
+
                         <li ><a href="mailto:marlenehirose@gmail.com">Contact</a></li>
-                         <li ><a href="/enterRecipe">Calculator</a></li>
+                        <li ><a href="/calculateRecipe">Calculator</a></li>
                         {% if session["user_id"] %}
+                            <li><a href = "/addRecipe/{{user_id}}">Add Recipe</a><li>
                             <li ><a href="/logout"> {{"Log Out"}} </a></li>
                         {% else %}
                             <li ><a href="/login">{{"Log In"}}</a></li>
                         {% endif %}
+
                     </ul>
                 </div>
             </div>

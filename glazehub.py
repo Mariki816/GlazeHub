@@ -138,19 +138,28 @@ def showUserRecipeList(userViewID):
 
 
 #This is the function to render the Enter Recipe page if not logged in
-@app.route("/enterRecipe", methods=['GET'])
-def renderEnterRecipeForm():
+@app.route("/calculateRecipe", methods=['GET'])
+def renderCalculateRecipeForm():
 
 	chems = model.session.query(model.Chem).all()
 	chemNames = [chem.chem_name for chem in chems]
 	batchComp = []
+	if "user_id" in session:
+		user_id = session["user_id"]
+	else:
+		user_id = None
 
-	return render_template("enter_recipe.html", chem_names = chemNames, batchComp = batchComp)
+	lbschecked = ""
+	kgchecked = ""
+
+	return render_template("calculate_recipe.html", chem_names = chemNames,\
+		batchComp = batchComp, user_id = user_id, lbschecked=lbschecked,
+		kgchecked=kgchecked)
 
 
 
 #This is the function to calculate on the Enter Recipe page if not logged in
-@app.route("/batchSizeChangeNoUser", methods=['POST'])
+@app.route("/calculateRecipe", methods=['POST'])
 def EnterRecipeForm():
 
 	chems = model.session.query(model.Chem).all()
@@ -161,20 +170,21 @@ def EnterRecipeForm():
 	# print "this is sizeflt", sizeflt
 	batchComp = []
 
-
+	if "user_id" in session:
+		user_id = session["user_id"]
+	else:
+		user_id = None
 
 	recipe = model.Recipe()
 	recipe.recipe_name = request.form.get('recipename')
+	chem_list = []
+	percentages =[]
 
 
-	comp1 = model.Component()
+	chem_list=request.values.getlist('chem')
+	percentages=request.values.getlist('percentage')
 
-	comp1.chem_name = request.form.get('chem1')
-	comp1.chem_id = model.Chem.getChemIDByName(comp1.chem_name)
-	comp1.percentage = request.form.get('percentage1')
-	comp1.recipe_id = recipe.id
-	batchComp.append(float(comp1.percentage))
-
+	i = 0
 
 	for chem in chem_list:
 		comp = model.Component()
@@ -182,7 +192,7 @@ def EnterRecipeForm():
 		comp.chem_id = model.Chem.getChemIDByName(comp.chem_name)
 		comp.percentage = float(percentages[i])
 		i += 1
-		comp.recipe_id = newRecipe.id
+
 		batchComp.append(float(comp.percentage))
 
 
@@ -191,11 +201,15 @@ def EnterRecipeForm():
 		print "this is type", type(batchComp[i])
 		batchComp[i] = sizeflt * batchComp[i]
 
+		kgchecked = 'checked = "checked"'
+		lbschecked = 'checked = "checked"'
 
 
 
 
-	return render_template("enter_recipe.html", chem_names = chemNames, batchComp = batchComp)
+
+	return render_template("calculate_recipe.html", chem_names = chemNames,\
+		batchComp = batchComp, user_id = user_id, lbschecked=lbschecked, kgchecked=kgchecked)
 
 
 

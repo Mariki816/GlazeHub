@@ -50,12 +50,13 @@
 		</select>
 	</div>
 
-	<div class = "col-sm-3" style = "margin-top:-10px; margin-left:-40px">
+	<div class = "col-sm-2" style = "margin-top:-10px; margin-left:-40px">
 		<input class = "form-control" type = "text" id = "percentage"
 				name="percentage"/>
 	</div>
 
 </div>
+<!-- end of hidden template -->
 
 	<form method=post>
 		<div class = "row">
@@ -73,21 +74,20 @@
 
 		<div id = "chemicals">
 
-			<p>Add components here.</p>
 			<table>
 				<thead>
 					<tr>
-					<th scope = "col">Chemical Name</th>
+					<th scope = "col">Chemical Names</th>
 
 					<th scope = "col">Percentage</th>
 					</tr>
 				</thead>
 				<tr>
-					<td width ="397px" height="25px">
+					<td width ="397px">
 					<div class = "col-sm-8"></div>
 
 					</td>
-					<td height="25px">
+					<td>
 					<div class = "col-sm-3"><div>
 					</td>
 				</tr>
@@ -100,28 +100,29 @@
 				</tbody>
 
 			</table>
+
 			<div class = "col-sm-8" style = "margin-left:10px">
 				<div class ="row">
-					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px" ><strong>Add Component</strong>
+					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px; margin-left:-10px" ><strong>Add Component</strong>
 					</button>
 				</div>
 			</div>
 
 			<div class = "row" id = "addNotes">
-			<label class = "col-sm-8 control-label" for="userCommentslbl" id ="userCommentslbl" style = "margin-top:1em; margin-left:10px">
-				Add Comments: (3000 char limit)
+			<label class = "col-sm-8 control-label" for="userCommentslbl" id ="userCommentslbl" style = "margin-top:1em">
+				Comments: (3000 char limit)
 			</label>
 			</div>
 			<div class = "row">
 				<div class = "col-sm-12" id = "userComments">
 
-					<textarea class = "form-control" name = "usercomments" type = "text" maxlength = "3000", id = "usercomments" style = "margin-left:10px; margin-bottom:10px"></textarea>
+					<textarea class = "form-control" name = "usercomments" type = "text" maxlength = "3000", id = "usercomments" style = " margin-bottom:10px"></textarea>
 				</div>
 
 			</div>
 				<div class = "col-sm-8">
 					<div class = "row">
-							<button class ="btn btn-GH" style="margin-top:5px; margin-left:10px" type = "submit" id = "add_recipe" value="Add Recipe">
+							<button class ="btn btn-GH" style="margin-top:5px; " type = "submit" id = "add_recipe" value="Add Recipe">
 							<strong>Add Recipe</strong>
 							</button>
 					</div>
