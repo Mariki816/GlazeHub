@@ -1,0 +1,139 @@
+{% extends 'base2.html' %}
+{% block body %}
+
+	<title>Calculate Recipe</title>
+<div class = "col-sm-2" id = "recipe_list" ></div>
+
+<div class = "col-sm-10" id = "recipe_section" style="margin-top:-2em">
+	<h1>Calculate Recipe</h1>
+	<div class = "row">
+
+			<div class = "form-group" id = "recipename">
+				<label class = "col-sm-2 control-label" for="recipename" id ="recipename" style = "margin-top:1em"><font size = "4">
+					Recipe Name
+				</font></label>
+				<div class = "col-sm-4" style= "margin-left:-2em">
+
+					<input class = "form-control" type = "text" id = "recipename" name="recipename" />
+				</div>
+			</div>
+	</div>
+
+
+
+<!-- This is my hidden template -->
+<div id = "compTemplate">
+
+	<div class = "col-sm-9" style = "margin-left:5px">
+
+	    <select name="chem">
+			{% for chem in chem_names %}
+				<option value="{{ chem }}">{{ chem }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div class = "col-sm-2" style = "margin-top:-10px; margin-left:-40px">
+		<input class = "form-control" type = "text" id = "percentage"
+				name="percentage" value = "{{percentage}}"/>
+	</div>
+
+
+</div>
+<!-- end of hidden template -->
+
+
+
+
+<form method=post>
+
+
+		<div id = "chemicals">
+
+
+			<table class ="table table-bordered">
+				<thead>
+					<tr>
+					<th scope = "col">Chemical Names</th>
+
+					<th scope = "col">Percentage</th>
+					<th scope ="col">Amt</th>
+					<th scope = "col">
+						<input class = "form-control" type = "text" id = "batchsize"
+						name="batchsize" style = "width:60px"/>
+					</th>
+					<th>
+						<input type = "radio" name= "unitSys" value = "lbs"
+							{{lbschecked}}/>
+						<label for "pounds">lbs</label>
+						<input type = "radio" name= "unitSys" value = "kg"
+							{{kgchecked}}/>
+						<label for "metric">kg</label>
+					</th>
+
+					</tr>
+				</thead>
+
+
+				<tbody>
+					<tr>
+						<td width ="395px">
+
+
+						</td>
+						<td width = "100px">
+						</td>
+						<td width = "50px">
+						</td>
+						<td width = "60px">
+						</td>
+						<td width = "120px">
+						</td>
+
+
+
+
+
+					</tr>
+				</tbody>
+
+
+
+			</table>
+
+
+
+			</div>
+			<table id = "chems_percents_tbl">
+
+				<tbody id = "chem_prcnts_bdy">
+
+					<tr>
+
+
+
+					</tr>
+				</tbody>
+
+			</table>
+			<div class = "col-sm-8" style = "margin-left:15px">
+				<div class ="row">
+					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px" ><strong>Add Component</strong>
+					</button>
+				</div>
+			</div>
+
+			<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getSize">
+			 <strong>Get Size</strong></button>
+
+
+</form>
+</div>
+
+
+
+
+
+
+
+{% endblock %}
