@@ -48,12 +48,10 @@
 					<div class ="col-sm-2">
 						{% if batchsize %}
 							<input class = "form-control" type = "text" id = "batchsize"
-									  name="batchsize" value = "{{batchsize}}"
-									  style = "margin-left:-1em"/>
+									  name="batchsize" value = "{{batchsize}}"/>
 						{% else %}
 							<input class = "form-control" type = "text" id = "batchsize"
-									  name="batchsize" style = "margin-left:-1em"
-									  value = ""/>
+									  name="batchsize" value = ""/>
 						{% endif %}
 
 					</div>
@@ -106,6 +104,7 @@
 				</form>
 
 				</div>
+
 				<div class = "col-sm-4">
 					{% if messageToUser %}
 						{{ messageToUser}}
@@ -114,9 +113,38 @@
 			</div>
 			<div class = "row">
 				<div class = "col-sm-8"
-					style="outline: 3px solid #ccccff; margin:20px">
+					style="outline: 3px solid #ccccff; margin-top:20px; margin-left:15px;
+						margin-bottom:20px">
 					{{user_notes}}
 				</div>
+			</div>
+			<div class = "row">
+				<div class = "col-sm-3">
+					<img id = "cplogo" src="/static/img/cplogo.png">
+				</div>
+
+				<div class = "col-sm-2" style="outline: 3px solid #ccccff; margin-top:15px">
+					Here is the price quote space
+				</div>
+				<div class = "col-sm-4" style="margin-top:15px">
+					Does not include tax, shipping and handling
+				</div>
+				<div class = "col-sm-1">
+					<button class ="btn btn-GH" style="margin-top:15px; margin-left:-30px"
+						id = "order">
+					<strong>Order?</strong></button>
+				</div>
+
+
+			</div>
+
+
+
+
+
+			<div class = "row">
+
+
 			</div>
 
 		</div>

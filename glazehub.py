@@ -270,10 +270,11 @@ def showRecipeAddForm(userViewID):
 		display_recipes = showUserRecipeList(userViewID)
 		chems = model.session.query(model.Chem).all()
 		chemNames = [chem.chem_name for chem in chems]
+		components = []
 
 
 	return render_template("add_recipe.html", chem_names = chemNames, user_id = userViewID,
-			display_recipes= display_recipes, recipe_name = recipe_name)
+			display_recipes= display_recipes, recipe_name = recipe_name, components = components)
 
 
 
@@ -284,7 +285,6 @@ def showRecipeAddForm(userViewID):
 def addRecipeName(userViewID):
 
 	display_recipes = showUserRecipeList(userViewID)
-	print "this is display_recipes", type(display_recipes), display_recipes
 	recipe_name = request.form.get('recipename')
 	notes = request.form.get('usercomments')
 
@@ -304,6 +304,8 @@ def addRecipeName(userViewID):
 
 	model.session.add(newRecipe)
 	model.session.commit()
+
+
 
 	batchComp=[]
 	batchsize = None
@@ -331,6 +333,8 @@ def addRecipeName(userViewID):
 
 
 	components = model.Component.getComponentsByRecipeID(newRecipe.id)
+	print "this is components type", type(components)
+
 
 	return render_template("recipecomps.html", user_id = userViewID, recipe_name = newRecipe.recipe_name,\
 			components = components, batchComp = batchComp, batchsize = batchsize, display_recipes = display_recipes,\
@@ -360,7 +364,8 @@ def recipe(userViewID, recipeName):
 	else:
 		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
 		components = model.Component.getComponentsByRecipeID(recipe.id)
-		print "This is components", components
+		print "These are components", components
+
 	messageToUser = None
 
 	batchComp = []

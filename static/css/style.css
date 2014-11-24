@@ -32,6 +32,11 @@ div#header_section{
 
 }
 
+#cplogo{
+	width:125px;
+	margin:10px;
+}
+
 ul#header_links{
 	margin-top: 15px;
 	text-align: right;

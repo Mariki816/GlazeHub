@@ -46,6 +46,28 @@ class Chem(Base):
 	def getChemIDByName(cls,chemNAME):
 		return session.query(Chem).filter_by(chem_name = chemNAME).first().id
 
+	@classmethod
+	def getChemPriceByID(cls, chemID, weight):
+		if (weight<= 0.25):
+			price = session.query(Chem).filter_by(id = chemID).get().quarter
+		elif(weight >0.25 and weight<=0.5):
+			price = session.query(Chem).filter_by(id = chemID).get().half
+		elif(weight >0.5 and weight<=1):
+			price = session.query(Chem).filter_by(id = chemID).get().onelb
+		elif(weight >1 and weight<=5):
+			price = session.query(Chem).filter_by(id = chemID).get().fivelb
+		elif(weight >5 and weight<=10):
+			price = session.query(Chem).filter_by(id = chemID).get().tenlb
+		elif(weight >10 and weight<=25):
+			price = session.query(Chem).filter_by(id = chemID).get().twentyfivelb
+		elif(weight >25 and weight<=50):
+			price = session.query(Chem).filter_by(id = chemID).get().fiftylb
+		elif(weight >50 and weight<=100):
+			price = session.query(Chem).filter_by(id = chemID).get().onehundlb
+		else:
+			price = session.query(Chem).filter_by(id = chemID).get().fivehundlb
+		return price
+
 
 #This is the table of users
 class User(Base):
