@@ -1,7 +1,7 @@
 {% extends 'base2.html' %}
 {% block body %}
 
-	<title>Calculate Recipe</title>
+<title>Calculate Recipe</title>
 <div class = "col-sm-2" id = "recipe_list" ></div>
 
 <div class = "col-sm-10" id = "recipe_section" style="margin-top:-2em">
@@ -40,6 +40,7 @@
 
 
 
+
 		</div>
 <!-- end of hidden template -->
 
@@ -58,7 +59,7 @@
 				<div class = "col-sm-2">
 
 					<input class = "form-control" type = "text" id = "batchsize"
-					name="batchsize" style = "width:60px" value = "Amt"/>
+					name="batchsize" style = "width:60px"/>
 				</div>
 
 				<div class = "col-sm-2">
@@ -96,31 +97,33 @@
 			</div>
 			<div class = "col-sm-2" style="margin-left:-185px">
 
-				{% if batchComp and (unitSys == "kg") %}
-					{% if wholenumlist %}
-						{% for num in wholenumlist%}
-							<tr>
+				{% for chem in chem_list %}
+						<div class = "row">
+							<div class = "col-sm-6" >{{comp.chem.chem_name}}</div>
+							<div class = "col-sm-2">{{ comp.percentage }}</div>
 
-								{{num}} kg
+							{% if batchComp and (unitSys == "kg") %}
+								{% if wholenumlist %}
+									<div class = "col-sm-2">
+										{{wholenumlist[loop.index-1]}} kg
+									</div>
+									<div class = "col-sm-2">
+										{{leftoverbitslist[loop.index-1]}} g
+									</div>
+								{%endif%}
+							{% else %}
+								{% if wholenumlist %}
+									<div class = "col-sm-2">
+										{{wholenumlist[loop.index-1]}} lbs
+									</div>
+									<div class = "col-sm-2">
+										{{leftoverbitslist[loop.index-1]}} oz
+									</div>
+								{%endif%}
+							{% endif %}
 
-							</tr>
-						{% endfor %}
-					{% endif %}
-				{% else %}
-					{% if wholenumlist %}
-						{% for num in wholenumlist%}
-							<tr>
-								{{num}} lbs
-							</tr>
-						{%endfor%}
-					{%endif%}
-				{% endif %}
-
-			</div>
-			<div class = "col-sm-2">
-				{% if messageToUser %}
-					<p>{{messageToUser}}</p>
-				{% endif %}
+						</div>
+					{% endfor %}
 				</div>
 		</div>
 		<div class = "row">

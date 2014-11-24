@@ -1,9 +1,8 @@
 #This is my controller script
 
 import model
-import api
 # import seedchem
-from flask import Flask, g, session, render_template, request
+from flask import Flask, session, render_template, request
 from flask import redirect, flash, url_for
 import jinja2
 import converter
@@ -66,7 +65,7 @@ def processLogin():
 			if "user" in session:
 				session["user_id"] = user.id
 				session["user_name"] = user.user_name
-				print "This is username", session["user_name"]
+				# print "This is username", session["user_name"]
 
 			else:
 				do_login(user.id, email, user.user_name)
@@ -164,7 +163,7 @@ def renderCalculateRecipeForm():
 
 #This is the function to calculate on the Enter Recipe page if not logged in
 @app.route("/calculateRecipe", methods=['POST'])
-def EnterRecipeForm():
+def calculateRecipeForm():
 
 	chems = model.session.query(model.Chem).all()
 	chemNames = [chem.chem_name for chem in chems]
@@ -200,7 +199,7 @@ def EnterRecipeForm():
 		batchComp.append(float(comp.percentage))
 
 	units = request.form.get("unitSys")
-	print "This is unitSys", units
+	# print "This is unitSys", units
 	chem_list = []
 
 	wholenumlist = []
@@ -225,24 +224,20 @@ def EnterRecipeForm():
 		else:
 			leftoverbitslist.append(int(converter.leftOverPoundsToOunces(batchComp[i])))
 			lbschecked = 'checked = "checked"'
-			print "This is leftoverbitslist", leftoverbitslist
+
 
 
 	for i in range(len(batchComp)):
-		print "This is batchComp[i]",batchComp[i]
-		print "this is type", type(batchComp[i])
+
 		batchComp[i] = (sizeflt * batchComp[i])* newPercent
 
 		kgchecked = 'checked = "checked"'
 		lbschecked = 'checked = "checked"'
 
-		print "This is chem_list", chem_list
-		print "This is batchComp", batchComp
 
 
 
-
-	return render_template("calculate_recipe.html", chem_names = chemNames,\
+	return render_template("calculate_recipe.html", chem_names = chemNames, chem_list = chem_list,\
 		batchComp = batchComp, user_id = user_id, lbschecked=lbschecked, kgchecked=kgchecked,\
 		messageToUser=messageToUser, unitSys = units, wholenumlist=wholenumlist,
 		leftoverbitslist=leftoverbitslist)
@@ -254,6 +249,7 @@ def EnterRecipeForm():
 def showRecipeAddForm(userViewID):
 
 	userLoginID = session["user_id"]
+	recipe_name = ""
 
 	if userLoginID != int(userViewID):
 		flash ("Invalid User ID. Here are your recipes. 2")
@@ -265,8 +261,9 @@ def showRecipeAddForm(userViewID):
 		chems = model.session.query(model.Chem).all()
 		chemNames = [chem.chem_name for chem in chems]
 
+
 	return render_template("add_recipe.html", chem_names = chemNames, user_id = userViewID,
-			display_recipes= display_recipes)
+			display_recipes= display_recipes, recipe_name = recipe_name)
 
 
 
@@ -277,10 +274,11 @@ def showRecipeAddForm(userViewID):
 def addRecipeName(userViewID):
 
 	display_recipes = showUserRecipeList(userViewID)
-	rname = request.form.get('recipename')
+	print "this is display_recipes", type(display_recipes), display_recipes
+	recipe_name = request.form.get('recipename')
 	notes = request.form.get('usercomments')
 
-	dupe = model.session.query(model.Recipe).filter_by(recipe_name = rname)\
+	dupe = model.session.query(model.Recipe).filter_by(recipe_name = recipe_name)\
 	.filter_by(user_id = session["user_id"]).all()
 
 	if dupe != []:
@@ -289,8 +287,10 @@ def addRecipeName(userViewID):
 
 	newRecipe = model.Recipe()
 	newRecipe.user_id = session["user_id"]
-	newRecipe.recipe_name = rname
+	newRecipe.recipe_name = recipe_name
 	newRecipe.user_notes = notes
+
+	display_recipes.append(newRecipe)
 
 	model.session.add(newRecipe)
 	model.session.commit()
@@ -301,6 +301,7 @@ def addRecipeName(userViewID):
 	percentages=request.values.getlist('percentage')
 	i = 0
 	for chem in chem_list:
+
 		comp = model.Component()
 		comp.chem_name = chem
 		comp.chem_id = model.Chem.getChemIDByName(comp.chem_name)
@@ -311,7 +312,7 @@ def addRecipeName(userViewID):
 		model.session.add(comp)
 		model.session.commit()
 
-	kgchecked = ""
+	kgchecked = 'checked = "checked"'
 	lbschecked = ""
 	unitSys = "kg"
 	wholenumlist = []
@@ -321,10 +322,10 @@ def addRecipeName(userViewID):
 
 	components = model.Component.getComponentsByRecipeID(newRecipe.id)
 
-	return render_template("recipecomps.html", user_id = userViewID, recipe_name = newRecipe.recipe_name,
-			components = components, batchComp = batchComp, batchsize = batchsize, display_recipes = display_recipes,
+	return render_template("recipecomps.html", user_id = userViewID, recipe_name = newRecipe.recipe_name,\
+			components = components, batchComp = batchComp, batchsize = batchsize, display_recipes = display_recipes,\
 			user_notes = newRecipe.user_notes, kgchecked = kgchecked, lbschecked = lbschecked,
-			unitSys = unitSys, wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist,
+			unitSys = unitSys, wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist,\
 			messageToUser = messageToUser)
 
 
@@ -349,7 +350,7 @@ def recipe(userViewID, recipeName):
 	else:
 		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
 		components = model.Component.getComponentsByRecipeID(recipe.id)
-
+		print "This is components", components
 	messageToUser = None
 
 	batchComp = []
@@ -359,9 +360,9 @@ def recipe(userViewID, recipeName):
 
 	unit_sys = "unitSys"
 	lbschecked = ""
-	kgchecked = ""
+	kgchecked = 'checked = "checked"'
 
-	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName,
+	return render_template("/recipecomps.html/", user_id = userViewID, recipe_name = recipeName,
 			components = components, batchComp = batchComp, display_recipes=display_recipes,
 			user_notes = recipe.user_notes, messageToUser = messageToUser, unitSys = unit_sys,
 			batchsize = batchsize, wholenumlist=wholenumlist, lbschecked =lbschecked,
@@ -411,7 +412,7 @@ def batchsizechange(userViewID, recipeName):
 		else:
 			leftoverbitslist.append(int(converter.leftOverPoundsToOunces(batchComp[i])))
 			lbschecked = 'checked = "checked"'
-			print "This is leftoverbitslist", leftoverbitslist
+
 
 
 

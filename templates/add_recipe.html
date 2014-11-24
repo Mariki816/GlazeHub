@@ -33,73 +33,64 @@
 	</div>
 </div>
 
-<!-- This template is hidden -->
+
 
 
 <div class = "col-sm-10" id = "recipe_section" style="margin-top:-2em">
 	<h1>Recipe</h1>
+	<!-- This template is hidden -->
+	<div id = "compTemplate">
 
-<div id = "compTemplate">
+		<div class = "col-sm-6" >
 
-	<div class = "col-sm-9" style = "margin-left:-15px">
+		    <select name="chem">
+				{% for chem in chem_names %}
+					<option value="{{ chem }}">{{ chem }}</option>
+				{% endfor %}
+			</select>
+		</div>
 
-	    <select name="chem">
-			{% for chem in chem_names %}
-				<option value="{{ chem }}">{{ chem }}</option>
-			{% endfor %}
-		</select>
+		<div class = "col-sm-2" style = "margin-top:-10px; margin-left:-40px">
+			<input class = "form-control" type = "text" id = "percentage"
+					name="percentage"/>
+		</div>
+
 	</div>
-
-	<div class = "col-sm-2" style = "margin-top:-10px; margin-left:-40px">
-		<input class = "form-control" type = "text" id = "percentage"
-				name="percentage"/>
-	</div>
-
-</div>
-<!-- end of hidden template -->
+	<!-- end of hidden template -->
 
 	<form method=post>
 		<div class = "row">
 			<div class = "form-group" id = "recipename">
-				<label class = "col-sm-3 control-label" for="recipename" id ="recipename" style = "margin-top:1em"><font size = "4">
-						Recipe Name
-				</font></label>
-				<div class = "col-sm-4" style= "margin-left:-7em">
+				<div class = "col-sm-6">
+					<label class = "control-label" for="recipename" id ="recipename">
+						<h4>Recipe Name</h4>
+					</label>
 
 					<input class = "form-control" type = "text" id = "recipename"
 						name="recipename" />
 				</div>
+
+
 			</div>
 		</div>
 
 		<div id = "chemicals">
+		<div class = "row">
+			<div class = "col-sm-6">
+				<h4>Chemical Names</h4>
+			</div>
+			<div class = "col-sm-2" style = "margin-left:-40px">
+				<h4>Percentage</h4>
+			</div>
+		</div>
 
-			<table>
-				<thead>
-					<tr>
-					<th scope = "col">Chemical Names</th>
 
-					<th scope = "col">Percentage</th>
-					</tr>
-				</thead>
-				<tr>
-					<td width ="397px">
-					<div class = "col-sm-8"></div>
+			<div id = "chems_percents_tbl">
 
-					</td>
-					<td>
-					<div class = "col-sm-3"><div>
-					</td>
-				</tr>
+				<div id = "chem_prcnts_bdy">
 
-			</table>
-			<table id = "chems_percents_tbl">
+				</div>
 
-				<tbody id = "chem_prcnts_bdy">
-
-				</tbody>
-
-			</table>
 
 			<div class = "col-sm-8" style = "margin-left:10px">
 				<div class ="row">
