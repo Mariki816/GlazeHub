@@ -3,11 +3,7 @@
 {% block body %}
 
 
-
-
-
-
-	<title>Add Recipe</title>
+<title>Add Recipe</title>
 
 <div class = "col-sm-2">
 	<div class = "col-sm-12" id = "recipe_list" style="outline: 3px solid #ccccff; margin-bottom:10px" >
@@ -41,7 +37,7 @@
 	<!-- This template is hidden -->
 	<div id = "compTemplate">
 
-		<div class = "col-sm-6" >
+		<div class = "col-sm-6" style = "margin:5px">
 
 		    <select name="chem">
 				{% for chem in chem_names %}
@@ -50,7 +46,7 @@
 			</select>
 		</div>
 
-		<div class = "col-sm-2" style = "margin-top:-10px; margin-left:-40px">
+		<div class = "col-sm-2" style = "margin-top:-10px">
 			<input class = "form-control" type = "text" id = "percentage"
 					name="percentage"/>
 		</div>
@@ -79,7 +75,7 @@
 			<div class = "col-sm-6">
 				<h4>Chemical Names</h4>
 			</div>
-			<div class = "col-sm-2" style = "margin-left:-40px">
+			<div class = "col-sm-2" style="margin-left:10px">
 				<h4>Percentage</h4>
 			</div>
 		</div>

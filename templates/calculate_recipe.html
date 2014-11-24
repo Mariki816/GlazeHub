@@ -1,68 +1,81 @@
 {% extends 'base2.html' %}
+
 {% block body %}
 
-<title>Calculate Recipe</title>
-<div class = "col-sm-2" id = "recipe_list" ></div>
 
-<div class = "col-sm-10" id = "recipe_section" style="margin-top:-2em">
-	<h1>Calculate Recipe</h1>
-	<div class = "row">
+<title>Add Recipe</title>
 
-			<div class = "form-group" id = "recipename">
-				<label class = "col-sm-2 control-label" for="recipename" id ="recipename" style = "margin-top:1em; margin-left:-15px"><font size = "4">
-					Recipe Name
-				</font></label>
-				<div class = "col-sm-4" style= "margin-left:-2em">
+<div class = "col-sm-2">
 
-					<input class = "form-control" type = "text" id = "recipename" name="recipename" />
-				</div>
-			</div>
+</div>
+
+
+
+
+<div class = "col-sm-10" id = "recipe_section">
+	<h1>Recipe</h1>
+	<!-- This template is hidden -->
+	<div id = "compTemplate">
+
+		<div class = "col-sm-6" style = "margin-left:-15px">
+
+		    <select name="chem">
+				{% for chem in chem_names %}
+					<option value="{{ chem }}">{{ chem }}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class = "col-sm-2" style = "margin-top:-10px; margin-left:-20px">
+			<input class = "form-control" type = "text" id = "percentage"
+					name="percentage" value = "{{percentage}}"/>
+		</div>
+
 	</div>
+	<!-- end of hidden template -->
 
+	<form action = "/calculateRecipe" method = "POST">
+		<div class = "row">
+				<div class = "col-sm-6">
+					<label class = "control-label" for="recipename" id ="recipename">
+						<h4>Recipe Name</h4>
+					</label>
 
-
-<!-- This is my hidden template -->
-		<div id = "compTemplate">
-
-			<div class = "col-sm-9" style = "margin-left:5px">
-
-			    <select name="chem">
-					{% for chem in chem_names %}
-						<option value="{{ chem }}">{{ chem }}</option>
-					{% endfor %}
-				</select>
-			</div>
-
-			<div class = "col-sm-2" style = "margin-top:-10px; margin-left:-50px">
-				<input class = "form-control" type = "text" id = "percentage"
-						name="percentage"/>
-			</div>
-
-
+					<input class = "form-control" type = "text" id = "recipename"
+						name="recipename" value = "{{recipename}}"/>
+				</div>
 
 
 		</div>
-<!-- end of hidden template -->
+
+		<div id = "chemicals">
+			<div class = "row">
+					<div class = "col-sm-6" id = "chem_name">
+						<h4>Chemical</h4>
+					</div>
+
+					<div class = "col-sm-2" id = "percentage" style = "margin-left:-15px">
+						<h4>Percent</h4>
+					</div>
+
+					<div class = "col-sm-1" id = "amount_to_make" >
+						<h4>Amt.</h4>
+					</div>
+					<div class = "col-sm-1">
+						{% if batchsize %}
+							<input class = "form-control" type = "text" id = "batchsize"
+									  name="batchsize" value = "{{batchsize}}"
+									  style = "margin-left:-1em"/>
+						{% else %}
+							<input class = "form-control" type = "text" id = "batchsize"
+									  name="batchsize" style = "margin-left:-1em"
+									  value = ""/>
+						{% endif %}
+					</div>
 
 
-
-
-		<form method=post>
-		<div class = "row">
-			<div id ="chemicals">
-				<div class = "col-sm-5" style = "margin-left:-15px" >
-					<h4>Chemical Names</h4>
-				</div>
-				<div class = "col-sm-1">
-					<h4>%</h4>
-				</div>
 				<div class = "col-sm-2">
 
-					<input class = "form-control" type = "text" id = "batchsize"
-					name="batchsize" style = "width:60px"/>
-				</div>
-
-				<div class = "col-sm-2">
 					<input type = "radio" name= "unitSys" value = "lbs"
 						{{lbschecked}}/>
 					<label for "pounds">lbs</label>
@@ -71,74 +84,41 @@
 					<label for "metric">kg</label>
 				</div>
 
-				<div class = "col-sm-2" style = "margin-left:-50px">
-					<button class ="btn btn-GH" style="margin-top:5px" type = "submit"
-					id = "getSize">
-					 <strong>Get Size</strong>
+			</div>
+		</div>
+
+
+
+
+				<div id = "chem_prcnts_bdy">
+
+				</div>
+
+
+		<div class = "row">
+			<div class = "col-sm-8" style = "margin-left:10px">
+				<div class ="row">
+					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px; margin-left:-10px" ><strong>Add Component</strong>
 					</button>
 				</div>
 			</div>
-		</div>
-		<div class = "row">
-			<div class = "col-sm-8">
 
-				<table id = "chems_percents_tbl">
-
-					<tbody id = "chem_prcnts_bdy">
-
-						<tr>
-
-
-
-						</tr>
-					</tbody>
-
-				</table>
+			<div class = "col-sm-2">
+				<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getSize">
+				<strong>Get Size</strong></button>
 			</div>
-			<div class = "col-sm-2" style="margin-left:-185px">
 
-				{% for chem in chem_list %}
-						<div class = "row">
-							<div class = "col-sm-6" >{{comp.chem.chem_name}}</div>
-							<div class = "col-sm-2">{{ comp.percentage }}</div>
-
-							{% if batchComp and (unitSys == "kg") %}
-								{% if wholenumlist %}
-									<div class = "col-sm-2">
-										{{wholenumlist[loop.index-1]}} kg
-									</div>
-									<div class = "col-sm-2">
-										{{leftoverbitslist[loop.index-1]}} g
-									</div>
-								{%endif%}
-							{% else %}
-								{% if wholenumlist %}
-									<div class = "col-sm-2">
-										{{wholenumlist[loop.index-1]}} lbs
-									</div>
-									<div class = "col-sm-2">
-										{{leftoverbitslist[loop.index-1]}} oz
-									</div>
-								{%endif%}
-							{% endif %}
-
-						</div>
-					{% endfor %}
-				</div>
-		</div>
-		<div class = "row">
-				<div class = "col-sm-8" style = "margin-left:15px">
-					<div class ="row">
-						<button id = "add_component" class ="btn btn-GH" style="margin-top:5px" ><strong>Add Component</strong>
-						</button>
-					</div>
-				</div>
 		</div>
 
-		</form>
+
+
+
+
+		</div>
+	</form>
+
 </div>
 
 
-
-
 {% endblock %}
+

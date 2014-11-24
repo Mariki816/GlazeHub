@@ -143,21 +143,28 @@ def renderCalculateRecipeForm():
 	chems = model.session.query(model.Chem).all()
 	chemNames = [chem.chem_name for chem in chems]
 	batchComp = []
+	components = model.Component()
 	if "user_id" in session:
 		user_id = session["user_id"]
 	else:
 		user_id = None
 
 	lbschecked = ""
-	kgchecked = ""
+	kgchecked = 'checked = "checked"'
 	wholenumlist=[]
 	leftoverbitslist =[]
 	messageToUser = ""
+	batchsize = 0.0
+	recipename = ""
+	percentage = 0.0
+	session["chem"] = ""
+	session["percentage"] =0.0
 
 	return render_template("calculate_recipe.html", chem_names = chemNames,\
 		batchComp = batchComp, user_id = user_id, lbschecked=lbschecked,
 		kgchecked=kgchecked, wholenumlist=wholenumlist, leftoverbitslist = leftoverbitslist,
-		messageToUser = messageToUser)
+		chem_list = chems, messageToUser = messageToUser, components = components,\
+		batchsize=batchsize, recipename = recipename, percentage = percentage)
 
 
 
@@ -186,6 +193,8 @@ def calculateRecipeForm():
 
 	chem_list=request.values.getlist('chem')
 	percentages=request.values.getlist('percentage')
+
+	percentage = percentages[0]
 
 	i = 0
 
@@ -240,7 +249,8 @@ def calculateRecipeForm():
 	return render_template("calculate_recipe.html", chem_names = chemNames, chem_list = chem_list,\
 		batchComp = batchComp, user_id = user_id, lbschecked=lbschecked, kgchecked=kgchecked,\
 		messageToUser=messageToUser, unitSys = units, wholenumlist=wholenumlist,
-		leftoverbitslist=leftoverbitslist)
+		leftoverbitslist=leftoverbitslist, batchsize = size, recipename = recipe.recipe_name,\
+		percentage = percentage)
 
 
 
