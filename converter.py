@@ -37,10 +37,10 @@ def checkPercent(percentlist):
 	checknums = percentlist
 	sum_of_nums = sum(checknums)
 	if sum_of_nums != 100:
-		print "This is sum_of_nums", sum_of_nums
+
 		return False
 	else:
-		print "This is sum_of_nums True", sum_of_nums
+
 		return True
 
 def getPercentMult(percentlist):

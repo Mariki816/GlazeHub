@@ -108,7 +108,7 @@ def listofUserRecipes(userViewID):
 	# print "This is userLoginID", (type(userLoginID), userLoginID)
 
 	lbschecked = ""
-	kgchecked = ""
+	kgchecked = 'checked = "checked"'
 
 	if userLoginID != int(userViewID):
 		flash ("Invalid User ID. Here are your recipes.4")
@@ -180,7 +180,6 @@ def enterRecipe():
 	newRecipe.recipe_name = recipeName
 
 
-
 	batchComp=[]
 	sizeflt = float(batchsize)
 	kgchecked = 'checked = "checked"'
@@ -213,7 +212,7 @@ def enterRecipe():
 	newPercent = converter.getPercentMult(percent_list)
 
 	if onehundred == False:
-		messageToUser = "Recipe does not add up to 100. Amount adjusted."
+		messageToUser = "Recipe does not add up to 100. Amounts adjusted."
 	else:
 		messageToUser = None
 
@@ -234,55 +233,6 @@ def enterRecipe():
 			batchsize = batchsize, kgchecked = kgchecked, lbschecked = lbschecked,\
 			unitSys = unitSys, wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist,\
 			messageToUser = messageToUser)
-
-
-
-@app.route("/batchSizeChangeNoLogin/<recipeName>",  methods=['POST'])
-def batchsizechangenologin(recipeName):
-
-	size = request.form.get("batchsize")
-	units = request.form.get("unitSys")
-
-
-	batchComp = []
-	percent_list = []
-	for comp in components:
-		percent_list.append(comp.percentage)
-
-	onehundred = converter.checkPercent(percent_list)
-	newPercent = converter.getPercentMult(percent_list)
-
-
-	if onehundred == False:
-		messageToUser = "Recipe does not add up to 100. Amount adjusted."
-	else:
-		messageToUser = None
-
-	for comp in components:
-		batchComp.append(comp.percentage/100)
-	sizeflt = float(size)
-	wholenumlist = []
-	leftoverbitslist = []
-	kgchecked = ""
-	lbschecked = ""
-
-	for i in range(len(batchComp)):
-		batchComp[i] = (sizeflt * batchComp[i])*newPercent
-
-		wholenumlist.append(int(batchComp[i]))
-		if units == "kg":
-			leftoverbitslist.append(int(converter.leftOverKilosToGrams(batchComp[i])))
-			kgchecked = 'checked = "checked"'
-		else:
-			leftoverbitslist.append(int(converter.leftOverPoundsToOunces(batchComp[i])))
-			lbschecked = 'checked = "checked"'
-
-	return render_template("calc_recipe.html", recipe_name = recipe_name,\
-		batchComp = batchComp, components = components,batchsize = size,\
-		user_notes = recipe.user_notes, messageToUser = messageToUser,\
-		wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist, kgchecked = kgchecked,
-		lbschecked = lbschecked, unitSys = units)
-
 
 
 

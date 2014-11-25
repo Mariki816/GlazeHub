@@ -30,6 +30,11 @@
 			<input class = "form-control percentage" type = "text"
 					name="percentage" value = "{{percentage}}"/>
 		</div>
+		<div class = "col-sm-2" style = "margin-top:-10px; margin-left: 20px">
+			<div class = "row">
+				<h5 class = "amount_needed">Amount You Need</h5>
+			</div>
+		</div>
 
 	</div>
 	<!-- end of hidden template -->
@@ -69,17 +74,17 @@
 						{% else %}
 							<input class = "form-control" type = "text" id = "batchsize"
 									  style = "margin-left:-1em"
-									  value = ""/>
+									  value = "0.0"/>
 						{% endif %}
 					</div>
 
 
 				<div class = "col-sm-2">
 
-					<input type = "radio" name= "unitSys" value = "lbs"
+					<input type = "radio" name= "unitSys" value = "lbs" id = "lbs"
 						{{lbschecked}}/>
 					<label for "pounds">lbs</label>
-					<input type = "radio" name= "unitSys" value = "kg"
+					<input type = "radio" name= "unitSys" value = "kg" id = "kg"
 						{{kgchecked}}/>
 					<label for "metric">kg</label>
 				</div>
@@ -95,12 +100,19 @@
 				</div>
 
 
+
+
 		<div class = "row">
-			<div class = "col-sm-8" style = "margin-left:10px">
+			<div class = "col-sm-6" style = "margin-left:10px">
 				<div class ="row">
 					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px; margin-left:-10px" ><strong>Add Component</strong>
 					</button>
 				</div>
+			</div>
+			<div class = "col-sm-4" id = "messageToUser">
+					{% if messageToUser %}
+						{{ messageToUser}}
+					{% endif %}
 			</div>
 
 			<div class = "col-sm-2">
