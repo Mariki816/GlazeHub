@@ -200,6 +200,11 @@ input.btn_submit:hover{
   background-position: 0 -15px;
 }
 
+hr{
+	border-color:#ccccff;
+	border-width: 2px;
+}
+
 
 
 

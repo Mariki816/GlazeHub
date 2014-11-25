@@ -137,8 +137,8 @@ def showUserRecipeList(userViewID):
 
 
 #This is the function to render the Enter Recipe page if not logged in
-@app.route("/calculateRecipe", methods=['GET'])
-def renderCalculateRecipeForm():
+@app.route("/enterRecipe", methods=['GET'])
+def renderEnterRecipeForm():
 
 	chems = model.session.query(model.Chem).all()
 	chemNames = [chem.chem_name for chem in chems]
@@ -160,7 +160,7 @@ def renderCalculateRecipeForm():
 	session["chem"] = ""
 	session["percentage"] =0.0
 
-	return render_template("calculate_recipe.html", chem_names = chemNames,\
+	return render_template("enter_recipe.html", chem_names = chemNames,\
 		batchComp = batchComp, user_id = user_id, lbschecked=lbschecked,
 		kgchecked=kgchecked, wholenumlist=wholenumlist, leftoverbitslist = leftoverbitslist,
 		chem_list = chems, messageToUser = messageToUser, components = components,\
@@ -169,59 +169,102 @@ def renderCalculateRecipeForm():
 
 
 #This is the function to calculate on the Enter Recipe page if not logged in
-@app.route("/calculateRecipe", methods=['POST'])
-def calculateRecipeForm():
+@app.route("/enterRecipe", methods=['POST'])
+def enterRecipe():
 
-	chems = model.session.query(model.Chem).all()
-	chemNames = [chem.chem_name for chem in chems]
+	recipeName = request.form.get('recipename')
+	batchsize = request.form.get('batchsize')
 
-	size = request.form.get("batchsize")
-	sizeflt = float(size)
-	# print "this is sizeflt", sizeflt
-	batchComp = []
 
-	if "user_id" in session:
-		user_id = session["user_id"]
-	else:
-		user_id = None
-
-	recipe = model.Recipe()
-	recipe.recipe_name = request.form.get('recipename')
+	newRecipe = model.Recipe()
+	newRecipe.recipe_name = recipeName
 
 
 
+	batchComp=[]
+	sizeflt = float(batchsize)
+	kgchecked = 'checked = "checked"'
+	lbschecked = ""
+	unitSys = "kg"
+	percent_list = []
+	wholenumlist = []
+	leftoverbitslist = []
+	messageToUser = None
 
 	chem_list=request.values.getlist('chem')
 	percentages=request.values.getlist('percentage')
-
-	percentage = percentages[0]
+	if percentages == []:
+		flash ("no entry")
+		return redirect ("/enterRecipe")
 
 	i = 0
-
 	for chem in chem_list:
 		comp = model.Component()
 		comp.chem_name = chem
 		comp.chem_id = model.Chem.getChemIDByName(comp.chem_name)
 		comp.percentage = float(percentages[i])
+		percent_list.append(comp.percentage)
 		i += 1
-
+		comp.recipe_id = newRecipe.id
 		batchComp.append(float(comp.percentage))
 
-	units = request.form.get("unitSys")
-	# print "This is unitSys", units
-	chem_list = []
 
-	wholenumlist = []
-	leftoverbitslist = []
-
-
-	onehundred = converter.checkPercent(batchComp)
-	newPercent = converter.getPercentMult(batchComp)
+	onehundred = converter.checkPercent(percent_list)
+	newPercent = converter.getPercentMult(percent_list)
 
 	if onehundred == False:
 		messageToUser = "Recipe does not add up to 100. Amount adjusted."
 	else:
 		messageToUser = None
+
+	for i in range(len(batchComp)):
+		batchComp[i] = (sizeflt * batchComp[i])*newPercent
+
+		wholenumlist.append(int(batchComp[i]))
+		if unitSys == "kg":
+			leftoverbitslist.append(int(converter.leftOverKilosToGrams(batchComp[i])))
+			kgchecked = 'checked = "checked"'
+		else:
+			leftoverbitslist.append(int(converter.leftOverPoundsToOunces(batchComp[i])))
+			lbschecked = 'checked = "checked"'
+
+
+	return render_template("calc_recipe.html", recipe_name = newRecipe.recipe_name,\
+			chem_list = chem_list, percentages = percentages, batchComp = batchComp,\
+			batchsize = batchsize, kgchecked = kgchecked, lbschecked = lbschecked,\
+			unitSys = unitSys, wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist,\
+			messageToUser = messageToUser)
+
+
+
+@app.route("/batchSizeChangeNoLogin/<recipeName>",  methods=['POST'])
+def batchsizechangenologin(recipeName):
+
+	size = request.form.get("batchsize")
+	units = request.form.get("unitSys")
+
+
+	batchComp = []
+	percent_list = []
+	for comp in components:
+		percent_list.append(comp.percentage)
+
+	onehundred = converter.checkPercent(percent_list)
+	newPercent = converter.getPercentMult(percent_list)
+
+
+	if onehundred == False:
+		messageToUser = "Recipe does not add up to 100. Amount adjusted."
+	else:
+		messageToUser = None
+
+	for comp in components:
+		batchComp.append(comp.percentage/100)
+	sizeflt = float(size)
+	wholenumlist = []
+	leftoverbitslist = []
+	kgchecked = ""
+	lbschecked = ""
 
 	for i in range(len(batchComp)):
 		batchComp[i] = (sizeflt * batchComp[i])*newPercent
@@ -234,23 +277,13 @@ def calculateRecipeForm():
 			leftoverbitslist.append(int(converter.leftOverPoundsToOunces(batchComp[i])))
 			lbschecked = 'checked = "checked"'
 
+	return render_template("calc_recipe.html", recipe_name = recipe_name,\
+		batchComp = batchComp, components = components,batchsize = size,\
+		user_notes = recipe.user_notes, messageToUser = messageToUser,\
+		wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist, kgchecked = kgchecked,
+		lbschecked = lbschecked, unitSys = units)
 
 
-	for i in range(len(batchComp)):
-
-		batchComp[i] = (sizeflt * batchComp[i])* newPercent
-
-		kgchecked = 'checked = "checked"'
-		lbschecked = 'checked = "checked"'
-
-
-
-
-	return render_template("calculate_recipe.html", chem_names = chemNames, chem_list = chem_list,\
-		batchComp = batchComp, user_id = user_id, lbschecked=lbschecked, kgchecked=kgchecked,\
-		messageToUser=messageToUser, unitSys = units, wholenumlist=wholenumlist,
-		leftoverbitslist=leftoverbitslist, batchsize = size, recipename = recipe.recipe_name,\
-		percentage = percentage)
 
 
 
@@ -282,7 +315,7 @@ def showRecipeAddForm(userViewID):
 
 #This function gets the recipe name from the form and adds it to the Recipes table
 @app.route("/addRecipe/<int:userViewID>", methods=['POST'])
-def addRecipeName(userViewID):
+def addRecipe(userViewID):
 
 	display_recipes = showUserRecipeList(userViewID)
 	recipe_name = request.form.get('recipename')
@@ -364,7 +397,7 @@ def recipe(userViewID, recipeName):
 	else:
 		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
 		components = model.Component.getComponentsByRecipeID(recipe.id)
-		print "These are components", components
+
 
 	messageToUser = None
 

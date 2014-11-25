@@ -3,7 +3,7 @@
 {% block body %}
 
 
-<title>Add Recipe</title>
+<title>Enter Recipe</title>
 
 <div class = "col-sm-2">
 
@@ -27,14 +27,14 @@
 		</div>
 
 		<div class = "col-sm-2" style = "margin-top:-10px; margin-left:-20px">
-			<input class = "form-control" type = "text" id = "percentage"
+			<input class = "form-control percentage" type = "text"
 					name="percentage" value = "{{percentage}}"/>
 		</div>
 
 	</div>
 	<!-- end of hidden template -->
 
-	<form action = "/calculateRecipe" method = "POST">
+	<form action = "/enterRecipe" method = "POST">
 		<div class = "row">
 				<div class = "col-sm-6">
 					<label class = "control-label" for="recipename" id ="recipename">
@@ -64,11 +64,11 @@
 					<div class = "col-sm-1">
 						{% if batchsize %}
 							<input class = "form-control" type = "text" id = "batchsize"
-									  name="batchsize" value = "{{batchsize}}"
+									   value = "{{batchsize}}"
 									  style = "margin-left:-1em"/>
 						{% else %}
 							<input class = "form-control" type = "text" id = "batchsize"
-									  name="batchsize" style = "margin-left:-1em"
+									  style = "margin-left:-1em"
 									  value = ""/>
 						{% endif %}
 					</div>

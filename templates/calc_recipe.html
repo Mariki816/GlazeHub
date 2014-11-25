@@ -2,27 +2,7 @@
 {% block body %}
 
 <div class = "col-sm-2">
-	<div class = "col-sm-12" id = "recipe_list" style="outline: 3px solid #ccccff; margin-bottom:10px" >
 
-    	<label class = "control-label" for="userRecipes">
-			Recipes
-		</label>
-		{% for recipe in display_recipes %}
-		<ul style = "margin-top: 6px" id="recipe_names">
-			<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}">
-				<li>{{ recipe.recipe_name }}</li></a>
-		</ul>
-
-		{% endfor %}
-	</div>
-	<div class = "row" id = "add_recipe_button">
-		<div class = "col-sm-2">
-			<a href = "/addRecipe/{{user_id}}">
-			<button class ="btn btn-GH" type = "submit" id = "add_recipe">
-					<strong>Add New Recipe?</strong></button>
-			</a>
-		</div>
-	</div>
 </div>
 
 	<div class = "col-sm-10" id = "recipe_section" style="margin-top:-2em">
@@ -44,14 +24,14 @@
 						Amt.
 					</label>
 
-				<form action = "/batchSizeChange/{{user_id}}/{{recipe_name}}" method = "POST">
+				<form method = "POST">
 					<div class ="col-sm-2">
 						{% if batchsize %}
 							<input class = "form-control" type = "text" id = "batchsize"
-									  name="batchsize" value = "{{batchsize}}"/>
+									  value = "{{batchsize}}"/>
 						{% else %}
 							<input class = "form-control" type = "text" id = "batchsize"
-									  name="batchsize" value = ""/>
+									  value = ""/>
 						{% endif %}
 
 					</div>
@@ -73,10 +53,10 @@
 
 					<div class = "col-sm-8" id ="comp_percent_amt">
 
-					{% for comp in components %}
+					{% for chem in chem_list %}
 						<div class = "row">
-							<div class = "col-sm-6" >{{comp.chem.chem_name}}</div>
-							<div class = "col-sm-2">{{ comp.percentage }}</div>
+							<div class = "col-sm-6" >{{chem}}</div>
+							<div class = "col-sm-2">{{ percentages[loop.index-1]}}</div>
 
 							{% if batchComp and (unitSys == "kg") %}
 								{% if wholenumlist %}
@@ -111,17 +91,8 @@
 					{% endif %}
 				</div>
 			</div>
-			<div class = "row">
-				<div class = "col-sm-8"
-					style="outline: 3px solid #ccccff; margin-top:20px; margin-left:15px;
-						margin-bottom:20px">
-					{{user_notes}}
-				</div>
-			</div>
-
 			<div class = "row"><hr noshade color ="#ccccff"></hr>
 			</div>
-
 			<div class = "row">
 				<div class = "col-sm-3">
 					<img id = "cplogo" src="/static/img/cplogo.png">
@@ -165,7 +136,3 @@
 
 {% endblock %}
 
-<!-- put this stuff below in a class somewhere so can keep it -->
-<!-- if batchsize
-
-	batchsize -->
