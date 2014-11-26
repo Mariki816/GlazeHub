@@ -1,6 +1,8 @@
 {% extends 'base2.html' %}
 {% block body %}
 
+<title>Recipe Details</title>
+
 <div class = "col-sm-2">
 	<div class = "col-sm-12" id = "recipe_list" style="outline: 3px solid #ccccff; margin-bottom:10px" >
 
@@ -8,8 +10,8 @@
 			Recipes
 		</label>
 		{% for recipe in display_recipes %}
-		<ul style = "margin-top: 6px" id="recipe_names">
-			<a id = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}">
+		<ul style = "margin-top: 6px" class="recipe_names">
+			<a class = "recipe_links" href = "/recipecomps/{{ recipe.user_id }}/{{recipe.recipe_name }}">
 				<li>{{ recipe.recipe_name }}</li></a>
 		</ul>
 
@@ -19,7 +21,7 @@
 		<div class = "col-sm-2">
 			<a href = "/addRecipe/{{user_id}}">
 			<button class ="btn btn-GH" type = "submit" id = "add_recipe">
-					<strong>Add New Recipe?</strong></button>
+					<strong>Add New Recipe</strong></button>
 			</a>
 		</div>
 	</div>
@@ -44,64 +46,64 @@
 						Amt.
 					</label>
 
-				<form action = "/batchSizeChange/{{user_id}}/{{recipe_name}}" method = "POST">
-					<div class ="col-sm-2">
-						{% if batchsize %}
-							<input class = "form-control" type = "text" id = "batchsize"
-									  name="batchsize" value = "{{batchsize}}"/>
-						{% else %}
-							<input class = "form-control" type = "text" id = "batchsize"
-									  name="batchsize" value = ""/>
-						{% endif %}
-
-					</div>
-
-
-					<div class = "col-sm-2">
-
-						<input type = "radio" name= "unitSys" value = "lbs"
-							{{lbschecked}}/>
-						<label for "pounds">lbs</label>
-						<input type = "radio" name= "unitSys" value = "kg"
-							{{kgchecked}}/>
-						<label for "metric">kg</label>
-					</div>
-					<div class = "col-sm-1">
-						<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getSize">
-						<strong>Get Size</strong></button>
-					</div>
-
-					<div class = "col-sm-8" id ="comp_percent_amt">
-
-					{% for comp in components %}
-						<div class = "row">
-							<div class = "col-sm-6" >{{comp.chem.chem_name}}</div>
-							<div class = "col-sm-2">{{ comp.percentage }}</div>
-
-							{% if batchComp and (unitSys == "kg") %}
-								{% if wholenumlist %}
-									<div class = "col-sm-2">
-										{{wholenumlist[loop.index-1]}} kg
-									</div>
-									<div class = "col-sm-2">
-										{{leftoverbitslist[loop.index-1]}} g
-									</div>
-								{%endif%}
+					<form action = "/batchSizeChange/{{user_id}}/{{recipe_name}}" method = "POST">
+						<div class ="col-sm-2">
+							{% if batchsize %}
+								<input class = "form-control" type = "text" id = "batchsize"
+										  name="batchsize" value = "{{batchsize}}"/>
 							{% else %}
-								{% if wholenumlist %}
-									<div class = "col-sm-2">
-										{{wholenumlist[loop.index-1]}} lbs
-									</div>
-									<div class = "col-sm-2">
-										{{leftoverbitslist[loop.index-1]}} oz
-									</div>
-								{%endif%}
+								<input class = "form-control" type = "text" id = "batchsize"
+										  name="batchsize" value = ""/>
 							{% endif %}
 
 						</div>
-					{% endfor %}
-					</div>
-				</form>
+
+
+						<div class = "col-sm-2">
+
+							<input type = "radio" name= "unitSys" value = "lbs"
+								{{lbschecked}}/>
+							<label for "pounds">lbs</label>
+							<input type = "radio" name= "unitSys" value = "kg"
+								{{kgchecked}}/>
+							<label for "metric">kg</label>
+						</div>
+						<div class = "col-sm-1">
+							<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getAmount">
+							<strong>Get Amt</strong></button>
+						</div>
+
+						<div class = "col-sm-8" id ="comp_percent_amt">
+
+						{% for comp in components %}
+							<div class = "row">
+								<div class = "col-sm-6" >{{comp.chem.chem_name}}</div>
+								<div class = "col-sm-2">{{ comp.percentage }}</div>
+
+								{% if batchComp and (unitSys == "kg") %}
+									{% if wholenumlist %}
+										<div class = "col-sm-2">
+											{{wholenumlist[loop.index-1]}} kg
+										</div>
+										<div class = "col-sm-2">
+											{{leftoverbitslist[loop.index-1]}} g
+										</div>
+									{%endif%}
+								{% else %}
+									{% if wholenumlist %}
+										<div class = "col-sm-2">
+											{{wholenumlist[loop.index-1]}} lbs
+										</div>
+										<div class = "col-sm-2">
+											{{leftoverbitslist[loop.index-1]}} oz
+										</div>
+									{%endif%}
+								{% endif %}
+
+							</div>
+						{% endfor %}
+						</div>
+					</form>
 
 				</div>
 
@@ -111,6 +113,7 @@
 					{% endif %}
 				</div>
 			</div>
+
 			<div class = "row">
 				<div class = "col-sm-8"
 					style="outline: 3px solid #ccccff; margin-top:20px; margin-left:15px;
@@ -118,8 +121,21 @@
 					{{user_notes}}
 				</div>
 			</div>
+			<div class = "row">
+				<form action = "/editRecipe/{{user_id}}/{{recipe_name}}"
 
-			<div class = "row"><hr noshade color ="#ccccff"></hr>
+					<div class = "col-sm-2">
+						<button class ="btn btn-GH" style="margin-top:15px" type = "submit" id = "editRecipe">
+						<strong>Edit Recipe</strong></button>
+					</div>
+
+
+				</form>
+
+
+
+			<div class = "row">
+				<hr noshade color ="#ccccff"></hr>
 			</div>
 
 			<div class = "row">
@@ -131,7 +147,7 @@
 					Here is the price quote space
 				</div>
 				<div class = "col-sm-4" style="margin-top:15px">
-					Does not include tax, shipping and handling
+					Does not include shipping
 				</div>
 				<div class = "col-sm-1">
 					<button class ="btn btn-GH" style="margin-top:15px; margin-left:-30px"
@@ -139,27 +155,15 @@
 					<strong>Order?</strong></button>
 				</div>
 
-
 			</div>
-
-
-
-
-
-			<div class = "row">
-
-
-			</div>
-
-		</div>
-
-
 
 
 	</div>
 
 
-</div>
+
+
+	</div>
 
 
 

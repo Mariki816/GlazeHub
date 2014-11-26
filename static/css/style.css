@@ -10,16 +10,6 @@ a:visited {
 }
 
 
-
-table td{
-	vertical-align: top;
-	padding-left:10px;
-}
-
-table th#chemnames{
-	width:40px;
-}
-
 div#header_section{
 	height:200px;
 	margin-bottom:10px;
@@ -59,84 +49,40 @@ body{
 	}
 
 
-input#add_recipe{
-	margin-top:10px;
-	width: 120px;
-	background-color: #CCCCFF;
-}
-
-input#add_recipe:hover{
-		background-color:#a29cab;
-	}
 
 
-div#recipename{
-	margin:20px;
-}
 
-div#chemicals{
-	margin:20px;
-}
-
-div#return_home{
-	position:absolute;
-	top: 350px;
-	margin:20px;
+.chemlistoptions{
+	display:inline-block;
 }
 
 
+
+
+
+.percentage{
+	width:100px;
+	display: inline-block;
+}
 
 
 #compTemplate{
 	visibility: hidden;
 }
 
-div#recipe_list{
+.recipe_list{
 	overflow: scroll;
 }
-
-a#recipe_links{
+/*This can be a class not an id*/
+ul.recipe_links{
 	text-decoration: none;
 }
 
-ul#recipe_names{
+/*this can also be a class*/
+ul.recipe_names{
 	list-style-type: none;
 	padding:0 0px;
 	}
-
-table#table_ofchems{
-		margin:20px;
-	}
-
-div#send_email_to_CP{
-		margin:20px;
-	}
-
-
-
-
-div.center_section{
-	position:absolute;
-	left: 200px;
-	margin-top: 10px;
-	width: 700px;
-
-	padding-left: 15px;
-	padding-top: 5px;
-
-}
-
-div#new_user{
-	margin: 10px;
-	padding-bottom:10px;
-	width: 300px;
-}
-
-div#returning_user{
-	margin:10px;
-	padding-bottom:10px;
-	width:300px;
-}
 
 
 input.btn_submit{

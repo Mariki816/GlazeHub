@@ -367,9 +367,8 @@ def recipe(userViewID, recipeName):
 			kgchecked =kgchecked, leftoverbitslist=leftoverbitslist)
 
 
-
 @app.route("/batchSizeChange/<userViewID>/<recipeName>",  methods=['POST'])
-def batchsizechange(userViewID, recipeName):
+def batchSizeChange(userViewID, recipeName):
 	display_recipes = showUserRecipeList(userViewID)
 	size = request.form.get("batchsize")
 	units = request.form.get("unitSys")
@@ -422,7 +421,65 @@ def batchsizechange(userViewID, recipeName):
 		lbschecked = lbschecked, unitSys = units)
 
 
+@app.route("/editRecipe/<userViewID>/<recipeName>", methods=['GET'])
+def showEditRecipeForm(userViewID, recipeName):
 
+	userLoginID = session["user_id"]
+	recipe_name = recipeName
+
+	if userLoginID != int(userViewID):
+		flash ("Invalid User ID. Here are your recipes. 2")
+		userViewID = userLoginID
+		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
+		return render_template("user_recipes.html", user_id = userViewID, display_recipes = recipes)
+	else:
+		display_recipes = showUserRecipeList(userViewID)
+		chems = model.session.query(model.Chem).all()
+		chemNames = [chem.chem_name for chem in chems]
+		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
+		components = model.Component.getComponentsByRecipeID(recipe.id)
+		user_notes = recipe.user_notes
+
+		for comp in components:
+			print "This is comp.chem.chem_name", comp.chem.chem_name
+
+		print "user_notes", user_notes
+
+
+	return render_template("edit_recipe.html", chem_names = chemNames, user_id = userViewID,
+			display_recipes= display_recipes, recipe_name = recipe_name, components = components,\
+			user_notes = user_notes)
+
+
+
+@app.route("/editRecipe/<userViewID>/<recipeName>", methods=['POST'])
+def updateRecipe(userViewID, recipeName):
+
+	userLoginID = session["user_id"]
+	recipe_name = recipeName
+
+	if userLoginID != int(userViewID):
+		flash ("Invalid User ID. Here are your recipes. 2")
+		userViewID = userLoginID
+		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
+		return render_template("user_recipes.html", user_id = userViewID, display_recipes = recipes)
+	else:
+		display_recipes = showUserRecipeList(userViewID)
+		chems = model.session.query(model.Chem).all()
+		chemNames = [chem.chem_name for chem in chems]
+		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
+		components = recipe.components
+		user_notes = recipe.user_notes
+
+		for comp in components:
+			print "This is comp.chem.chem_name", comp.chem.chem_name
+
+		print "user_notes", user_notes
+
+
+	return render_template("edit_recipe.html", chem_names = chemNames, user_id = userViewID,
+			display_recipes= display_recipes, recipe_name = recipe_name, components = components,\
+			user_notes = user_notes)
 
 
 

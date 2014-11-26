@@ -1,24 +1,34 @@
 $(document).ready(function () {
-	var template = $("#compTemplate").clone();
+
+	$('.delete_comp').click(function(e){
+		e.preventDefault();
+		console.dir(this);
+		$(this.parentElement).remove();
+	});
+
+	var template = $("#compTemplate").clone(true);
 	$("#chem_prcnts_bdy").append(template.children());
+
 
 	$("#add_component").click(function(e){
 		e.preventDefault();
-		var template = $("#compTemplate").clone();
+		var template = $("#compTemplate").clone(true);
 		$("#chem_prcnts_bdy").append(template.children());
 	});
+
+
+
+
 
 	$("#getSize").click(function(e){
 		e.preventDefault();
 		console.log("Button GetSize clicked!");
 
-
-
 // Because of hidden template, numOfChems is always one more than what user enters
+
+
 		var numOfChems = $(".percentage").length;
 		console.log("This is numofchems", numOfChems);
-
-
 
 		var amount = [];
 		var wholeNums = [];
@@ -27,6 +37,8 @@ $(document).ready(function () {
 		var sumOfNums = 0;
 		var percent = 0.01;
 		var mult = 0;
+
+//hidden template, so starting x at 1
 
 		for (var x = 1; x < numOfChems; x++){
 			amount[x] = (($($(".percentage")[x]).val()));
@@ -49,7 +61,7 @@ $(document).ready(function () {
 
 // Starting i with 1 because the first element in numOfChems is 'undefined/nothing'
 // because of hidden template
-		for (var i = 1; i<numOfChems; i++){
+		for (var i = 1; i < numOfChems; i++){
 			amount[i] = (($($(".percentage")[i]).val())) * mult;
 			wholeNums[i] = Math.floor(amount[i]);
 
@@ -72,7 +84,7 @@ $(document).ready(function () {
 
 
 
-// onchange select field... get value, user InnerHTML
+
 
 function getOunces(pounds){
 	var oz = 0;

@@ -17,20 +17,22 @@
 	<!-- This template is hidden -->
 	<div id = "compTemplate">
 
-		<div class = "col-sm-6" style = "margin-left:-15px">
+		<div class = "col-sm-8">
 
-		    <select name="chem">
+		    <select class = "chemlistoptions" name="chem">
+		    	<option disabled selected> -- select a component -- </option>
 				{% for chem in chem_names %}
 					<option value="{{ chem }}">{{ chem }}</option>
 				{% endfor %}
 			</select>
-		</div>
 
-		<div class = "col-sm-2" style = "margin-top:-10px; margin-left:-20px">
 			<input class = "form-control percentage" type = "text"
-					name="percentage" value = "{{percentage}}"/>
+					name="percentage" style = "margin-left: 20px"/>
+
+			<button class="btn btn-GH delete_comp"><strong>Delete</button>
+
 		</div>
-		<div class = "col-sm-2" style = "margin-top:-10px; margin-left: 20px">
+		<div class = "col-sm-2" style = "margin-left: -100px">
 			<div class = "row">
 				<h5 class = "amount_needed">Amount You Need</h5>
 			</div>
@@ -55,11 +57,11 @@
 
 		<div id = "chemicals">
 			<div class = "row">
-					<div class = "col-sm-6" id = "chem_name">
+					<div class = "col-sm-4" id = "chem_name">
 						<h4>Chemical</h4>
 					</div>
 
-					<div class = "col-sm-2" id = "percentage" style = "margin-left:-15px">
+					<div class = "col-sm-2" id = "percentage" style = "margin-left:15px">
 						<h4>Percent</h4>
 					</div>
 
@@ -92,33 +94,29 @@
 			</div>
 		</div>
 
-
-
-
 				<div id = "chem_prcnts_bdy">
 
 				</div>
 
 
-
-
 		<div class = "row">
-			<div class = "col-sm-6" style = "margin-left:10px">
+			<div class = "col-sm-6">
 				<div class ="row">
-					<button id = "add_component" class ="btn btn-GH" style="margin-top:5px; margin-left:-10px" ><strong>Add Component</strong>
+					<button id = "add_component" class ="btn btn-GH" style="margin-top:15px; margin-left:15px" ><strong>Add Component</strong>
 					</button>
 				</div>
 			</div>
-			<div class = "col-sm-4" id = "messageToUser">
+			<div class = "col-sm-2">
+				<button class ="btn btn-GH" style="margin-top:15px; margin-left:-35px" type = "submit" id = "getSize">
+				<strong>Get Size</strong></button>
+			</div>
+			<div class = "col-sm-4" id = "messageToUser" style = "margin-top:15px; margin-left:-35px">
 					{% if messageToUser %}
 						{{ messageToUser}}
 					{% endif %}
 			</div>
 
-			<div class = "col-sm-2">
-				<button class ="btn btn-GH" style="margin-top:5px" type = "submit" id = "getSize">
-				<strong>Get Size</strong></button>
-			</div>
+
 
 		</div>
 
