@@ -11,7 +11,7 @@
 		</label>
 		{% for recipe in display_recipes %}
 		<ul style = "margin-top: 6px" class="recipe_names">
-			<a class = "recipe_links" href = "/recipecomps/{{ recipe.user_id }}/{{recipe.recipe_name }}">
+			<a class = "recipe_links" href = "/recipecomps/{{recipe.user_id}}/{{recipe.recipe_name }}">
 				<li>{{ recipe.recipe_name }}</li></a>
 		</ul>
 
@@ -61,10 +61,10 @@
 
 						<div class = "col-sm-2">
 
-							<input type = "radio" name= "unitSys" value = "lbs"
+							<input class = "radio-GH" type = "radio" name= "unitSys" value = "lbs"
 								{{lbschecked}}/>
 							<label for "pounds">lbs</label>
-							<input type = "radio" name= "unitSys" value = "kg"
+							<input class = "radio-GH" type = "radio" name= "unitSys" value = "kg"
 								{{kgchecked}}/>
 							<label for "metric">kg</label>
 						</div>
@@ -78,7 +78,7 @@
 						{% for comp in components %}
 							<div class = "row">
 								<div class = "col-sm-6" >{{comp.chem.chem_name}}</div>
-								<div class = "col-sm-2">{{ comp.percentage }}</div>
+								<div class = "col-sm-2">{{comp.percentage}}</div>
 
 								{% if batchComp and (unitSys == "kg") %}
 									{% if wholenumlist %}

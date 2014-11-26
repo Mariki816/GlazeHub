@@ -49,23 +49,23 @@ class Chem(Base):
 	@classmethod
 	def getChemPriceByID(cls, chemID, weight):
 		if (weight<= 0.25):
-			price = session.query(Chem).filter_by(id = chemID).get().quarter
+			price = session.query(Chem).filter_by(id = chemID).first().quarter
 		elif(weight >0.25 and weight<=0.5):
-			price = session.query(Chem).filter_by(id = chemID).get().half
+			price = session.query(Chem).filter_by(id = chemID).first().half
 		elif(weight >0.5 and weight<=1):
-			price = session.query(Chem).filter_by(id = chemID).get().onelb
+			price = session.query(Chem).filter_by(id = chemID).first().onelb
 		elif(weight >1 and weight<=5):
-			price = session.query(Chem).filter_by(id = chemID).get().fivelb
+			price = session.query(Chem).filter_by(id = chemID).first().fivelb
 		elif(weight >5 and weight<=10):
-			price = session.query(Chem).filter_by(id = chemID).get().tenlb
+			price = session.query(Chem).filter_by(id = chemID).first().tenlb
 		elif(weight >10 and weight<=25):
-			price = session.query(Chem).filter_by(id = chemID).get().twentyfivelb
+			price = session.query(Chem).filter_by(id = chemID).first().twentyfivelb
 		elif(weight >25 and weight<=50):
-			price = session.query(Chem).filter_by(id = chemID).get().fiftylb
+			price = session.query(Chem).filter_by(id = chemID).first().fiftylb
 		elif(weight >50 and weight<=100):
-			price = session.query(Chem).filter_by(id = chemID).get().onehundlb
+			price = session.query(Chem).filter_by(id = chemID).first().onehundlb
 		else:
-			price = session.query(Chem).filter_by(id = chemID).get().fivehundlb
+			price = session.query(Chem).filter_by(id = chemID).first().fivehundlb
 		return price
 
 
@@ -133,13 +133,6 @@ class Component(Base):
 
 
 
-# def getComponentsByRecipeID(recipeID):
-# 	components = session.query(Component).filter_by(recipe_id = recipeID).all()
-# 	return components
-# # 	for comp in components:
-# # 		compName = getChemNameByID(comp.chem_id)
-# # 		compPercent = comp.percentage
-# # 		compChemID= getChemIDbyName(compName)
 
 
 

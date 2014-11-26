@@ -47,7 +47,7 @@ def do_login(userID, userEmail, userName):
 
 
 #This processes a returning user
-@app.route("/process-login", methods = ['POST'])
+@app.route("/process-login", methods = ["POST"])
 def processLogin():
 	session["user_id"] = None
 	session["user_name"] = None
@@ -83,7 +83,7 @@ def processLogin():
 
 
 #This creates a New user
-@app.route("/register", methods =['POST'])
+@app.route("/register", methods =["POST"])
 def getNewUser():
 	session["user_id"] = None
 	newUser = model.User()
@@ -169,7 +169,7 @@ def renderEnterRecipeForm():
 
 
 #This is the function to calculate on the Enter Recipe page if not logged in
-@app.route("/enterRecipe", methods=['POST'])
+@app.route("/enterRecipe", methods=["POST"])
 def enterRecipe():
 
 	recipeName = request.form.get('recipename')
@@ -264,7 +264,7 @@ def showRecipeAddForm(userViewID):
 
 
 #This function gets the recipe name from the form and adds it to the Recipes table
-@app.route("/addRecipe/<int:userViewID>", methods=['POST'])
+@app.route("/addRecipe/<int:userViewID>", methods=["POST"])
 def addRecipe(userViewID):
 
 	display_recipes = showUserRecipeList(userViewID)
@@ -332,7 +332,7 @@ def addRecipe(userViewID):
 
 
 #this is the recipe page, checks user too
-@app.route("/recipecomps/<userViewID>/<recipeName>")
+@app.route("/recipecomps/<int:userViewID>/<recipeName>")
 def recipe(userViewID, recipeName):
 
 	display_recipes = showUserRecipeList(userViewID)
@@ -367,7 +367,7 @@ def recipe(userViewID, recipeName):
 			kgchecked =kgchecked, leftoverbitslist=leftoverbitslist)
 
 
-@app.route("/batchSizeChange/<userViewID>/<recipeName>",  methods=['POST'])
+@app.route("/batchSizeChange/<userViewID>/<recipeName>",  methods=["POST"])
 def batchSizeChange(userViewID, recipeName):
 	display_recipes = showUserRecipeList(userViewID)
 	size = request.form.get("batchsize")
@@ -440,48 +440,32 @@ def showEditRecipeForm(userViewID, recipeName):
 		components = model.Component.getComponentsByRecipeID(recipe.id)
 		user_notes = recipe.user_notes
 
-		for comp in components:
-			print "This is comp.chem.chem_name", comp.chem.chem_name
-
-		print "user_notes", user_notes
-
-
 	return render_template("edit_recipe.html", chem_names = chemNames, user_id = userViewID,
 			display_recipes= display_recipes, recipe_name = recipe_name, components = components,\
 			user_notes = user_notes)
 
 
 
-@app.route("/editRecipe/<userViewID>/<recipeName>", methods=['POST'])
+@app.route("/editRecipe/<userViewID>/<recipeName>", methods=["POST"])
 def updateRecipe(userViewID, recipeName):
-
-	userLoginID = session["user_id"]
-	recipe_name = recipeName
-
-	if userLoginID != int(userViewID):
-		flash ("Invalid User ID. Here are your recipes. 2")
-		userViewID = userLoginID
-		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
-		return render_template("user_recipes.html", user_id = userViewID, display_recipes = recipes)
-	else:
-		display_recipes = showUserRecipeList(userViewID)
-		chems = model.session.query(model.Chem).all()
-		chemNames = [chem.chem_name for chem in chems]
-		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
-		components = recipe.components
-		user_notes = recipe.user_notes
-
-		for comp in components:
-			print "This is comp.chem.chem_name", comp.chem.chem_name
-
-		print "user_notes", user_notes
+	user_id = userViewID
+	return redirect("/userRecipes/%d" % user_id)
 
 
-	return render_template("edit_recipe.html", chem_names = chemNames, user_id = userViewID,
-			display_recipes= display_recipes, recipe_name = recipe_name, components = components,\
-			user_notes = user_notes)
+@app.route("/deleteRecipe/<int:userViewID>/<recipeName>", methods = ["GET"])
+def deleteRecipe(userViewID, recipeName):
+	user_id = userViewID
 
+	print "This is recipeName", recipeName
+	recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
+	components = model.Component.getComponentsByRecipeID(recipe.id)
+	model.session.delete(recipe)
 
+	for comp in components:
+		model.session.delete(comp)
+	model.session.commit()
+
+	return redirect("/userRecipes/%d" % user_id)
 
 #This function returns the user to the homepage
 @app.route("/returnHome")

@@ -112,6 +112,15 @@ input.btn_submit:hover{
 
 }
 
+.radio-GH{
+	border:2px #ccccff;
+}
+
+.radio-GH:focus{
+	outline: 0;
+	border:2px #ccccff;
+}
+
 
 /*Bootstrap css overrides*/
 
@@ -150,6 +159,13 @@ hr{
 	border-color:#ccccff;
 	border-width: 2px;
 }
+
+select{
+	font-size: 16;
+}
+
+
+
 
 
 
