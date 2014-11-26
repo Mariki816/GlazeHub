@@ -292,8 +292,8 @@ def addRecipe(userViewID):
 
 	batchComp=[]
 	batchsize = None
-	chem_list=request.values.getlist('chem')
-	percentages=request.values.getlist('percentage')
+	chem_list=request.values.getlist("chem")
+	percentages=request.values.getlist("percentage")
 	i = 0
 	for chem in chem_list:
 
@@ -346,6 +346,7 @@ def recipe(userViewID, recipeName):
 		return render_template("user_recipes.html", display_recipes = recipes)
 	else:
 		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
+		print "recipe type in recipecomps", type(recipe)
 		components = model.Component.getComponentsByRecipeID(recipe.id)
 
 
@@ -446,10 +447,44 @@ def showEditRecipeForm(userViewID, recipeName):
 
 
 
-@app.route("/editRecipe/<userViewID>/<recipeName>", methods=["POST"])
+@app.route("/editRecipe/<int:userViewID>/<recipeName>", methods=["POST"])
 def updateRecipe(userViewID, recipeName):
 	user_id = userViewID
-	return redirect("/userRecipes/%d" % user_id)
+	recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
+	recipe.recipe_name = request.form.get("recipe_name")
+	recipe.user_notes = request.form.get("user_notes")
+	recipeName = recipe.recipe_name
+	print "this is recipeName", recipeName
+
+	components = model.Component.getComponentsByRecipeID(recipe.id)
+
+
+# Get rid of old recipe components
+	for comp in components:
+		model.session.delete(comp)
+		model.session.commit()
+
+# Get new values for recipe components, names and percentages
+	chem_list = request.form.getlist("chem")
+	percentages = request.form.getlist("percentage")
+
+	i = 0
+	for chem in chem_list:
+		addComp = model.Component()
+		addComp.chem_name = chem
+		addComp.chem_id = model.Chem.getChemIDByName(addComp.chem_name)
+		addComp.percentage = float(percentages[i])
+		addComp.recipe_id = recipe.id
+		if (percentages[i] != 0) or percentages[i]:
+			model.session.add(addComp)
+			model.session.commit()
+			i+=1
+		else:
+			model.session.commit()
+
+		print
+
+	return redirect("/recipecomps/%d/%s" % (user_id,recipeName))
 
 
 @app.route("/deleteRecipe/<int:userViewID>/<recipeName>", methods = ["GET"])

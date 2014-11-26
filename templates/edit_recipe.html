@@ -13,7 +13,7 @@
 		</label>
 		{% for recipe in display_recipes %}
 		<ul style = "margin-top: 6px" class="recipe_names">
-			<a class = "recipe_links" href = "/recipecomps/{{ recipe.user_id }} /{{recipe.recipe_name }}">
+			<a class = "recipe_links" href = "/recipecomps/{{recipe.user_id}}/{{recipe.recipe_name }}">
 				<li>{{ recipe.recipe_name }}</li></a>
 		</ul>
 
@@ -96,7 +96,7 @@
 						<select class = "chemlistoption" name="chem">
 
 						{% for chem in chem_names%}
-							<option value="{{ chem }}"
+							<option value="{{chem}}"
 								{% if chem == comp.chem.chem_name %}
 									selected
 								{% endif %}
@@ -131,7 +131,7 @@
 			<div class = "row">
 				<div class = "col-sm-8" id = "userComments">
 
-					<textarea class = "form-control" name = "usercomments" type = "text" maxlength = "3000", id = "usercomments" style = " margin-bottom:10px" value = "{{user_notes}}">{{user_notes}}</textarea>
+					<textarea class = "form-control" name = "user_notes" type = "text" maxlength = "3000", id = "user_notes" style = " margin-bottom:10px" value = "{{user_notes}}">{{user_notes}}</textarea>
 				</div>
 
 			</div>
