@@ -1,21 +1,22 @@
 {% extends 'base2.html' %}
 {% block body %}
+<div class = "col-sm-2">
 
-</head>
-<body>
-	<div id = "header_section">
-		<img class = "header_logo" src="/static/img/ghlogo1114.svg"></br>
-	</div>
-	<div id="email_msg">
-	<p>Send email to Clay Planet to order glaze</p>
-	<textarea name = "emailmsg" cols = "50" rows ="10"> Enter message...</textarea>
+</div>
+
+<div class = "col-sm-10">
+
+	<div class = "row">
+	<h4>Send email to Clay Planet to order glaze</h4>
+
 
 	</div>
-	<div id = "submit_email">
-		<input type = "submit">
+	<form>
+	<div class = "row">
+	<button class ="btn btn-GH" style="margin-top:15px" type = "submit" id = "sendEmail">
+		<strong>Send Email</strong>
+	</button>
 	</div>
-	<div id = "return_home">
-		<a href ="/returnHome">Home</a>
-	</div>
-
+	</form>
+</div>
 {% endblock %}

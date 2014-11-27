@@ -17,6 +17,9 @@ div#header_section{
 	padding: 10px;
 	}
 
+
+
+
 .header_logo{
 	width: 350px;
 
@@ -165,8 +168,11 @@ select{
 }
 
 
-
-
+.batchsize:focus {
+	border-color: #a3a3ff;
+	box-shadow: 0 1px 1px #E6905D inset, 0 0 8px #E6905D;
+	outline: 0 none;
+}
 
 
 

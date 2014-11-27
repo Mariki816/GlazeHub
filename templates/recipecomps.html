@@ -20,7 +20,7 @@
 	<div class = "row" id = "add_recipe_button">
 		<div class = "col-sm-2">
 			<a href = "/addRecipe/{{user_id}}">
-			<button class ="btn btn-GH" type = "submit" id = "add_recipe">
+			<button class ="btn btn-GH" id = "add_recipe">
 					<strong>Add New Recipe</strong></button>
 			</a>
 		</div>
@@ -137,25 +137,26 @@
 			<div class = "row">
 				<hr noshade color ="#ccccff"></hr>
 			</div>
-
+		<form action = "/emailCP/{{user_id}}">
 			<div class = "row">
 				<div class = "col-sm-3">
 					<img id = "cplogo" src="/static/img/cplogo.png">
 				</div>
 
 				<div class = "col-sm-2" style="outline: 3px solid #ccccff; margin-top:15px">
-					Here is the price quote space
+					{{"$%.2f" %price}}
 				</div>
 				<div class = "col-sm-4" style="margin-top:15px">
-					Does not include shipping
+					Price quote. Includes tax and shipping
 				</div>
 				<div class = "col-sm-1">
 					<button class ="btn btn-GH" style="margin-top:15px; margin-left:-30px"
 						id = "order">
-					<strong>Order?</strong></button>
+					<strong>Order</strong></button>
 				</div>
 
 			</div>
+		</form>
 
 
 	</div>

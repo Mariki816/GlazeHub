@@ -3,10 +3,10 @@
 import model
 # import seedchem
 from flask import Flask, session, render_template, request
-from flask import redirect, flash, url_for
+from flask import redirect, flash
 import jinja2
 import converter
-import json
+import pricecompute
 
 app = Flask(__name__)
 
@@ -316,7 +316,7 @@ def addRecipe(userViewID):
 
 
 	components = model.Component.getComponentsByRecipeID(newRecipe.id)
-	print "this is components type", type(components)
+
 
 
 	return render_template("recipecomps.html", user_id = userViewID, recipe_name = newRecipe.recipe_name,\
@@ -346,12 +346,13 @@ def recipe(userViewID, recipeName):
 		return render_template("user_recipes.html", display_recipes = recipes)
 	else:
 		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
-		print "recipe type in recipecomps", type(recipe)
+
 		components = model.Component.getComponentsByRecipeID(recipe.id)
 
 
 	messageToUser = None
 
+	price = 0.00
 	batchComp = []
 	wholenumlist = []
 	leftoverbitslist = []
@@ -361,11 +362,13 @@ def recipe(userViewID, recipeName):
 	lbschecked = ""
 	kgchecked = 'checked = "checked"'
 
+
+
 	return render_template("/recipecomps.html/", user_id = userViewID, recipe_name = recipeName,
 			components = components, batchComp = batchComp, display_recipes=display_recipes,
 			user_notes = recipe.user_notes, messageToUser = messageToUser, unitSys = unit_sys,
 			batchsize = batchsize, wholenumlist=wholenumlist, lbschecked =lbschecked,
-			kgchecked =kgchecked, leftoverbitslist=leftoverbitslist)
+			kgchecked =kgchecked, leftoverbitslist=leftoverbitslist, price = price)
 
 
 @app.route("/batchSizeChange/<userViewID>/<recipeName>",  methods=["POST"])
@@ -392,34 +395,60 @@ def batchSizeChange(userViewID, recipeName):
 	else:
 		messageToUser = None
 
+	x=0;
 	for comp in components:
 		batchComp.append(comp.percentage/100)
+		x+=1
+
 	sizeflt = float(size)
 	wholenumlist = []
 	leftoverbitslist = []
 	kgchecked = ""
 	lbschecked = ""
+	price_list = []
+	j = 0
 
 	for i in range(len(batchComp)):
 		batchComp[i] = (sizeflt * batchComp[i])*newPercent
+		chemID = model.Chem.getChemIDByName(components[j].chem.chem_name)
+
+		chemprice = pricecompute.getPrice(chemID, batchComp[i])
+		price_list.append(chemprice * batchComp[i])
 
 		wholenumlist.append(int(batchComp[i]))
 		if units == "kg":
 			leftoverbitslist.append(int(converter.leftOverKilosToGrams(batchComp[i])))
 			kgchecked = 'checked = "checked"'
+			kgToPounds = converter.poundsToKilos(batchComp[i])
+			chemprice = pricecompute.getPrice(chemID, kgToPounds)
+			price_list.append(chemprice * batchComp[i])
 		else:
 			leftoverbitslist.append(int(converter.leftOverPoundsToOunces(batchComp[i])))
 			lbschecked = 'checked = "checked"'
+			chemprice = pricecompute.getPrice(chemID, batchComp[i])
+			price_list.append(chemprice * batchComp[i])
+		j+=1
 
-
-
-
+	surcharge = pricecompute.getSurChargeLbs(sizeflt) * len(batchComp)
+	print "This is surcharge", surcharge
+	sumprice = sum(price_list)
+	print "this is sumprice", sumprice
+	tax = pricecompute.getTax(sumprice)
+	print "this is tax", tax
+	if units == "kg":
+		shipping = pricecompute.getShipping(converter.poundsToKilos(sizeflt))
+		print "this is shipping from kg", shipping
+	else:
+		shipping = pricecompute.getShipping(sizeflt)
+		print "this is shipping from lbs", shipping
+	price = round((sumprice + surcharge + shipping + tax),2)
+	print "this is final price", price
 
 	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName,
 		batchComp = batchComp, components = components, display_recipes=display_recipes,
 		user_notes = recipe.user_notes, messageToUser = messageToUser, batchsize = size,
 		wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist, kgchecked = kgchecked,
-		lbschecked = lbschecked, unitSys = units)
+		lbschecked = lbschecked, unitSys = units, price = price)
 
 
 @app.route("/editRecipe/<userViewID>/<recipeName>", methods=['GET'])
@@ -502,15 +531,13 @@ def deleteRecipe(userViewID, recipeName):
 
 	return redirect("/userRecipes/%d" % user_id)
 
-#This function returns the user to the homepage
-@app.route("/returnHome")
-def returnHome():
-	return render_template("index.html")
+
 
 #This sends you to a way to send a quote to Clay Planet
-@app.route("/sendEmailToCP")
-def emailCP():
-	return render_template("emailCP.html")
+@app.route("/emailCP/<int:userViewID>", methods = ["GET"])
+def emailCP(userViewID):
+	user_id = userViewID
+	return render_template("emailCP.html", user_id =user_id)
 
 
 

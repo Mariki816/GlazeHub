@@ -3,6 +3,10 @@ def kiloToPounds(kilos):
 	return pounds
 
 
+def poundsToKilos(pounds):
+	kilos = pounds/2.20462
+	return kilos
+
 
 def leftOverPoundsToOunces(pounds):
 	if pounds >= 1:

@@ -47,25 +47,25 @@ class Chem(Base):
 		return session.query(Chem).filter_by(chem_name = chemNAME).first().id
 
 	@classmethod
-	def getChemPriceByID(cls, chemID, weight):
-		if (weight<= 0.25):
-			price = session.query(Chem).filter_by(id = chemID).first().quarter
-		elif(weight >0.25 and weight<=0.5):
-			price = session.query(Chem).filter_by(id = chemID).first().half
-		elif(weight >0.5 and weight<=1):
-			price = session.query(Chem).filter_by(id = chemID).first().onelb
-		elif(weight >1 and weight<=5):
-			price = session.query(Chem).filter_by(id = chemID).first().fivelb
-		elif(weight >5 and weight<=10):
-			price = session.query(Chem).filter_by(id = chemID).first().tenlb
-		elif(weight >10 and weight<=25):
-			price = session.query(Chem).filter_by(id = chemID).first().twentyfivelb
-		elif(weight >25 and weight<=50):
-			price = session.query(Chem).filter_by(id = chemID).first().fiftylb
-		elif(weight >50 and weight<=100):
-			price = session.query(Chem).filter_by(id = chemID).first().onehundlb
+	def getChemPriceByName(cls, id, weight):
+		if (weight<= 0.5):
+			price = session.query(Chem).filter_by(id = id).first().quarter
+		elif (weight >= 0.5 and weight < 1.0):
+			price = session.query(Chem).filter_by(id = id).first().half
+		elif (weight >=1 and weight<5):
+			price = session.query(Chem).filter_by(id = id).first().onelb
+		elif (weight >=5 and weight<10):
+			price = session.query(Chem).filter_by(id = id).first().fivelb
+		elif (weight >=10 and weight<25):
+			price = session.query(Chem).filter_by(id = id).first().tenlb
+		elif (weight >=25 and weight<50):
+			price = session.query(Chem).filter_by(id = id).first().twentyfivelb
+		elif (weight >=50 and weight<100):
+			price = session.query(Chem).filter_by(id = id).first().fiftylb
+		elif (weight >=100 and weight<500):
+			price = session.query(Chem).filter_by(id = id).first().onehundlb
 		else:
-			price = session.query(Chem).filter_by(id = chemID).first().fivehundlb
+			price = session.query(Chem).filter_by(id = id).first().fivehundlb
 		return price
 
 
