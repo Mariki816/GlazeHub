@@ -56,24 +56,24 @@
 					{% for chem in chem_list %}
 						<div class = "row">
 							<div class = "col-sm-6" >{{chem}}</div>
-							<div class = "col-sm-2">{{ percentages[loop.index-1]}}</div>
+							<div class = "col-sm-2">{{ percentages[loop.index0]}}</div>
 
 							{% if batchComp and (unitSys == "kg") %}
 								{% if wholenumlist %}
 									<div class = "col-sm-2">
-										{{wholenumlist[loop.index-1]}} kg
+										{{wholenumlist[loop.index0]}} kg
 									</div>
 									<div class = "col-sm-2">
-										{{leftoverbitslist[loop.index-1]}} g
+										{{leftoverbitslist[loop.index0]}} g
 									</div>
 								{%endif%}
 							{% else %}
 								{% if wholenumlist %}
 									<div class = "col-sm-2">
-										{{wholenumlist[loop.index-1]}} lbs
+										{{wholenumlist[loop.index0]}} lbs
 									</div>
 									<div class = "col-sm-2">
-										{{leftoverbitslist[loop.index-1]}} oz
+										{{leftoverbitslist[loop.index0]}} oz
 									</div>
 								{%endif%}
 							{% endif %}

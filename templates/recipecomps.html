@@ -46,7 +46,7 @@
 						Amt.
 					</label>
 
-					<form action = "/batchSizeChange/{{user_id}}/{{recipe_name}}" method = "POST">
+					<form action = "/recipecomps/{{user_id}}/{{recipe_name}}" method = "POST">
 						<div class ="col-sm-2">
 							{% if batchsize %}
 								<input class = "form-control" type = "text" id = "batchsize"
@@ -83,19 +83,19 @@
 								{% if batchComp and (unitSys == "kg") %}
 									{% if wholenumlist %}
 										<div class = "col-sm-2">
-											{{wholenumlist[loop.index-1]}} kg
+											{{wholenumlist[loop.index0]}} kg
 										</div>
 										<div class = "col-sm-2">
-											{{leftoverbitslist[loop.index-1]}} g
+											{{leftoverbitslist[loop.index0]}} g
 										</div>
 									{%endif%}
 								{% else %}
 									{% if wholenumlist %}
 										<div class = "col-sm-2">
-											{{wholenumlist[loop.index-1]}} lbs
+											{{wholenumlist[loop.index0]}} lbs
 										</div>
 										<div class = "col-sm-2">
-											{{leftoverbitslist[loop.index-1]}} oz
+											{{leftoverbitslist[loop.index0]}} oz
 										</div>
 									{%endif%}
 								{% endif %}
@@ -137,7 +137,8 @@
 			<div class = "row">
 				<hr noshade color ="#ccccff"></hr>
 			</div>
-		<form action = "/emailCP/{{user_id}}">
+
+		<form action = "/emailCP/{{user_id}}/{{recipe_name}}/{{batchsize}}">
 			<div class = "row">
 				<div class = "col-sm-3">
 					<img id = "cplogo" src="/static/img/cplogo.png">
@@ -147,21 +148,21 @@
 					{{"$%.2f" %price}}
 				</div>
 				<div class = "col-sm-4" style="margin-top:15px">
-					Price quote. Includes tax and shipping
+					Price quote. Does not include tax and shipping
 				</div>
-				<div class = "col-sm-1">
-					<button class ="btn btn-GH" style="margin-top:15px; margin-left:-30px"
-						id = "order">
-					<strong>Order</strong></button>
-				</div>
+				{% if batchsize %}
+					<div class = "col-sm-1">
+						<button class ="btn btn-GH" style="margin-top:15px; margin-left:-30px"
+							id = "order">
+						<strong>Order</strong></button>
+					</div>
+				{% endif %}
 
 			</div>
 		</form>
 
 
 	</div>
-
-
 
 
 	</div>

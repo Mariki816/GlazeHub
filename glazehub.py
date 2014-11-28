@@ -1,12 +1,13 @@
 #This is my controller script
 
 import model
+import converter
+import pricecompute
 # import seedchem
 from flask import Flask, session, render_template, request
 from flask import redirect, flash
 import jinja2
-import converter
-import pricecompute
+import json
 
 app = Flask(__name__)
 
@@ -122,16 +123,7 @@ def listofUserRecipes(userViewID):
 			lbschecked = lbschecked, kgchecked = kgchecked, user_id = userViewID)
 
 
-def showUserRecipeList(userViewID):
-	userLoginID = session["user_id"]
-	if userLoginID != int(userViewID):
-		flash ("Invalid User ID. Here are your recipes. 3")
-		userViewID = userLoginID
-		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
-		return recipes
-	else:
-		recipes = model.Recipe.getRecipeNamesByUserID(userViewID)
-		return recipes
+
 
 
 
@@ -370,8 +362,8 @@ def recipe(userViewID, recipeName):
 			batchsize = batchsize, wholenumlist=wholenumlist, lbschecked =lbschecked,
 			kgchecked =kgchecked, leftoverbitslist=leftoverbitslist, price = price)
 
-
-@app.route("/batchSizeChange/<userViewID>/<recipeName>",  methods=["POST"])
+# This section allows the user to change batchsizes
+@app.route("/recipecomps/<userViewID>/<recipeName>",  methods=["POST"])
 def batchSizeChange(userViewID, recipeName):
 	display_recipes = showUserRecipeList(userViewID)
 	size = request.form.get("batchsize")
@@ -406,9 +398,13 @@ def batchSizeChange(userViewID, recipeName):
 	kgchecked = ""
 	lbschecked = ""
 	price_list = []
-	j = 0
+	comp_list = []
 
+
+
+	j = 0
 	for i in range(len(batchComp)):
+
 		batchComp[i] = (sizeflt * batchComp[i])*newPercent
 		chemID = model.Chem.getChemIDByName(components[j].chem.chem_name)
 
@@ -426,29 +422,57 @@ def batchSizeChange(userViewID, recipeName):
 			leftoverbitslist.append(int(converter.leftOverPoundsToOunces(batchComp[i])))
 			lbschecked = 'checked = "checked"'
 			chemprice = pricecompute.getPrice(chemID, batchComp[i])
-			price_list.append(chemprice * batchComp[i])
-		j+=1
+			price_list.append(round((chemprice * batchComp[i]),2))
 
-	surcharge = pricecompute.getSurChargeLbs(sizeflt) * len(batchComp)
-	print "This is surcharge", surcharge
+
+		dict_of_comp = {
+				'name': components[j].chem.chem_name,
+				'percent':components[j].percentage,
+				'whole': wholenumlist[i],
+				'fraction':leftoverbitslist[i],
+				}
+		comp_list.append(dict_of_comp)
+		j += 1
+
+
 	sumprice = sum(price_list)
 	print "this is sumprice", sumprice
-	tax = pricecompute.getTax(sumprice)
-	print "this is tax", tax
+
 	if units == "kg":
+		surcharge = pricecompute.getSurChargeKilos(sizeflt) * len(batchComp)
+		print "This is surcharge", surcharge
 		shipping = pricecompute.getShipping(converter.poundsToKilos(sizeflt))
 		print "this is shipping from kg", shipping
 	else:
+		surcharge = pricecompute.getSurChargeLbs(sizeflt) * len(batchComp)
+		print "This is surcharge", surcharge
 		shipping = pricecompute.getShipping(sizeflt)
 		print "this is shipping from lbs", shipping
+
+	tax = pricecompute.getTax(sumprice)
+	print "this is tax", tax
+
+	session["shipping"] = shipping
+	session["pre-tax-cost"] = round((sumprice + surcharge),2)
 	price = round((sumprice + surcharge + shipping + tax),2)
 	print "this is final price", price
+
+
+
+	order_items = json.dumps(comp_list, sort_keys = True, separators=(',', ': '))
+	print "JSON:", order_items
+	session["order_list"] = order_items
+
+	if (lbschecked == 'checked = "checked"'):
+		session["unitSys"] = "lbs"
+	else:
+		session["unitSys"] = "kilos"
 
 	return render_template("recipecomps.html", user_id = userViewID, recipe_name = recipeName,
 		batchComp = batchComp, components = components, display_recipes=display_recipes,
 		user_notes = recipe.user_notes, messageToUser = messageToUser, batchsize = size,
 		wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist, kgchecked = kgchecked,
-		lbschecked = lbschecked, unitSys = units, price = price)
+		lbschecked = lbschecked, unitSys = units, price = price, comp_list=comp_list, order_items = order_items)
 
 
 @app.route("/editRecipe/<userViewID>/<recipeName>", methods=['GET'])
@@ -488,12 +512,12 @@ def updateRecipe(userViewID, recipeName):
 	components = model.Component.getComponentsByRecipeID(recipe.id)
 
 
-# Get rid of old recipe components
+	# Get rid of old recipe components
 	for comp in components:
 		model.session.delete(comp)
 		model.session.commit()
 
-# Get new values for recipe components, names and percentages
+	# Get new values for recipe components, names and percentages
 	chem_list = request.form.getlist("chem")
 	percentages = request.form.getlist("percentage")
 
@@ -520,7 +544,6 @@ def updateRecipe(userViewID, recipeName):
 def deleteRecipe(userViewID, recipeName):
 	user_id = userViewID
 
-	print "This is recipeName", recipeName
 	recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
 	components = model.Component.getComponentsByRecipeID(recipe.id)
 	model.session.delete(recipe)
@@ -534,10 +557,32 @@ def deleteRecipe(userViewID, recipeName):
 
 
 #This sends you to a way to send a quote to Clay Planet
-@app.route("/emailCP/<int:userViewID>", methods = ["GET"])
-def emailCP(userViewID):
+@app.route("/emailCP/<int:userViewID>/<recipeName>/<batchSize>", methods = ["GET"])
+def emailCP(userViewID, recipeName, batchSize):
+	display_recipes = showUserRecipeList(userViewID)
 	user_id = userViewID
-	return render_template("emailCP.html", user_id =user_id)
+	recipeName = recipeName
+	# sizeflt = float(batchSize)
+	unitSys = session["unitSys"]
+	subtotal = session["pre-tax-cost"]
+	shipping_cost = session["shipping"]
+
+	tax = pricecompute.getTax(subtotal)
+
+
+	order_list = session["order_list"]
+	data = json.loads(order_list)
+
+
+
+
+
+
+
+
+	return render_template("emailCP.html", user_id =user_id, display_recipes=display_recipes,\
+		recipeName = recipeName, batchsize = batchSize, order_list = order_list, data = data,\
+		unitSys = unitSys, subtotal = subtotal, shipping = shipping_cost, tax = tax)
 
 
 
@@ -547,7 +592,16 @@ def listChemNames():
 	return chemicalNames
 
 
-
+def showUserRecipeList(userViewID):
+	userLoginID = session["user_id"]
+	if userLoginID != int(userViewID):
+		flash ("Invalid User ID. Here are your recipes. 3")
+		userViewID = userLoginID
+		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
+		return recipes
+	else:
+		recipes = model.Recipe.getRecipeNamesByUserID(userViewID)
+		return recipes
 
 
 

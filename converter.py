@@ -15,8 +15,6 @@ def leftOverPoundsToOunces(pounds):
 		oz = int(round(ounces * 16))
 	else:
 		oz = int(round(pounds * 16))
-		print "This is oz", oz
-
 	return oz
 
 
