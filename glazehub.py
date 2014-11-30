@@ -387,9 +387,6 @@ def batchSizeChange(userViewID, recipeName):
 		batchComp[i] = (sizeflt * batchComp[i])*newPercent
 		chemID = model.Chem.getChemIDByName(components[j].chem.chem_name)
 
-		chemprice = pricecompute.getPrice(chemID, batchComp[i])
-		price_list.append(chemprice * batchComp[i])
-
 		wholenumlist.append(int(batchComp[i]))
 		if units == "kg":
 			leftoverbitslist.append(int(converter.leftOverKilosToGrams(batchComp[i])))
@@ -397,19 +394,23 @@ def batchSizeChange(userViewID, recipeName):
 			kgToPounds = converter.poundsToKilos(batchComp[i])
 			chemprice = pricecompute.getPrice(chemID, kgToPounds)
 			price_list.append(chemprice * batchComp[i])
+
+
 		else:
 			leftoverbitslist.append(int(converter.leftOverPoundsToOunces(batchComp[i])))
 			lbschecked = 'checked = "checked"'
 			chemprice = pricecompute.getPrice(chemID, batchComp[i])
-			price_list.append(round((chemprice * batchComp[i]),2))
+			price_list.append(chemprice * batchComp[i])
 
 
+
+# "{0:.2f}".format
 		dict_of_comp = {
-				'a_name': components[j].chem.chem_name,
+				'a_name': components[j].chem.chem_name[:35],
 				'b_percent':components[j].percentage,
 				'c_whole': wholenumlist[i],
 				'd_fraction':leftoverbitslist[i],
-				'e_chem_price':price_list[i]
+				'e_chem_price':"{0:.2f}".format(price_list[i])
 				}
 
 
@@ -517,7 +518,7 @@ def updateRecipe(userViewID, recipeName):
 		else:
 			model.session.commit()
 
-		print
+
 
 	return redirect("/recipecomps/%d/%s" % (user_id,recipeName))
 
@@ -586,16 +587,23 @@ def emailCPSend(userViewID, recipeName, batchSize):
 	#Getting info from the form
 	order_list = session["order_list"]
 
+	# newlist = ""
 
 	data = json.loads(order_list)
-	for datum in data:
-		nm = str(datum.get('a_name'))
-		prct = str(datum.get('b_percent'))
-		whl = str(datum.get('c_whole'))
-		frctn = str(datum.get('d_fraction'))
-		chmprc = str(round(datum.get('e_chem_price'),2))
-		total = nm.ljust(40,) + prct.rjust(5,)+"%" + whl.rjust(5,) +\
-		" " + wholesys + frctn.rjust(8,) + fractionsys + " " + chmprc.rjust(8,) +"\n"
+	# for datum in data:
+	# 	nm = str(datum.get('a_name'))
+	# 	prct = str(datum.get('b_percent'))
+	# 	whl = str(datum.get('c_whole'))
+	# 	frctn = str(datum.get('d_fraction'))
+	# 	chmprc = str(datum.get('e_chem_price'))
+
+	# 	total = nm +"\t" + prct.rjust(5,)+"%\t" + whl.rjust(5,) +\
+	# 	" " + wholesys+ "\t" + frctn.rjust(8,) + fractionsys + "\t" + chmprc.rjust(8,) +"\n"
+	# 	newlist = newlist + total
+
+
+
+	table = data
 
 
 	order_time = str(datetime.datetime.utcnow())
@@ -608,13 +616,13 @@ def emailCPSend(userViewID, recipeName, batchSize):
 	TEXT = "Order from: " + customer + "\n" + \
 			"Message from Customer: " + msgToCP + "\n" + \
 			"Recipe Name: " + recipeName + "\n" +\
-			"Pounds/Kilos: " + wholesys + " " +fractionsys + "\n" +\
-			total
+			"Pounds/Kilos: " + wholesys + " " +fractionsys + "\n\n" +\
+			tabulate(table, headers = 'keys', tablefmt="pipe")
 
 
 
 
- 	message = """\From: %s\nTo: %s\nSubject: %s\n\n%sq
+ 	message = """\From: %s\nTo: %s\nSubject: %s\n\n%sq\
 	           """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
 
 	#The actual mail to send
