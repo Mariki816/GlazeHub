@@ -115,14 +115,7 @@ input.btn_submit:hover{
 
 }
 
-.radio-GH{
-	border:2px #ccccff;
-}
 
-.radio-GH:focus{
-	outline: 0;
-	border:2px #ccccff;
-}
 
 
 /*Bootstrap css overrides*/
@@ -168,17 +161,37 @@ select{
 }
 
 
-.batchsize:focus {
-	border-color: #a3a3ff;
-	box-shadow: 0 1px 1px #E6905D inset, 0 0 8px #E6905D;
-	outline: 0 none;
+.radio input[type="radio"],
+.radio-GH input[type="radio"],
+.checkbox input[type="checkbox"],
+.checkbox-inline input[type="checkbox"] {
+  position: absolute;
+  margin-top: 4px;
+  margin-left: -20px;
+}
+.radio + .radio,
+.checkbox + .checkbox {
+  margin-top: -5px;
+}
+.radio-GH,
+.checkbox-inline {
+  display: inline-block;
+  padding-left: 20px;
+  margin-bottom: 0;
+  font-weight: normal;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.radio-GH + .radio-GH,
+.checkbox-inline + .checkbox-inline {
+  margin-top: 0;
+  margin-left: 10px;
 }
 
+ .has-success .radio-inline{
 
-
-
-
-
+  	color: #a3a3ff;
+  }
 
 
 

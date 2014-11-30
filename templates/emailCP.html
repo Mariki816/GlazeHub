@@ -28,106 +28,118 @@
 <div class = "col-sm-10">
 
 	<div class = "row" style = "margin-top:-14px">
-	<h4>Send email to Clay Planet to order glaze</h4>
+		<div class = "col-sm-2">
+		<img id = "cplogo" src="/static/img/cplogo.png">
+		</div>
+		<div class = "col-sm-4" style = "margin-top:5px; margin-left:-30px">
+			<h1>Order Form</h1>
+		</div>
 	</div>
-	<div class = "row">
-		<form action="mailto:marlene_hirose@yahoo.com" method="POST"
-			name="emailForm">
+	{% if msg_sent %}
+		<div class = "row">
+			<h4>Order Placed. Thank you, {{user_name}}!</h4>
+		</div>
+	{% else %}
+		<div class = "row" name = "formToSend">
+			<form method="POST"
+				name="emailForm">
 
-			<div class = "row">
+				<div class = "row">
 
-				<div class = "col-sm-8" style = "margin-left:20px">
-					<div class = "row" style = "margin-bottom:10px">
-						{% for datum in data%}
-							<div class = "col-sm-4">
-								{{datum.get('name')}}
-							</div>
-							<div class = "col-sm-2">
-								{{datum.get('percent')}}%
-							</div>
-							{% if unitSys == "lbs" %}
-								<div class = "col-sm-1">
-									{{datum.get('whole')}} lb
+					<div class = "col-sm-8" style = "margin-left:20px" name = "recipe">
+						<h3>{{recipeName}} - {{batchsize}} {{unitSys}}</h3>
+						<div class = "row" style = "margin-bottom:10px">
+							{% for datum in data%}
+								<div class = "col-sm-5">
+									{{datum.get('a_name')}}
 								</div>
-								<div class = "col-sm-2">
-									{{datum.get('fraction')}} oz
+								<div class = "col-sm-2 text-right">
+									{{datum.get('b_percent')}}%
 								</div>
-							{% else %}
-								<div class = "col-sm-1">
-									{{datum.get('whole')}} kg
-								</div>
-								<div class = "col-sm-2">
-									{{datum.get('fraction')}} grams
-								</div>
-							{% endif %}
+								{% if unitSys == "lbs" %}
+									<div class = "col-sm-2 text-right">
+										{{datum.get('c_whole')}} lb
+									</div>
+									<div class = "col-sm-2 text-right">
+										{{datum.get('d_fraction')}} oz
+									</div>
+								{% else %}
+									<div class = "col-sm-2 text-right">
+										{{datum.get('c_whole')}} kg
+									</div>
+									<div class = "col-sm-2 text-right">
+										{{datum.get('d_fraction')}} grams
+									</div>
+								{% endif %}
 
-						{%endfor%}
+							{%endfor%}
 
-					</div>
-
-					<div class = "row">
-						<hr noshade color ="#ccccff" style = "margin-top:-5px"></hr>
-					</div>
-					<div class = "row" style = "margin-bottom: 10px">
-						<div class = "col-sm-4">
 						</div>
-							<div class = "col-sm-4">
-								<div class = "row">
-									<div class = "col-sm-6 text-right">
-										Subtotal:
-									</div>
-									<div class = "col-sm-6 text-right">
-										{{"%.2f" %subtotal}}
+
+						<div class = "row">
+							<hr noshade color ="#ccccff" style = "margin-top:-5px"></hr>
+						</div>
+						<div class = "row" style = "margin-bottom: 10px">
+							<div class = "col-sm-7">
+							</div>
+								<div class = "col-sm-4">
+									<div class = "row">
+										<div class = "col-sm-6 text-right">
+											Subtotal:
+										</div>
+										<div class = "col-sm-6 text-right">
+											{{"%.2f" %subtotal}}
+										</div>
+
 									</div>
 
-								</div>
-
-								<div class = "row">
-									<div class = "col-sm-6 text-right">
-										Tax:
-									</div>
-									<div class = "col-sm-6 text-right">
-										{{"%.2f" %tax}}
-									</div>
-								</div>
-
-								<div class = "row">
-									<div class = "col-sm-6 text-right">
-										Shipping:
-									</div>
-									<div class = "col-sm-6 text-right">
-										{{"%.2f" %shipping}}
-									</div>
-								</div>
-
-								<div class = "row">
-									<div class = "col-sm-6 text-right">
-										Total:
-									</div>
-									<div class = "col-sm-6 text-right">
-										{{"%.2f" %(subtotal + tax + shipping)}}
+									<div class = "row">
+										<div class = "col-sm-6 text-right">
+											Tax:
+										</div>
+										<div class = "col-sm-6 text-right">
+											{{"%.2f" %tax}}
+										</div>
 									</div>
 
-								</div>
+									<div class = "row">
+										<div class = "col-sm-6 text-right">
+											Shipping:
+										</div>
+										<div class = "col-sm-6 text-right">
+											{{"%.2f" %shipping}}
+										</div>
+									</div>
+
+									<div class = "row">
+										<div class = "col-sm-6 text-right">
+											Total:
+										</div>
+										<div class = "col-sm-6 text-right">
+											{{"%.2f" %(subtotal + tax + shipping)}}
+										</div>
+
+									</div>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-					<div class = "row" style = "margin-left:10px">
 
-						<textarea name="msgToCP" rows ="8" cols = "80"></textarea>
-					</div>
+						<div class = "row" style = "margin-left:1px; margin-top: 20px">
 
-					<div class = "row" style = "margin-left:10px">
-						<button class ="btn btn-GH" style="margin-top:15px" type = "submit" id = "sendEmail">
-							<strong>Send Email</strong>
-						</button>
+							<textarea name="msgToCP" rows ="8" cols = "80"></textarea>
+
+							<button class ="btn btn-GH" style="margin-top:-25px" type = "submit" id = "sendEmail">
+								<strong>Send Email</strong>
+							</button>
+						</div>
+
+
 					</div>
 				</div>
-			</div>
-		</form>
-	</div>
-
+			</form>
+		</div>
+	{%endif%}
 
 </div>
 

@@ -8,6 +8,9 @@ from flask import Flask, session, render_template, request
 from flask import redirect, flash
 import jinja2
 import json
+import smtplib
+from tabulate import tabulate
+import datetime
 
 app = Flask(__name__)
 
@@ -66,7 +69,6 @@ def processLogin():
 			if "user" in session:
 				session["user_id"] = user.id
 				session["user_name"] = user.user_name
-				# print "This is username", session["user_name"]
 
 			else:
 				do_login(user.id, email, user.user_name)
@@ -104,25 +106,9 @@ def getNewUser():
 #This is the list of recipes of the logged in user
 @app.route("/userRecipes/<int:userViewID>")
 def listofUserRecipes(userViewID):
-	userLoginID = session["user_id"]
-	# print "This is userViewID", userViewID
-	# print "This is userLoginID", (type(userLoginID), userLoginID)
 
-	lbschecked = ""
-	kgchecked = 'checked = "checked"'
-
-	if userLoginID != int(userViewID):
-		flash ("Invalid User ID. Here are your recipes.4")
-		userViewID = userLoginID
-		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
-		return render_template("user_recipes.html", display_recipes = recipes, user_id = userViewID,
-			kgchecked = kgchecked, lbschecked=lbschecked)
-	else:
-		recipes = model.Recipe.getRecipeNamesByUserID(userViewID)
-		return render_template("user_recipes.html", display_recipes = recipes,
-			lbschecked = lbschecked, kgchecked = kgchecked, user_id = userViewID)
-
-
+	recipes = showUserRecipeList(userViewID)
+	return render_template("user_recipes.html", display_recipes = recipes, user_id = userViewID)
 
 
 
@@ -233,23 +219,18 @@ def enterRecipe():
 @app.route("/addRecipe/<int:userViewID>", methods=['GET'])
 def showRecipeAddForm(userViewID):
 
-	userLoginID = session["user_id"]
-	recipe_name = ""
 
-	if userLoginID != int(userViewID):
-		flash ("Invalid User ID. Here are your recipes. 2")
-		userViewID = userLoginID
-		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
-		return render_template("user_recipes.html", user_id = userViewID, display_recipes = recipes)
-	else:
-		display_recipes = showUserRecipeList(userViewID)
-		chems = model.session.query(model.Chem).all()
-		chemNames = [chem.chem_name for chem in chems]
-		components = []
+	recipe_name = ""
+	price_quote = float(0.00)
+	display_recipes = showUserRecipeList(userViewID)
+	chems = model.session.query(model.Chem).all()
+	chemNames = [chem.chem_name for chem in chems]
+	components = []
 
 
 	return render_template("add_recipe.html", chem_names = chemNames, user_id = userViewID,
-			display_recipes= display_recipes, recipe_name = recipe_name, components = components)
+			display_recipes= display_recipes, recipe_name = recipe_name, components = components,\
+			price_quote = price_quote)
 
 
 
@@ -331,20 +312,18 @@ def recipe(userViewID, recipeName):
 
 	userLoginID = session["user_id"]
 
-	if userLoginID != int(userViewID):
-		flash ("Invalid User ID. Here are your recipes.")
+	if checkUserLoginID(userLoginID, userViewID):
 		userViewID = userLoginID
 		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
 		return render_template("user_recipes.html", display_recipes = recipes)
 	else:
 		recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
-
 		components = model.Component.getComponentsByRecipeID(recipe.id)
 
 
 	messageToUser = None
 
-	price = 0.00
+	price_quote = 0.00
 	batchComp = []
 	wholenumlist = []
 	leftoverbitslist = []
@@ -360,7 +339,7 @@ def recipe(userViewID, recipeName):
 			components = components, batchComp = batchComp, display_recipes=display_recipes,
 			user_notes = recipe.user_notes, messageToUser = messageToUser, unitSys = unit_sys,
 			batchsize = batchsize, wholenumlist=wholenumlist, lbschecked =lbschecked,
-			kgchecked =kgchecked, leftoverbitslist=leftoverbitslist, price = price)
+			kgchecked =kgchecked, leftoverbitslist=leftoverbitslist, price_quote = price_quote)
 
 # This section allows the user to change batchsizes
 @app.route("/recipecomps/<userViewID>/<recipeName>",  methods=["POST"])
@@ -369,8 +348,8 @@ def batchSizeChange(userViewID, recipeName):
 	size = request.form.get("batchsize")
 	units = request.form.get("unitSys")
 
-
 	recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
+
 	components = model.Component.getComponentsByRecipeID(recipe.id)
 	batchComp = []
 
@@ -426,41 +405,44 @@ def batchSizeChange(userViewID, recipeName):
 
 
 		dict_of_comp = {
-				'name': components[j].chem.chem_name,
-				'percent':components[j].percentage,
-				'whole': wholenumlist[i],
-				'fraction':leftoverbitslist[i],
+				'a_name': components[j].chem.chem_name,
+				'b_percent':components[j].percentage,
+				'c_whole': wholenumlist[i],
+				'd_fraction':leftoverbitslist[i],
+				'e_chem_price':price_list[i]
 				}
+
+
 		comp_list.append(dict_of_comp)
+
 		j += 1
 
 
+
+
 	sumprice = sum(price_list)
-	print "this is sumprice", sumprice
+
 
 	if units == "kg":
 		surcharge = pricecompute.getSurChargeKilos(sizeflt) * len(batchComp)
-		print "This is surcharge", surcharge
 		shipping = pricecompute.getShipping(converter.poundsToKilos(sizeflt))
-		print "this is shipping from kg", shipping
 	else:
 		surcharge = pricecompute.getSurChargeLbs(sizeflt) * len(batchComp)
-		print "This is surcharge", surcharge
 		shipping = pricecompute.getShipping(sizeflt)
-		print "this is shipping from lbs", shipping
 
-	tax = pricecompute.getTax(sumprice)
-	print "this is tax", tax
 
 	session["shipping"] = shipping
 	session["pre-tax-cost"] = round((sumprice + surcharge),2)
-	price = round((sumprice + surcharge + shipping + tax),2)
-	print "this is final price", price
+
+	if sizeflt == 0:
+		price_quote = 0
+	else:
+		price_quote = round((sumprice + surcharge),2)
+
 
 
 
 	order_items = json.dumps(comp_list, sort_keys = True, separators=(',', ': '))
-	print "JSON:", order_items
 	session["order_list"] = order_items
 
 	if (lbschecked == 'checked = "checked"'):
@@ -472,7 +454,7 @@ def batchSizeChange(userViewID, recipeName):
 		batchComp = batchComp, components = components, display_recipes=display_recipes,
 		user_notes = recipe.user_notes, messageToUser = messageToUser, batchsize = size,
 		wholenumlist = wholenumlist, leftoverbitslist = leftoverbitslist, kgchecked = kgchecked,
-		lbschecked = lbschecked, unitSys = units, price = price, comp_list=comp_list, order_items = order_items)
+		lbschecked = lbschecked, unitSys = units, price_quote = price_quote, comp_list=comp_list, order_items = order_items)
 
 
 @app.route("/editRecipe/<userViewID>/<recipeName>", methods=['GET'])
@@ -507,7 +489,7 @@ def updateRecipe(userViewID, recipeName):
 	recipe.recipe_name = request.form.get("recipe_name")
 	recipe.user_notes = request.form.get("user_notes")
 	recipeName = recipe.recipe_name
-	print "this is recipeName", recipeName
+
 
 	components = model.Component.getComponentsByRecipeID(recipe.id)
 
@@ -562,10 +544,11 @@ def emailCP(userViewID, recipeName, batchSize):
 	display_recipes = showUserRecipeList(userViewID)
 	user_id = userViewID
 	recipeName = recipeName
-	# sizeflt = float(batchSize)
 	unitSys = session["unitSys"]
 	subtotal = session["pre-tax-cost"]
 	shipping_cost = session["shipping"]
+	msg_sent = False
+
 
 	tax = pricecompute.getTax(subtotal)
 
@@ -574,36 +557,97 @@ def emailCP(userViewID, recipeName, batchSize):
 	data = json.loads(order_list)
 
 
-
-
-
-
-
-
 	return render_template("emailCP.html", user_id =user_id, display_recipes=display_recipes,\
 		recipeName = recipeName, batchsize = batchSize, order_list = order_list, data = data,\
-		unitSys = unitSys, subtotal = subtotal, shipping = shipping_cost, tax = tax)
+		unitSys = unitSys, subtotal = subtotal, shipping = shipping_cost, tax = tax, msg_sent = msg_sent)
+
+
+@app.route("/emailCP/<int:userViewID>/<recipeName>/<batchSize>", methods = ["POST"])
+def emailCPSend(userViewID, recipeName, batchSize):
+	display_recipes = showUserRecipeList(userViewID)
+	user_name = session["user_name"]
+	user_id = userViewID
+	unitSys = session["unitSys"]
+	if unitSys == "lbs":
+		wholesys = "lbs"
+		fractionsys = "oz"
+	else:
+		wholesys = "kgs"
+		fractionsys = "grms"
+
+	customer = session["user"]
+	print "This is Customer", customer
+
+	msgToCP = request.form.get("msgToCP")
+
+
+	# table = []
+	# sorted_data = []
+	#Getting info from the form
+	order_list = session["order_list"]
+
+
+	data = json.loads(order_list)
+	for datum in data:
+		nm = str(datum.get('a_name'))
+		prct = str(datum.get('b_percent'))
+		whl = str(datum.get('c_whole'))
+		frctn = str(datum.get('d_fraction'))
+		chmprc = str(round(datum.get('e_chem_price'),2))
+		total = nm.ljust(40,) + prct.rjust(5,)+"%" + whl.rjust(5,) +\
+		" " + wholesys + frctn.rjust(8,) + fractionsys + " " + chmprc.rjust(8,) +"\n"
+
+
+	order_time = str(datetime.datetime.utcnow())
+
+	gmail_user = "glazehub@gmail.com"
+	gmail_pwd = "Gl4z3r1ff1c!"
+	FROM = gmail_user
+	TO = ["marlenehirose@gmail.com"]
+	SUBJECT = "Glaze Order" + order_time
+	TEXT = "Order from: " + customer + "\n" + \
+			"Message from Customer: " + msgToCP + "\n" + \
+			"Recipe Name: " + recipeName + "\n" +\
+			"Pounds/Kilos: " + wholesys + " " +fractionsys + "\n" +\
+			total
 
 
 
-def listChemNames():
-	chems = model.session.query(model.Chem).all()
-	chemicalNames = [chem.chem_name for chem in chems]
-	return chemicalNames
 
+ 	message = """\From: %s\nTo: %s\nSubject: %s\n\n%sq
+	           """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
 
+	#The actual mail to send
+
+	server = smtplib.SMTP("smtp.gmail.com", 587)
+	server.ehlo()
+	server.starttls()
+	server.login(gmail_user, gmail_pwd)
+	server.sendmail(FROM, TO, message)
+	# server.quit()
+	server.close()
+
+	msg_sent = True
+
+	return render_template("emailCP.html", user_id =user_id, display_recipes=display_recipes,\
+		user_name = user_name, msg_sent = msg_sent)
+
+# This function displays all recipes for the particular user
 def showUserRecipeList(userViewID):
 	userLoginID = session["user_id"]
-	if userLoginID != int(userViewID):
-		flash ("Invalid User ID. Here are your recipes. 3")
-		userViewID = userLoginID
+	if checkUserLoginID(userLoginID, userViewID):
 		recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
 		return recipes
 	else:
 		recipes = model.Recipe.getRecipeNamesByUserID(userViewID)
 		return recipes
 
-
+# This function checks userLogin and userViewID to make sure that logged in user
+# only sees their own recipes
+def checkUserLoginID(userLoginID, userViewID):
+	if userLoginID != int(userViewID):
+		flash ("Invalid User ID. Here are your recipes.4")
+	return False
 
 
 def main():

@@ -10,8 +10,8 @@
 			Recipes
 		</label>
 		{% for recipe in display_recipes %}
-		<ul style = "margin-top: 6px" id="recipe_names">
-			<a id = "recipe_links" href = "/recipecomps/{{recipe.user_id}}/{{recipe.recipe_name}}">
+		<ul style = "margin-top: 6px" class="recipe_names">
+			<a class = "recipe_links" href = "/recipecomps/{{recipe.user_id}}/{{recipe.recipe_name}}">
 				<li>{{ recipe.recipe_name }}</li></a>
 		</ul>
 
@@ -20,8 +20,8 @@
 	<div class = "row" id = "add_recipe_button">
 		<div class = "col-sm-2">
 			<a href = "/addRecipe/{{user_id}}">
-			<button class ="btn btn-GH" type = "submit" id = "add_recipe">
-					<strong>Add New Recipe?</strong></button>
+			<button class ="btn btn-GH" id = "add_recipe">
+					<strong>Add New Recipe</strong></button>
 			</a>
 		</div>
 	</div>

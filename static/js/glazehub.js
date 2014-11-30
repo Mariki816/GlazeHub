@@ -18,8 +18,6 @@ $(document).ready(function () {
 
 
 
-
-
 	$("#getSize").click(function(e){
 		e.preventDefault();
 		console.log("Button GetSize clicked!");
