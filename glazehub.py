@@ -11,6 +11,7 @@ import json
 import smtplib
 from tabulate import tabulate
 import datetime
+import collections
 
 app = Flask(__name__)
 
@@ -94,7 +95,7 @@ def getNewUser():
 	newUser.email = request.form.get("NewUserEmail")
 	newUser.password = request.form.get("NewUserPassword")
 
-	print "This is newUser.email", newUser.email
+
 	model.session.add(newUser)
 	model.session.commit()
 
@@ -413,9 +414,14 @@ def batchSizeChange(userViewID, recipeName):
 				'e_chem_price':"{0:.2f}".format(price_list[i])
 				}
 
+		# dict_of_comp = collections.OrderedDict()
+		# dict_of_comp['a_name'] = components[j].chem.chem_name[:35],
+		# dict_of_comp['b_percent'] =components[j].percentage,
+		# dict_of_comp['c_whole'] = wholenumlist[i],
+		# dict_of_comp['d_fraction'] = leftoverbitslist[i],
+		# dict_of_comp['e_chem_price'] = "{0:.2f}".format(price_list[i])
 
 		comp_list.append(dict_of_comp)
-
 		j += 1
 
 
@@ -553,6 +559,8 @@ def emailCP(userViewID, recipeName, batchSize):
 
 	tax = pricecompute.getTax(subtotal)
 
+	session["tax"] = tax
+
 
 	order_list = session["order_list"]
 	data = json.loads(order_list)
@@ -577,33 +585,35 @@ def emailCPSend(userViewID, recipeName, batchSize):
 		fractionsys = "grms"
 
 	customer = session["user"]
-	print "This is Customer", customer
+
 
 	msgToCP = request.form.get("msgToCP")
 
 
-	# table = []
-	# sorted_data = []
-	#Getting info from the form
 	order_list = session["order_list"]
 
-	# newlist = ""
+	data_list = []
 
 	data = json.loads(order_list)
-	# for datum in data:
-	# 	nm = str(datum.get('a_name'))
-	# 	prct = str(datum.get('b_percent'))
-	# 	whl = str(datum.get('c_whole'))
-	# 	frctn = str(datum.get('d_fraction'))
-	# 	chmprc = str(datum.get('e_chem_price'))
 
-	# 	total = nm +"\t" + prct.rjust(5,)+"%\t" + whl.rjust(5,) +\
-	# 	" " + wholesys+ "\t" + frctn.rjust(8,) + fractionsys + "\t" + chmprc.rjust(8,) +"\n"
-	# 	newlist = newlist + total
+	for datum in data:
+		sorted_data = collections.OrderedDict()
+		sorted_data['a_name'] = str(datum.get('a_name'))
+		sorted_data['b_percent'] = str(datum.get('b_percent')) + "%"
+		sorted_data['c_whole'] = str(datum.get('c_whole')) + wholesys
+		sorted_data['d_fraction'] = str(datum.get('d_fraction')) + fractionsys
+		sorted_data['e_chem_price'] = str(datum.get('e_chem_price'))
+		data_list.append(sorted_data)
+
+	table = tabulate(data_list, headers = 'keys', tablefmt="grid")
 
 
 
-	table = data
+	tax = round(session["tax"],2)
+	subtotal = round(session["pre-tax-cost"],2)
+	shipping = round(session["shipping"],2)
+
+	price_quote = tax + subtotal + shipping
 
 
 	order_time = str(datetime.datetime.utcnow())
@@ -617,12 +627,16 @@ def emailCPSend(userViewID, recipeName, batchSize):
 			"Message from Customer: " + msgToCP + "\n" + \
 			"Recipe Name: " + recipeName + "\n" +\
 			"Pounds/Kilos: " + wholesys + " " +fractionsys + "\n\n" +\
-			tabulate(table, headers = 'keys', tablefmt="pipe")
+			table + "\n\n" +\
+			"SubTotal: %.2f" % subtotal + "\n" +\
+			"Tax: %.2f" % tax + "\n" + \
+			"Shipping: %.2f" % shipping + "\n"\
+			"Price Quote: %.2f" % price_quote
 
 
 
 
- 	message = """\From: %s\nTo: %s\nSubject: %s\n\n%sq\
+ 	message = """\From: %s\nTo: %s\nSubject: %s\n\n%s\
 	           """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
 
 	#The actual mail to send
