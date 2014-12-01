@@ -6,7 +6,7 @@
     	<label class = "control-label" for="userRecipes">
 			Recipes
 		</label>
-		{% for recipe in display_recipes %}
+		{% for recipe in displayRecipes %}
 		<ul style = "margin-top: 6px" class="recipe_names">
 			<a class = "recipe_links" href = "/recipecomps/{{recipe.user_id}}/{{recipe.recipe_name }}">
 				<li>{{ recipe.recipe_name }}</li></a>
@@ -35,9 +35,9 @@
 			<h1>Order Form</h1>
 		</div>
 	</div>
-	{% if msg_sent %}
+	{% if msgSent %}
 		<div class = "row">
-			<h4>Order Placed. Thank you, {{user_name}}!</h4>
+			<h4>Order Placed. Thank you, {{userName}}!</h4>
 			<h4>You will receive a confirmation email soon</h4>
 		</div>
 	{% else %}
@@ -62,14 +62,14 @@
 										{{datum.get('c_whole')}} lb
 									</div>
 									<div class = "col-sm-2 text-right">
-										{{datum.get('d_fraction')}} oz
+										{{datum.get('d_frctn')}} oz
 									</div>
 								{% else %}
 									<div class = "col-sm-2 text-right">
 										{{datum.get('c_whole')}} kg
 									</div>
 									<div class = "col-sm-2 text-right">
-										{{datum.get('d_fraction')}} grams
+										{{datum.get('d_frctn')}} grams
 									</div>
 								{% endif %}
 

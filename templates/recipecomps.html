@@ -9,7 +9,7 @@
     	<label class = "control-label" for="userRecipes">
 			Recipes
 		</label>
-		{% for recipe in display_recipes %}
+		{% for recipe in displayRecipes %}
 		<ul style = "margin-top: 6px" class="recipe_names">
 			<a class = "recipe_links" href = "/recipecomps/{{recipe.user_id}}/{{recipe.recipe_name }}">
 				<li>{{ recipe.recipe_name }}</li></a>
@@ -81,21 +81,21 @@
 								<div class = "col-sm-2">{{comp.percentage}}</div>
 
 								{% if batchComp and (unitSys == "kg") %}
-									{% if wholenumlist %}
+									{% if wholeNumList %}
 										<div class = "col-sm-2">
-											{{wholenumlist[loop.index0]}} kg
+											{{wholeNumList[loop.index0]}} kg
 										</div>
 										<div class = "col-sm-2" style = "margin-left:-25px">
-											{{leftoverbitslist[loop.index0]}} g
+											{{frctnList[loop.index0]}} g
 										</div>
 									{%endif%}
 								{% else %}
-									{% if wholenumlist %}
+									{% if wholeNumList %}
 										<div class = "col-sm-2">
-											{{wholenumlist[loop.index0]}} lbs
+											{{wholeNumList[loop.index0]}} lbs
 										</div>
 										<div class = "col-sm-2" style = "margin-left:-25px">
-											{{leftoverbitslist[loop.index0]}} oz
+											{{frctnList[loop.index0]}} oz
 										</div>
 									{%endif%}
 								{% endif %}

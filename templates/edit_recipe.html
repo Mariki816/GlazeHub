@@ -11,7 +11,7 @@
     	<label class = "control-label" for="userRecipes">
 			Recipes
 		</label>
-		{% for recipe in display_recipes %}
+		{% for recipe in displayRecipes %}
 		<ul style = "margin-top: 6px" class="recipe_names">
 			<a class = "recipe_links" href = "/recipecomps/{{recipe.user_id}}/{{recipe.recipe_name }}">
 				<li>{{ recipe.recipe_name }}</li></a>

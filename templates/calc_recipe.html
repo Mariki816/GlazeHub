@@ -59,21 +59,21 @@
 							<div class = "col-sm-2">{{ percentages[loop.index0]}}</div>
 
 							{% if batchComp and (unitSys == "kg") %}
-								{% if wholenumlist %}
+								{% if wholeNumList %}
 									<div class = "col-sm-2">
-										{{wholenumlist[loop.index0]}} kg
+										{{wholeNumList[loop.index0]}} kg
 									</div>
 									<div class = "col-sm-2">
-										{{leftoverbitslist[loop.index0]}} g
+										{{frctnList[loop.index0]}} g
 									</div>
 								{%endif%}
 							{% else %}
-								{% if wholenumlist %}
+								{% if wholeNumList %}
 									<div class = "col-sm-2">
-										{{wholenumlist[loop.index0]}} lbs
+										{{wholeNumList[loop.index0]}} lbs
 									</div>
 									<div class = "col-sm-2">
-										{{leftoverbitslist[loop.index0]}} oz
+										{{frctnList[loop.index0]}} oz
 									</div>
 								{%endif%}
 							{% endif %}
