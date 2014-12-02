@@ -31,7 +31,7 @@ So here was the framework for that product:
 
 Data Model
 ========
-The first step was to set up my data model using Python. Each object was written as a class and then class particuar methods were written to retrieve data from that class.
+The first step was to set up my data model using Python and sqlite. Each object was written as a class and then class particuar methods were written to retrieve data from that class.
 
 ![Data Model](/screencaps/GH_datamodel.jpg)
 
