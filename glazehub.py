@@ -392,7 +392,7 @@ def batchSizeChange(userViewID, recipeName):
             'b_percent': components[j].percentage,
             'c_whole': wholeNumList[i],
             'd_frctn': frctnList[i],
-            'e_chemPrice': "{0:.2f}".format(priceList[i])
+            'e_chemPrice': priceList[i]
         }
 
         compList.append(dict_of_comp)
@@ -570,8 +570,9 @@ def emailCPSend(userViewID, recipeName, batchSize):
         sorted_data['b_percent'] = str(datum.get('b_percent')) + "%"
         sorted_data['c_whole'] = str(datum.get('c_whole')) + wholesys
         sorted_data['d_frctn'] = str(datum.get('d_frctn')) + frctnsys
-        sorted_data['e_chemPrice'] = str(datum.get('e_chem_price'))
+        sorted_data['e_chemPrice'] = round((datum.get('e_chemPrice')), 2)
         data_list.append(sorted_data)
+        print sorted_data['e_chemPrice']
 
     table = tabulate(data_list, headers='keys', tablefmt="grid")
 
