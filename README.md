@@ -10,7 +10,7 @@ is made simple with this app.
 When a user creates a free account, they can then save their most-used recipes or test 
 recipes as well as make notes.
 
-Back end is written in Python. Front end makes use of HTML, CSS, JavaScript, JQuery and Bootstrap.
+This is a Flask app. Back end is written in Python, SQLite and SQLAlchemy for the ORM. Front end makes use of HTML, CSS, JavaScript, JQuery and Bootstrap.
 
 GlazeHub started out as an idea in January 2014. After a discussion with some ceramic friends about a glaze calculator, we discovered that there is really only one. (http://glazecalculator.com/). It's a neat little site, but there were a few things we or rather I wanted to change.
 
@@ -18,7 +18,7 @@ GlazeHub started out as an idea in January 2014. After a discussion with some ce
 2. Allow the user to enter in a batch size (kilos or pounds) and the app would calculate the amount of each chemical needed.
 3. Allow the user to order their custom glaze from Clay Planet, a clay supply store in Santa Clara
 
-A few things helped, mostly, the other members of this discussion own Clay Planet and they graciously allowed me access to their chemical list and the prices attached to them. (This list is confidential and not saved in this github repository. Because of this, my app will not run on any other machine but my own) Other things that helped were: access to other potters who were interested in using this tool and provided encouragement, experienced glaze mixers who helped me with how to write the calculation formula and a guideline/framework for a minimum viable product.
+A few things helped, mostly, the other members of this discussion own Clay Planet and they graciously allowed me access to their chemical list and the prices attached to them. (WARNING: Because this list is confidential and not saved in this github repository, GlazeHub will not run on any other machine but my own for right now.) Other things that helped were: access to other potters who were interested in using this tool and provided encouragement, experienced glaze mixers who helped me with how to write the calculation formula and a guideline/framework for a minimum viable product.
 
 So here was the framework for that product:
 
@@ -31,7 +31,7 @@ So here was the framework for that product:
 
 Data Model
 ========
-The first step was to set up my data model using Python. Each object was written as a class and then class particuar methods were written to retrieve data from that class.
+The first step was to set up my data model using Python and sqlite. Each object was written as a class and then class particuar methods were written to retrieve data from that class.
 
 ![Data Model](/screencaps/GH_datamodel.jpg)
 
@@ -42,6 +42,7 @@ The chemical object has an id, name and price rates from a quarter pound to 500 
 Once the data model was set up in Python, I used SQLAlchemy queries to write up class methods for retrieving prices, ids, recipe names and such from each table.
 
 When a user adds a recipe, the recipe and components tables are updated. The chemical table should never be touched by the users.
+
 
 Design/UX flow
 ========

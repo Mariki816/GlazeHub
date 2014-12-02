@@ -1,8 +1,7 @@
-/Users/Marlene/Desktop/GlazeHub/chemlist102414.csv
-/Users/Marlene/Desktop/GlazeHub/env
-/Users/Marlene/Desktop/GlazeHub/testfiles
-/Users/Marlene/Desktop/GlazeHub/model.pyc
-/Users/Marlene/Desktop/GlazeHub/seedchem.pyc
-/Users/Marlene/Desktop/GlazeHub/glazehub.db
-/Users/Marlene/Desktop/GlazeHub/irrelevantfiles
-/Users/Marlene/Desktop/GlazeHub/static/jquery-ui-1.11.2
+Usechemlist102414.csv
+env
+testfiles
+*.pyc
+
+glazehub.db
+irrelevantfiles
