@@ -597,8 +597,8 @@ def emailCPSend(userViewID, recipeName, batchSize):
            "Recipe Name: " + recipeName + "\n" +\
            "Pounds/Kilos: " + wholesys + " " + frctnsys + "\n\n" +\
            table + "\n\n" +\
-           "SubTotal: %.2f " % subtotal + "\n" + \
-           "Surcharge: %.2f" % surcharge + "\n" +\
+           "SubTotal: %.2f " % (subtotal+surcharge) + \
+           "(surcharge included)\n" + \
            "Tax: %.2f" % tax + "\n" + \
            "Shipping: %.2f" % shipping + "\n"\
            "Price Quote: %.2f" % price_quote
