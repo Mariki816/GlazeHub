@@ -410,7 +410,7 @@ def batchSizeChange(userViewID, recipeName):
         shipping = pricecompute.getShipping(sizeflt)
 
     session["shipping"] = shipping
-    session["pre-tax-cost"] = round((sumprice + surcharge), 2)
+    session["pre-tax-cost"] = round(sumprice, 2)
 
     if sizeflt == 0:
         price_quote = 0
@@ -524,7 +524,7 @@ def emailCP(userViewID, recipeName, batchSize):
     user_id = userViewID
     recipeName = recipeName
     unitSys = session["unitSys"]
-    subtotal = session["pre-tax-cost"]
+    subtotal = session["pre-tax-cost"] + session["surcharge"]
     shipping_cost = session["shipping"]
     msgSent = False
 
@@ -583,7 +583,7 @@ def emailCPSend(userViewID, recipeName, batchSize):
     subtotal = round(session["pre-tax-cost"], 2)
     shipping = round(session["shipping"], 2)
 
-    price_quote = tax + subtotal + shipping
+    price_quote = tax + subtotal + shipping + surcharge
 
     order_time = str(datetime.datetime.utcnow())
 
@@ -597,8 +597,8 @@ def emailCPSend(userViewID, recipeName, batchSize):
            "Recipe Name: " + recipeName + "\n" +\
            "Pounds/Kilos: " + wholesys + " " + frctnsys + "\n\n" +\
            table + "\n\n" +\
-           "SubTotal: %.2f " % subtotal + "Surcharge added ($ %.2f" \
-           % surcharge + ")\n" +\
+           "SubTotal: %.2f " % subtotal + "\n" + \
+           "Surcharge: %.2f" % surcharge + "\n" +\
            "Tax: %.2f" % tax + "\n" + \
            "Shipping: %.2f" % shipping + "\n"\
            "Price Quote: %.2f" % price_quote
