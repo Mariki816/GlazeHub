@@ -12,11 +12,12 @@ import smtplib
 from tabulate import tabulate
 import datetime
 import collections
-from prettytable import PrettyTable
+import os
+
 
 app = Flask(__name__)
 
-app.secret_key = 'abcdefghijklmnop1234567890'
+app.secret_key = os.environ.get("SECRETKEY")
 app.jinja_env.undefined = jinja2.StrictUndefined
 
 # This is the index page. Later it will show the Calculator itself
@@ -591,7 +592,7 @@ def emailCPSend(userViewID, recipeName, batchSize):
     order_time = str(datetime.datetime.utcnow())
 
     gmail_user = "glazehub@gmail.com"
-    gmail_pwd = "************"
+    gmail_pwd = os.environ.get("EMAILPASSWORD")
     FROM = gmail_user
     TO = ["marlenehirose@gmail.com"]
     SUBJECT = "Glaze Order" + order_time
