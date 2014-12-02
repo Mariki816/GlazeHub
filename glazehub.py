@@ -402,9 +402,11 @@ def batchSizeChange(userViewID, recipeName):
 
     if units == "kg":
         surcharge = pricecompute.getSurChargeKilos(sizeflt) * len(batchComp)
+        session["surcharge"] = surcharge
         shipping = pricecompute.getShipping(converter.poundsToKilos(sizeflt))
     else:
         surcharge = pricecompute.getSurChargeLbs(sizeflt) * len(batchComp)
+        session["surcharge"] = surcharge
         shipping = pricecompute.getShipping(sizeflt)
 
     session["shipping"] = shipping
@@ -576,6 +578,7 @@ def emailCPSend(userViewID, recipeName, batchSize):
 
     table = tabulate(data_list, headers='keys', tablefmt="grid")
 
+    surcharge = round(session["surcharge"], 2)
     tax = round(session["tax"], 2)
     subtotal = round(session["pre-tax-cost"], 2)
     shipping = round(session["shipping"], 2)
@@ -594,7 +597,8 @@ def emailCPSend(userViewID, recipeName, batchSize):
            "Recipe Name: " + recipeName + "\n" +\
            "Pounds/Kilos: " + wholesys + " " + frctnsys + "\n\n" +\
            table + "\n\n" +\
-           "SubTotal: %.2f" % subtotal + "\n" +\
+           "SubTotal: %.2f " % subtotal + "Surcharge added ($ %.2f" \
+           % surcharge + ")\n" +\
            "Tax: %.2f" % tax + "\n" + \
            "Shipping: %.2f" % shipping + "\n"\
            "Price Quote: %.2f" % price_quote
