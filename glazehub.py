@@ -566,29 +566,30 @@ def emailCPSend(userViewID, recipeName, batchSize):
 
     data = json.loads(orderList)
 
+    surcharge = round(session["surcharge"], 2)
+    tax = round(session["tax"], 2)
+    subtotal = round(session["pre-tax-cost"], 2)
+    shipping = round(session["shipping"], 2)
+
     for datum in data:
         sorted_data = collections.OrderedDict()
         sorted_data['a_name'] = str(datum.get('a_name'))
         sorted_data['b_percent'] = str(datum.get('b_percent')) + "%"
         sorted_data['c_whole'] = str(datum.get('c_whole')) + wholesys
         sorted_data['d_frctn'] = str(datum.get('d_frctn')) + frctnsys
-        sorted_data['e_chemPrice'] = round((datum.get('e_chemPrice')), 2)
+        sorted_data['e_chemPrice'] = round((datum.get('e_chemPrice') +
+                                            surcharge), 2)
         data_list.append(sorted_data)
         print sorted_data['e_chemPrice']
 
     table = tabulate(data_list, headers='keys', tablefmt="grid")
-
-    surcharge = round(session["surcharge"], 2)
-    tax = round(session["tax"], 2)
-    subtotal = round(session["pre-tax-cost"], 2)
-    shipping = round(session["shipping"], 2)
 
     price_quote = tax + subtotal + shipping + surcharge
 
     order_time = str(datetime.datetime.utcnow())
 
     gmail_user = "glazehub@gmail.com"
-    gmail_pwd = "Gl4z3r1ff1c!"
+    gmail_pwd = "***********"
     FROM = gmail_user
     TO = ["marlenehirose@gmail.com"]
     SUBJECT = "Glaze Order" + order_time
@@ -597,8 +598,7 @@ def emailCPSend(userViewID, recipeName, batchSize):
            "Recipe Name: " + recipeName + "\n" +\
            "Pounds/Kilos: " + wholesys + " " + frctnsys + "\n\n" +\
            table + "\n\n" +\
-           "SubTotal: %.2f " % (subtotal+surcharge) + \
-           "(surcharge included)\n" + \
+           "SubTotal: %.2f " % (subtotal+surcharge) + "\n"\
            "Tax: %.2f" % tax + "\n" + \
            "Shipping: %.2f" % shipping + "\n"\
            "Price Quote: %.2f" % price_quote
