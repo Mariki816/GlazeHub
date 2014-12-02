@@ -35,11 +35,11 @@ The first step was to set up my data model using Python. Each object was written
 
 ![Data Model](/screencaps/GH_datamodel.jpg)
 
-The hardest part for me here was changing the way I thought of a recipe as being the "binding" table. I thought the "one-to-many" should have been set up as one recipe with many components. However, that started getting very complicated by becoming more of a "many-to-many" relationship. After a discussion with and help from an advisor, I came up with the model (see image above).
+The hardest part for me here was changing the way I thought of a recipe as being the "binding" table. I thought the "one-to-many" should have been set up as one recipe with many components. However, that started getting very complicated by becoming more of a "many-to-many" relationship. After a discussion with and help from an advisor(Thanks, Joel!), I came up with the model (see image above).
 
 The chemical object has an id, name and price rates from a quarter pound to 500 lbs. User table object has an id, email, user name and password. Recipe object has an id, reipe name, user id(backref to the User object and user notes. The component object is the 'binding' object in that it relates the chemicals to a recipe as well as a percentage of each component or chemical for that particular recipe.
 
-Once the data model was set up, I used SQLAlchemy queries to write up class methods for retrieving prices, ids, recipe names and such from each table.
+Once the data model was set up in Python, I used SQLAlchemy queries to write up class methods for retrieving prices, ids, recipe names and such from each table.
 
 When a user adds a recipe, the recipe and components tables are updated. The chemical table should never be touched by the users.
 
@@ -53,7 +53,9 @@ Once the data model was created and set up, it was time to start with some basic
 Oh, I created the GlazeHub logo as well. Playing on the Clay Planet theme, the GlazeHub logo is an alien in a spaceship, the font is Impress BT (also used by Clay Planet). The purple is similar in shade and tone to the blue of Clay Planet logo. The GH logo itself was done in Adobe Illustrator and exported as an SVG. Future versions will have the logo as a PNG so that it has more of a cross platform compatibility and so that the Impress BT font will be seen in all browsers.
 
 ![Enter Recipe-not logged in](/screencaps/GH_enterrecipe_nologin.png)
-This page allows a user to calculate their recipe. However, they are not able to save their recipe nor order the glaze from Clay Planet.
+This page allows a user to calculate their recipe. However, they are not able to save their recipe nor order the glaze from Clay Planet. This page is basically the same thing as the Add Recipe page that logged in users see. 
+
+Glazes have different numbers of components. I didn't want to hard code the number of components a user can add, so I created a hidden template that would cloned every time the "Add Component" button was clicked or deleted whenever the "Delete" button was clicked. Both of these buttons are controlled by an external JavaScript script. They interrupt the "Get Size" form action and allow for user modification.
 
 ![Welcome to User](/screencaps/GH_welcomempg.png)
 When a user logs in, this is what they will see. On the extreme left, users will see a list of the recipes they have saved before. This list will appear on every page on GlazeHub that a user goes to while logged in. The center part is a message area where I can communicate with users about the current status of GlazeHub or if there have been price updates from Clay Planet.
