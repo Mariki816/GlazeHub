@@ -37,8 +37,10 @@
 	</div>
 	{% if msgSent %}
 		<div class = "row">
-			<h4>Order Placed. Thank you, {{userName}}!</h4>
-			<h4>You will receive a confirmation email soon</h4>
+			<div class = "col-sm-6" style = "margin-left:15px">
+				<h4>Order Placed. Thank you, {{userName}}!</h4>
+				<h4>You will receive a confirmation email soon</h4>
+			</div>
 		</div>
 	{% else %}
 		<div class = "row" name = "formToSend">
@@ -89,7 +91,7 @@
 											Subtotal:
 										</div>
 										<div class = "col-sm-6 text-right">
-											{{"%.2f" %subtotal}}
+											$ {{"%.2f" %subtotal}}
 										</div>
 
 									</div>
@@ -117,7 +119,7 @@
 											Total:
 										</div>
 										<div class = "col-sm-6 text-right">
-											{{"%.2f" %(subtotal + tax + shipping)}}
+											$ {{"%.2f" %(subtotal + tax + shipping)}}
 										</div>
 
 									</div>

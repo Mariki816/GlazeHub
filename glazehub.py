@@ -12,6 +12,7 @@ import smtplib
 from tabulate import tabulate
 import datetime
 import collections
+from prettytable import PrettyTable
 
 app = Flask(__name__)
 
@@ -55,7 +56,7 @@ def processLogin():
     session["user_id"] = None
     session["user_name"] = None
 
-    email = request.form.get("userEmail")
+    email = request.form.get("userEmail").lower()
     pword = request.form.get("password")
     user = model.User.getUserByEmail(email)
 
@@ -88,7 +89,7 @@ def getNewUser():
     session["user_id"] = None
     newUser = model.User()
     newUser.user_name = request.form.get("NewUserName")
-    newUser.email = request.form.get("NewUserEmail")
+    newUser.email = request.form.get("NewUserEmail").lower()
     newUser.password = request.form.get("NewUserPassword")
     if model.User.getUserByEmail(newUser.email):
         flash("Email address already exists. Please log on or enter new email")
@@ -388,7 +389,6 @@ def batchSizeChange(userViewID, recipeName):
             chemPrice = pricecompute.getPrice(chemID, batchComp[i])
             priceList.append(chemPrice * batchComp[i])
 
-# "{0:.2f}".format for chem_price
         dict_of_comp = {
             'a_name': components[j].chem.chem_name[:35],
             'b_percent': components[j].percentage,
@@ -575,12 +575,13 @@ def emailCPSend(userViewID, recipeName, batchSize):
 
     for datum in data:
         sorted_data = collections.OrderedDict()
-        sorted_data['a_name'] = str(datum.get('a_name'))
+        sorted_data['a_name_of_chem'] = str(datum.get('a_name'))
         sorted_data['b_percent'] = str(datum.get('b_percent')) + "%"
         sorted_data['c_whole'] = str(datum.get('c_whole')) + wholesys
         sorted_data['d_frctn'] = str(datum.get('d_frctn')) + frctnsys
-        sorted_data['e_chemPrice'] = round((datum.get('e_chemPrice') +
-                                            surcharge), 2)
+        sorted_data['e_chemPrice'] = "$ %.2f" % (datum.get('e_chemPrice') +
+                                                 surcharge)
+
         data_list.append(sorted_data)
 
     table = tabulate(data_list, headers='keys', tablefmt="grid")
@@ -590,7 +591,7 @@ def emailCPSend(userViewID, recipeName, batchSize):
     order_time = str(datetime.datetime.utcnow())
 
     gmail_user = "glazehub@gmail.com"
-    gmail_pwd = "*********"
+    gmail_pwd = "************"
     FROM = gmail_user
     TO = ["marlenehirose@gmail.com"]
     SUBJECT = "Glaze Order" + order_time
