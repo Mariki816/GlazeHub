@@ -90,9 +90,12 @@ def getNewUser():
     newUser.user_name = request.form.get("NewUserName")
     newUser.email = request.form.get("NewUserEmail")
     newUser.password = request.form.get("NewUserPassword")
-
-    model.session.add(newUser)
-    model.session.commit()
+    if model.User.getUserByEmail(newUser.email):
+        flash("Email address already exists. Please log on or enter new email")
+        return render_template("login.html")
+    else:
+        model.session.add(newUser)
+        model.session.commit()
 
     flash("Welcome, %s" % (newUser.user_name))
     do_login(newUser.id, newUser.email, newUser.user_name)
@@ -375,7 +378,6 @@ def batchSizeChange(userViewID, recipeName):
 
         if units == "kg":
             frctnList.append(int(converter.frctnKilosToGrams(batchComp[i])))
-            print frctnList
             kgchecked = 'checked = "checked"'
             kgToPounds = converter.poundsToKilos(batchComp[i])
             chemPrice = pricecompute.getPrice(chemID, kgToPounds)
@@ -580,7 +582,6 @@ def emailCPSend(userViewID, recipeName, batchSize):
         sorted_data['e_chemPrice'] = round((datum.get('e_chemPrice') +
                                             surcharge), 2)
         data_list.append(sorted_data)
-        print sorted_data['e_chemPrice']
 
     table = tabulate(data_list, headers='keys', tablefmt="grid")
 
@@ -589,7 +590,7 @@ def emailCPSend(userViewID, recipeName, batchSize):
     order_time = str(datetime.datetime.utcnow())
 
     gmail_user = "glazehub@gmail.com"
-    gmail_pwd = "Hubt4$t!c1"
+    gmail_pwd = "*********"
     FROM = gmail_user
     TO = ["marlenehirose@gmail.com"]
     SUBJECT = "Glaze Order" + order_time
