@@ -33,7 +33,7 @@ Data Model
 ========
 The first step was to set up my data model using Python. Each object was written as a class and then class particuar methods were written to retrieve data from that class.
 
-![DataModel](/screencaps/GH_datamodel.jpg)
+![Data Model](/screencaps/GH_datamodel.jpg)
 
 The hardest part for me here was changing the way I thought of a recipe as being the "binding" table. I thought the "one-to-many" should have been set up as one recipe with many components. However, that started getting very complicated by becoming more of a "many-to-many" relationship. After a discussion with and help from an advisor, I came up with the model (see image above).
 
@@ -41,5 +41,41 @@ The chemical object has an id, name and price rates from a quarter pound to 500 
 
 Once the data model was set up, I used SQLAlchemy queries to write up class methods for retrieving prices, ids, recipe names and such from each table.
 
+When a user adds a recipe, the recipe and components tables are updated. The chemical table should never be touched by the users.
+
 Design/UX flow
 ========
+Once the data model was created and set up, it was time to start with some basics. First was the index and login pages:
+
+![Index Page](/screencaps/GH_indexpg.png)
+![Log in Page](/screencaps/GH_loginpg.png)
+
+Oh, I created the GlazeHub logo as well. Playing on the Clay Planet theme, the GlazeHub logo is an alien in a spaceship, the font is Impress BT (also used by Clay Planet). The purple is similar in shade and tone to the blue of Clay Planet logo. The GH logo itself was done in Adobe Illustrator and exported as an SVG. Future versions will have the logo as a PNG so that it has more of a cross platform compatibility and so that the Impress BT font will be seen in all browsers.
+
+![Enter Recipe-not logged in](/screencaps/GH_enterrecipe_nologin.png)
+This page allows a user to calculate their recipe. However, they are not able to save their recipe nor order the glaze from Clay Planet.
+
+![Welcome to User](/screencaps/GH_welcomempg.png)
+When a user logs in, this is what they will see. On the extreme left, users will see a list of the recipes they have saved before. This list will appear on every page on GlazeHub that a user goes to while logged in. The center part is a message area where I can communicate with users about the current status of GlazeHub or if there have been price updates from Clay Planet.
+
+![Saved Recipe](/screencaps/GH_saved_recipebatch.png)
+This is what a saved recipe looks like. From here, a user can change the batch size and get it calculated in either pounds or kilograms. Switching between unit systems needs a click on the Get Size button in order to get the new system calculation. Once a user has entered a batch size and clicked "Get Size", a price quote from Clay Planet not including shipping and tax as well as an "Order" button will appear.
+
+If a user wants to edit their recipe, they can just click on the edit recipe button.
+![Edit Recipe](screencaps/GH_editrecipepg.png)
+From this page, a user can add or delete components, change the name of the recipe and add or delete or edit comments. WARNING: this will update a recipe. It will completely overwrite the previous version.
+
+A user can also delete their recipe from here as well. Deleting will remove the recipe and its components entirely from the recipe and component tables.
+
+![Batch Size Change](screencaps/GH_order_emailpg.png)
+Once the user has finished editing their glaze recipe and added in a batch size, they can click the "Order" and come to the above page. A user can review their recipe, see a price quote with tax and shipping itemized, write a message to Clay Planet, and order the glaze. GlazeHub uses the login email of a user as an identifier and will include the user's email address in the email it generates for the order.
+
+![Email Sent](screencaps/GH_email_sentpg.png)
+Once the user hits the "Send Email" button, this page comes up informing the user that the email has been sent and soon, they should receive a confirmation email from Clay Planet.
+
+![Email Example](screencaps/GH_emailexample.png)
+This is a screen cap of what the email from GlazeHub looks like to Clay Planet. Information included is:recipe, unit system (kilos/pounds), amount of each chemical required, chemical price, subtotal, tax, shipping and total price quote
+
+
+
+
