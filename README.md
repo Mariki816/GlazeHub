@@ -74,7 +74,7 @@ Once the user has finished editing their glaze recipe and added in a batch size,
 Once the user hits the "Send Email" button, this page comes up informing the user that the email has been sent and soon, they should receive a confirmation email from Clay Planet.
 
 ![Email Example](screencaps/GH_emailexample.png)
-This is a screen cap of what the email from GlazeHub looks like to Clay Planet. Information included is:recipe, unit system (kilos/pounds), amount of each chemical required, chemical price, subtotal(includes surcharge which is not reflected in the chemical price), tax, shipping and total price quote
+This is a screen cap of what the email from GlazeHub looks like to Clay Planet. Information included is:recipe, unit system (kilos/pounds), amount of each chemical required, chemical price, subtotal(note: exact surcharge is shown and is already added into the subtotal.), tax, shipping and total price quote
 
 
 
