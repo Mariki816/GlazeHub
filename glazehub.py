@@ -589,7 +589,7 @@ def emailCPSend(userViewID, recipeName, batchSize):
     order_time = str(datetime.datetime.utcnow())
 
     gmail_user = "glazehub@gmail.com"
-    gmail_pwd = "***********"
+    gmail_pwd = "Hubt4$t!c1"
     FROM = gmail_user
     TO = ["marlenehirose@gmail.com"]
     SUBJECT = "Glaze Order" + order_time
