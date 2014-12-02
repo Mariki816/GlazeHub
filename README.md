@@ -77,5 +77,10 @@ Once the user hits the "Send Email" button, this page comes up informing the use
 This is a screen cap of what the email from GlazeHub looks like to Clay Planet. Information included is:recipe, unit system (kilos/pounds), amount of each chemical required, chemical price, subtotal(note: exact surcharge is shown and is already added into the subtotal.), tax, shipping and total price quote
 
 
+Future Plans
+========
+GlazeHub will be deployed after a period of testing. I hope to soft launch by the end of December 2014.
 
+Future versions will have Facebook/Twitter or other social media log in. I also will add an upload photo feature. This will aid potters/artists who wish to keep a record of test glazes.
 
+If GlazeHub does indeed become a 'hub' for glaze calculation and ordering of glazes from Clay Planet, I hope to implement PayPal or other electronic payment formats.
