@@ -88,6 +88,8 @@ def processLogin():
 @app.route("/register", methods=['POST'])
 def getNewUser():
     session["user_id"] = None
+    session["user_name"] = None
+
     newUser = model.User()
     newUser.user_name = request.form.get("NewUserName")
     newUser.email = request.form.get("NewUserEmail").lower()
@@ -107,7 +109,10 @@ def getNewUser():
 #This is the list of recipes of the logged in user
 @app.route("/userRecipes/<int:userViewID>")
 def listofUserRecipes(userViewID):
-
+    userLoginID = session["user_id"]
+    if checkUserLoginID(userLoginID, userViewID) is False:
+        flash("Invalid UserID. Here are your recipes")
+        userViewID = userLoginID
     recipes = showUserRecipeList(userViewID)
     return render_template("user_recipes.html", displayRecipes=recipes,
                            user_id=userViewID)
@@ -301,10 +306,11 @@ def recipe(userViewID, recipeName):
 
     userLoginID = session["user_id"]
 
-    if checkUserLoginID(userLoginID, userViewID):
+    if checkUserLoginID(userLoginID, userViewID) is False:
         userViewID = userLoginID
         recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
-        return render_template("user_recipes.html", displayRecipes=recipes)
+        return render_template("user_recipes.html", displayRecipes=recipes,
+                               user_id=userLoginID)
     else:
         recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
         components = model.Component.getComponentsByRecipeID(recipe.id)
@@ -641,8 +647,9 @@ def showUserRecipeList(userViewID):
 # logged in user only sees their own recipes
 def checkUserLoginID(userLoginID, userViewID):
     if userLoginID != int(userViewID):
-        flash("Invalid User ID. Here are your recipes.4")
-    return False
+        flash("Invalid User ID. Here are your recipes")
+        userViewID = userLoginID
+        return False
 
 
 def main():

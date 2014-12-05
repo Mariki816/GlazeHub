@@ -31,20 +31,21 @@
                 </div>
             </div>
         </div>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                <ul class="flashes">
-                    <li>{{message}}</li>
-                </ul>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+             {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                    <ul class="flashes">
+                        <li>{{message}}</li>
+                        </ul>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
         {% block body %}
-            <div class = "col-sm-2"></div>
-        {% endblock %}
+        <div class = "col-sm-2">
 
+        {% endblock %}
+        </div>
     </body>
 
 
