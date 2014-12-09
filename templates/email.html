@@ -1,0 +1,106 @@
+<html>
+    <body>
+        <h2>Order from: {{customer}}</h2>
+        <h3>Message from: {{user_name}}</h3>
+            <p>{{msgToCP}}</p>
+
+        <div class = "row">
+            <hr noshade color ="#ccccff" style = "margin-top:-5px"></hr>
+        </div>
+
+                <h3>{{recipeName}} - {{batchsize}} {{unitSys}}</h3>
+                <table>
+                    <col width="200">
+                    <col width="50">
+                    <col width="50">
+                    <col width="100">
+                    <col width="100">
+                    <tr>
+                        <th>Chemical Name</th>
+                        <th align="center">%</th>
+                        {% if unitSys == "lbs" %}
+                            <th colspan="2" align="center">Lbs/Ounces</th>
+                        {% else %}
+                            <th colspan="2" align="center">Kilos/Grams</th>
+                        {% endif %}
+                        <th align="right">Unit Price</th>
+                    </tr>
+
+                    {% for datum in data%}
+                        <tr>
+                            <td align="left">
+                                {{datum.get('a_name')}}
+                            </td>
+                            <td align="right">
+                                {{datum.get('b_percent')}}%
+                            </td>
+                            {% if unitSys == "lbs" %}
+                                <td align="right">
+                                    {{datum.get('c_whole')}} lb
+                                </td>
+                                <td align="right">
+                                    {{datum.get('d_frctn')}} oz
+                                </td>
+                            {% else %}
+                                <td align="right">
+                                    {{datum.get('c_whole')}} kg
+                                </td>
+                                <td align="right">
+                                    {{datum.get('d_frctn')}} grams
+                                </td>
+                            {% endif %}
+                            <td align="right">
+                                ${{"%.2f" %datum.get('e_chemPrice')}}
+                            </td>
+                        </tr>
+
+                    {%endfor%}
+                </table>
+
+                <div class = "row">
+                    <hr noshade color ="#ccccff" style = "margin-top:-5px"></hr>
+                </div>
+                <table>
+                    <col width = "75">
+                            <tr>
+                                <td>
+                                    Subtotal:
+                                </td>
+                                <td align="right">
+                                    ${{"%.2f" %subtotal}}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Tax:
+                                </td>
+                                <td align="right">
+                                    {{"%.2f" %tax}}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Shipping:
+                                </td>
+                                <td align="right">
+                                    {{"%.2f" %shipping}}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Total:
+                                </td>
+                                <td>
+                                    ${{"%.2f" %(subtotal + tax + shipping)}}
+                                </td>
+                            <tr>
+                    <table>
+
+
+    </body>
+</html>
+
+

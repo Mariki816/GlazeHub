@@ -13,6 +13,8 @@ from tabulate import tabulate
 import datetime
 import collections
 import os
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 app = Flask(__name__)
@@ -537,6 +539,7 @@ def emailCP(userViewID, recipeName, batchSize):
     subtotal = session["pre-tax-cost"] + session["surcharge"]
     shipping_cost = session["shipping"]
     msgSent = False
+    session["batchSize"] = batchSize
 
     tax = pricecompute.getTax(subtotal)
 
@@ -559,6 +562,7 @@ def emailCPSend(userViewID, recipeName, batchSize):
     user_name = session["user_name"]
     user_id = userViewID
     unitSys = session["unitSys"]
+    batchSize = session["batchSize"]
     if unitSys == "lbs":
         wholesys = "lbs"
         frctnsys = "oz"
@@ -572,8 +576,6 @@ def emailCPSend(userViewID, recipeName, batchSize):
 
     orderList = session["orderList"]
 
-    data_list = []
-
     data = json.loads(orderList)
 
     surcharge = round(session["surcharge"], 2)
@@ -581,49 +583,46 @@ def emailCPSend(userViewID, recipeName, batchSize):
     subtotal = round(session["pre-tax-cost"], 2)
     shipping = round(session["shipping"], 2)
 
-    for datum in data:
-        sorted_data = collections.OrderedDict()
-        sorted_data['a_name_of_chem'] = str(datum.get('a_name'))
-        sorted_data['b_percent'] = str(datum.get('b_percent')) + "%"
-        sorted_data['c_whole'] = str(datum.get('c_whole')) + wholesys
-        sorted_data['d_frctn'] = str(datum.get('d_frctn')) + frctnsys
-        sorted_data['e_chemPrice'] = "$ %.2f" % (datum.get('e_chemPrice') +
-                                                 surcharge)
-
-        data_list.append(sorted_data)
-
-    table = tabulate(data_list, headers='keys', tablefmt="grid")
-
     price_quote = tax + subtotal + shipping + surcharge
 
     order_time = str(datetime.datetime.utcnow())
 
     gmail_user = "glazehub@gmail.com"
     gmail_pwd = os.environ.get("EMAILPASSWORD")
-    FROM = gmail_user
-    TO = ["marlenehirose@gmail.com"]
-    SUBJECT = "Glaze Order" + order_time
-    TEXT = "Order from: " + customer + "\n" + \
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Glaze Order" + order_time
+    msg['From'] = gmail_user
+    msg['To'] = "marlenehirose@gmail.com"
+
+    text = "Order from: " + customer + "\n" + \
            "Message from Customer: " + msgToCP + "\n" + \
            "Recipe Name: " + recipeName + "\n" +\
            "Pounds/Kilos: " + wholesys + " " + frctnsys + "\n\n" +\
-           table + "\n\n" +\
            "SubTotal: %.2f " % (subtotal+surcharge) + "\n"\
            "Tax: %.2f" % tax + "\n" + \
            "Shipping: %.2f" % shipping + "\n"\
            "Price Quote: %.2f" % price_quote
 
-    message = """\From: %s\nTo: %s\nSubject: %s\n\n%s\
-               """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+    html = render_template("email.html", recipeName=recipeName, data=data,
+                           batchsize=batchSize, unitSys=unitSys,
+                           customer=customer, subtotal=subtotal+surcharge,
+                           shipping=shipping, tax=tax, msgToCP=msgToCP,
+                           user_name=user_name)
 
-    #The actual mail to send
+    part1 = MIMEText(text, 'plain')
+    part2 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+    msg.attach(part2)
+
+    FROM = gmail_user
+    TO = ["marlenehirose@gmail.com"]
 
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.ehlo()
     server.starttls()
     server.login(gmail_user, gmail_pwd)
-    server.sendmail(FROM, TO, message)
-    # server.quit()
+    server.sendmail(FROM, TO, msg.as_string())
     server.close()
 
     msgSent = True
