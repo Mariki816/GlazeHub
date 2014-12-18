@@ -1,9 +1,8 @@
 #This is my controller script
 
-import model
+import modelPG
 import converter
 import pricecompute
-# import seedchem
 from flask import Flask, session, render_template, request
 from flask import redirect, flash
 import jinja2
@@ -11,6 +10,7 @@ import json
 import smtplib
 import datetime
 import os
+from passlib.hash import pbkdf2_sha256
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -59,12 +59,15 @@ def processLogin():
     session["user_name"] = None
 
     email = request.form.get("userEmail").lower()
-    pword = request.form.get("password")
-    user = model.User.getUserByEmail(email)
+    tempPassword = request.form.get("password")
+    hash = pbkdf2_sha256.encrypt(tempPassword, rounds=200000, salt_size=16)
+    print "This is hash", hash
+    print "this is tempPassword", tempPassword
+
+    user = modelPG.User.getUserByEmail(email)
 
     if user:
-        pwordcheck = model.User.getUserPasswordByEmail(email)
-        if pword == pwordcheck:
+        if pbkdf2_sha256.verify(tempPassword, hash):
             flash("Welcome, %s" % (user.user_name))
         # if the user is already logged in do the first part
             if "user" in session:
@@ -74,7 +77,8 @@ def processLogin():
             else:
                 do_login(user.id, email, user.user_name)
         else:
-            flash("Incorrect password. Please try again")
+            flash("Invalid Email or Password. Please try again")
+            flash('<a href = "/resetpword">Reset Password</a>')
             return render_template("login.html")
 
     else:
@@ -85,22 +89,48 @@ def processLogin():
     return redirect("/userRecipes/%d" % user.id)
 
 
+@app.route("/resetpword", methods=['GET'])
+def startresetPword():
+    userEmail = None
+    password = None
+    passwordCheck = None
+
+    return render_template("resetpword.html", userEmail=userEmail,
+                           password=password, passwordCheck=passwordCheck)
+
+
+@app.route("/resetpword", methods=['POST'])
+def resetPword():
+    session["user_id"] = request.form.get("userEmail")
+    tempPassword = request.form.get("password")
+    tempPassword2 = request.form.get("passwordCheck")
+    hash = pbkdf2_sha256.encrypt(tempPassword2, rounds=200000, salt_size=16)
+    if tempPassword != tempPassword2:
+        flash("Passwords do not match. Please try again.")
+        return render_template("resetpword.html")
+    else:
+        modelPG.user.password = hash
+        modelPG.session.commit()
+
+
 # This creates a New user
 @app.route("/register", methods=['POST'])
 def getNewUser():
     session["user_id"] = None
     session["user_name"] = None
 
-    newUser = model.User()
+    newUser = modelPG.User()
     newUser.user_name = request.form.get("NewUserName")
     newUser.email = request.form.get("NewUserEmail").lower()
-    newUser.password = request.form.get("NewUserPassword")
-    if model.User.getUserByEmail(newUser.email):
+    tempPassword = request.form.get("NewUserPassword")
+    hash = pbkdf2_sha256.encrypt(tempPassword, rounds=200000, salt_size=16)
+    newUser.password = hash
+    if modelPG.User.getUserByEmail(newUser.email):
         flash("Email address already exists. Please log on or enter new email")
         return render_template("login.html")
     else:
-        model.session.add(newUser)
-        model.session.commit()
+        modelPG.session.add(newUser)
+        modelPG.session.commit()
 
     flash("Welcome, %s" % (newUser.user_name))
     do_login(newUser.id, newUser.email, newUser.user_name)
@@ -123,10 +153,10 @@ def listofUserRecipes(userViewID):
 @app.route("/enterRecipe", methods=['GET'])
 def renderEnterRecipeForm():
 
-    chems = model.session.query(model.Chem).all()
+    chems = modelPG.session.query(modelPG.Chem).all()
     chemNames = [chem.chem_name for chem in chems]
     batchComp = []
-    components = model.Component()
+    components = modelPG.Component()
     if "user_id" in session:
         user_id = session["user_id"]
     else:
@@ -160,7 +190,7 @@ def enterRecipe():
     recipeName = request.form.get('recipename')
     batchsize = request.form.get('batchsize')
 
-    newRecipe = model.Recipe()
+    newRecipe = modelPG.Recipe()
     newRecipe.recipe_name = recipeName
 
     batchComp = []
@@ -181,9 +211,9 @@ def enterRecipe():
 
     i = 0
     for chem in chem_list:
-        comp = model.Component()
+        comp = modelPG.Component()
         comp.chem_name = chem
-        comp.chem_id = model.Chem.getChemIDByName(comp.chem_name)
+        comp.chem_id = modelPG.Chem.getChemIDByName(comp.chem_name)
         comp.percentage = float(percentages[i])
         percent_list.append(comp.percentage)
         i += 1
@@ -225,7 +255,7 @@ def showRecipeAddForm(userViewID):
     recipe_name = ""
     price_quote = float(0.00)
     displayRecipes = showUserRecipeList(userViewID)
-    chems = model.session.query(model.Chem).all()
+    chems = modelPG.session.query(modelPG.Chem).all()
     chemNames = [chem.chem_name for chem in chems]
     components = []
 
@@ -245,7 +275,7 @@ def addRecipe(userViewID):
     recipe_name = request.form.get('recipename')
     notes = request.form.get('usercomments')
 
-    dupe = model.session.query(model.Recipe)\
+    dupe = modelPG.session.query(modelPG.Recipe)\
         .filter_by(recipe_name=recipe_name)\
         .filter_by(user_id=session["user_id"]).all()
 
@@ -253,15 +283,15 @@ def addRecipe(userViewID):
         flash("Duplicate Recipe Name")
         return redirect("/addRecipe/" + str(userViewID))
 
-    newRecipe = model.Recipe()
+    newRecipe = modelPG.Recipe()
     newRecipe.user_id = session["user_id"]
     newRecipe.recipe_name = recipe_name
     newRecipe.user_notes = notes
 
     displayRecipes.append(newRecipe)
 
-    model.session.add(newRecipe)
-    model.session.commit()
+    modelPG.session.add(newRecipe)
+    modelPG.session.commit()
 
     batchComp = []
     batchsize = None
@@ -269,15 +299,15 @@ def addRecipe(userViewID):
     percentages = request.values.getlist("percentage")
     i = 0
     for chem in chem_list:
-        comp = model.Component()
+        comp = modelPG.Component()
         comp.chem_name = chem
-        comp.chem_id = model.Chem.getChemIDByName(comp.chem_name)
+        comp.chem_id = modelPG.Chem.getChemIDByName(comp.chem_name)
         comp.percentage = float(percentages[i])
         i += 1
         comp.recipe_id = newRecipe.id
         batchComp.append(float(comp.percentage))
-        model.session.add(comp)
-        model.session.commit()
+        modelPG.session.add(comp)
+        modelPG.session.commit()
 
     kgchecked = 'checked = "checked"'
     lbschecked = ""
@@ -286,7 +316,7 @@ def addRecipe(userViewID):
     frctnList = []
     messageToUser = None
 
-    components = model.Component.getComponentsByRecipeID(newRecipe.id)
+    components = modelPG.Component.getComponentsByRecipeID(newRecipe.id)
 
     return render_template("recipecomps.html", user_id=userViewID,
                            recipe_name=newRecipe.recipe_name,
@@ -309,12 +339,12 @@ def recipe(userViewID, recipeName):
 
     if checkUserLoginID(userLoginID, userViewID) is False:
         userViewID = userLoginID
-        recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
+        recipes = modelPG.Recipe.getRecipeNamesByUserID(userLoginID)
         return render_template("user_recipes.html", displayRecipes=recipes,
                                user_id=userLoginID)
     else:
-        recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
-        components = model.Component.getComponentsByRecipeID(recipe.id)
+        recipe = modelPG.Recipe.getRecipeIDByName(recipeName, userViewID)
+        components = modelPG.Component.getComponentsByRecipeID(recipe.id)
 
     messageToUser = None
 
@@ -347,9 +377,9 @@ def batchSizeChange(userViewID, recipeName):
     size = request.form.get("batchsize")
     units = request.form.get("unitSys")
 
-    recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
+    recipe = modelPG.Recipe.getRecipeIDByName(recipeName, userViewID)
 
-    components = model.Component.getComponentsByRecipeID(recipe.id)
+    components = modelPG.Component.getComponentsByRecipeID(recipe.id)
     batchComp = []
 
     percent_list = []
@@ -381,7 +411,7 @@ def batchSizeChange(userViewID, recipeName):
     for i in range(len(batchComp)):
 
         batchComp[i] = (sizeflt * batchComp[i])*newPercent
-        chemID = model.Chem.getChemIDByName(components[j].chem.chem_name)
+        chemID = modelPG.Chem.getChemIDByName(components[j].chem.chem_name)
 
         wholeNumList.append(int(batchComp[i]))
 
@@ -457,15 +487,15 @@ def showEditRecipeForm(userViewID, recipeName):
     if userLoginID != int(userViewID):
         flash("Invalid User ID. Here are your recipes. 2")
         userViewID = userLoginID
-        recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
+        recipes = modelPG.Recipe.getRecipeNamesByUserID(userLoginID)
         return render_template("user_recipes.html", user_id=userViewID,
                                displayRecipes=recipes)
     else:
         displayRecipes = showUserRecipeList(userViewID)
-        chems = model.session.query(model.Chem).all()
+        chems = modelPG.session.query(modelPG.Chem).all()
         chemNames = [chem.chem_name for chem in chems]
-        recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
-        components = model.Component.getComponentsByRecipeID(recipe.id)
+        recipe = modelPG.Recipe.getRecipeIDByName(recipeName, userViewID)
+        components = modelPG.Component.getComponentsByRecipeID(recipe.id)
         user_notes = recipe.user_notes
 
     return render_template("edit_recipe.html", chem_names=chemNames,
@@ -478,17 +508,17 @@ def showEditRecipeForm(userViewID, recipeName):
 @app.route("/editRecipe/<int:userViewID>/<recipeName>", methods=["POST"])
 def updateRecipe(userViewID, recipeName):
     user_id = userViewID
-    recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
+    recipe = modelPG.Recipe.getRecipeIDByName(recipeName, userViewID)
     recipe.recipe_name = request.form.get("recipe_name")
     recipe.user_notes = request.form.get("user_notes")
     recipeName = recipe.recipe_name
 
-    components = model.Component.getComponentsByRecipeID(recipe.id)
+    components = modelPG.Component.getComponentsByRecipeID(recipe.id)
 
     # Get rid of old recipe components
     for comp in components:
-        model.session.delete(comp)
-        model.session.commit()
+        modelPG.session.delete(comp)
+        modelPG.session.commit()
 
     # Get new values for recipe components, names and percentages
     chem_list = request.form.getlist("chem")
@@ -496,17 +526,17 @@ def updateRecipe(userViewID, recipeName):
 
     i = 0
     for chem in chem_list:
-        addComp = model.Component()
+        addComp = modelPG.Component()
         addComp.chem_name = chem
-        addComp.chem_id = model.Chem.getChemIDByName(addComp.chem_name)
+        addComp.chem_id = modelPG.Chem.getChemIDByName(addComp.chem_name)
         addComp.percentage = float(percentages[i])
         addComp.recipe_id = recipe.id
         if (percentages[i] != 0) or percentages[i]:
-            model.session.add(addComp)
-            model.session.commit()
+            modelPG.session.add(addComp)
+            modelPG.session.commit()
             i += 1
         else:
-            model.session.commit()
+            modelPG.session.commit()
 
     return redirect("/recipecomps/%d/%s" % (user_id, recipeName))
 
@@ -515,13 +545,13 @@ def updateRecipe(userViewID, recipeName):
 def deleteRecipe(userViewID, recipeName):
     user_id = userViewID
 
-    recipe = model.Recipe.getRecipeIDByName(recipeName, userViewID)
-    components = model.Component.getComponentsByRecipeID(recipe.id)
-    model.session.delete(recipe)
+    recipe = modelPG.Recipe.getRecipeIDByName(recipeName, userViewID)
+    components = modelPG.Component.getComponentsByRecipeID(recipe.id)
+    modelPG.session.delete(recipe)
 
     for comp in components:
-        model.session.delete(comp)
-    model.session.commit()
+        modelPG.session.delete(comp)
+    modelPG.session.commit()
 
     return redirect("/userRecipes/%d" % user_id)
 
@@ -634,10 +664,10 @@ def emailCPSend(userViewID, recipeName, batchSize):
 def showUserRecipeList(userViewID):
     userLoginID = session["user_id"]
     if checkUserLoginID(userLoginID, userViewID):
-        recipes = model.Recipe.getRecipeNamesByUserID(userLoginID)
+        recipes = modelPG.Recipe.getRecipeNamesByUserID(userLoginID)
         return recipes
     else:
-        recipes = model.Recipe.getRecipeNamesByUserID(userViewID)
+        recipes = modelPG.Recipe.getRecipeNamesByUserID(userViewID)
         return recipes
 
 

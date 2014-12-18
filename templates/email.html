@@ -70,6 +70,12 @@
                                     ${{"%.2f" %subtotal}}
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    Surcharge:
+                                </td>
+                                <td align="right">
+                                    ${{"%.2f" %surcharge}}
 
                             <tr>
                                 <td>
@@ -94,7 +100,7 @@
                                     Total:
                                 </td>
                                 <td>
-                                    ${{"%.2f" %(subtotal + tax + shipping)}}
+                                    ${{"%.2f" %(subtotal + surcharge + tax + shipping)}}
                                 </td>
                             <tr>
                     <table>

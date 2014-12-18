@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block body %}
+
+
+    <div class = "col-sm-2" class = "left_side_section" >
+    </div>
+	<div class = "col-sm-6" class = "center_section">
+		<div class = "row">
+			<div id = "reset_password">
+				<h3>Please Sign In</h3>
+				<form class ="form-horizontal" action="/process-login" method="POST">
+					<div class = "form-group">
+						<label class = "col-sm-4 control-label" for="userEmail">
+							User email:
+						</label>
+						<div class = "col-sm-6">
+							<input class = "form-control" type = "text" id = "userEmail" name="userEmail" />
+						</div>
+					</div>
+					<div class = "form-group">
+						<label class = "col-sm-4 control-label" for="password">
+							Password:
+						</label>
+						<div class = "col-sm-6">
+							<input class = "form-control" type = "password" id = "NewPassword" name="NewPassword" />
+						</div>
+					</div>
+					<div class = "form-group">
+						<label class = "col-sm-4 control-label" for="passwordCheck">
+							Re-enter Password:
+						</label>
+						<div class = "col-sm-6">
+							<input class = "form-control" type = "password" id = "passwordCheck" name="passwordCheck" />
+							<button class ="btn btn-GH pull-right" style = "margin-top:10px"
+								type = "submit" id = "user">
+								<strong>Change Password</strong>
+							</button>
+						</div>
+					</div>
+
+					</form>
+			</div>
+
+		</div>
+
+
+
+
+	</div>
+
+
+
+{% endblock %}

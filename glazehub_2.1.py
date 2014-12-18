@@ -3,7 +3,6 @@
 import model
 import converter
 import pricecompute
-# import seedchem
 from flask import Flask, session, render_template, request
 from flask import redirect, flash
 import jinja2
