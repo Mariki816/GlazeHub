@@ -14,7 +14,6 @@ from passlib.hash import pbkdf2_sha256
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-
 app = Flask(__name__)
 
 
@@ -686,8 +685,8 @@ def checkUserLoginID(userLoginID, userViewID):
 
 
 def main():
-    pass
 
+    PORT = int(os.environ.get("PORT", 5000))
 
-if __name__ == "__main__":
-    app.run()
+    if __name__ == "__main__":
+        app.run(debug=True, host="0.0.0.0", port=PORT)
