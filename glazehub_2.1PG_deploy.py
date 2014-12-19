@@ -16,9 +16,13 @@ from email.mime.text import MIMEText
 
 app = Flask(__name__)
 
-
-app.secret_key = os.environ.get("SECRETKEY")
+SECRET_KEY = "HeLium_M4kes_Ur_v01c3_sQ34KY!"
+app.secret_key = os.environ.get("FLASK_SECRET_KEY",
+                                "HeLium_M4kes_Ur_v01c3_sQ34KY!")
 app.jinja_env.undefined = jinja2.StrictUndefined
+
+DATABASE_URL = os.environ.get("DATABASE_URL",
+                              "postgresql:///glazehubPG")
 
 # This is the index page. Later it will show the Calculator itself
 
@@ -664,6 +668,11 @@ def emailCPSend(userViewID, recipeName, batchSize):
                            userName=user_name, msgSent=msgSent)
 
 
+@app.route("/error")
+def error():
+    raise Exception("Error!")
+
+
 # This function displays all recipes for the particular user
 def showUserRecipeList(userViewID):
     userLoginID = session["user_id"]
@@ -687,6 +696,7 @@ def checkUserLoginID(userLoginID, userViewID):
 def main():
 
     PORT = int(os.environ.get("PORT", 5000))
+    DEBUG = "NO_DEBUG" not in os.environ
 
     if __name__ == "__main__":
-        app.run(debug=True, host="0.0.0.0", port=PORT)
+        app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
