@@ -16,7 +16,7 @@ from email.mime.text import MIMEText
 
 app = Flask(__name__)
 
-SECRET_KEY = "HeLium_M4kes_Ur_v01c3_sQ34KY!"
+
 app.secret_key = os.environ.get("FLASK_SECRET_KEY",
                                 "HeLium_M4kes_Ur_v01c3_sQ34KY!")
 app.jinja_env.undefined = jinja2.StrictUndefined
@@ -623,7 +623,7 @@ def emailCPSend(userViewID, recipeName, batchSize):
     order_time = str(datetime.datetime.utcnow())
 
     gmail_user = "glazehub@gmail.com"
-    gmail_pwd = os.environ.get("EMAILPASSWORD")
+    gmail_pwd = os.environ.get("EMAILPASSWORD", "secretpassword")
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Glaze Order" + order_time
     msg['From'] = gmail_user
