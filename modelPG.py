@@ -1,11 +1,11 @@
-import os
 
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import ForeignKey
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Float, String, Integer
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.ext.declarative import declarative_base
+import os
 
 # import model
 

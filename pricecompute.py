@@ -1,8 +1,8 @@
-import model
+import modelPG
 
 
 def getPrice(chemID, weight):
-    price = model.Chem.getChemPriceByName(chemID, weight)
+    price = modelPG.Chem.getChemPriceByName(chemID, weight)
     return price
 
 
