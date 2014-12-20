@@ -21,8 +21,7 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY",
                                 "HeLium_M4kes_Ur_v01c3_sQ34KY!")
 app.jinja_env.undefined = jinja2.StrictUndefined
 
-DATABASE_URL = os.environ.get("DATABASE_URL",
-                              "postgresql:///glazehubPG")
+
 
 # This is the index page. Later it will show the Calculator itself
 
@@ -693,10 +692,9 @@ def checkUserLoginID(userLoginID, userViewID):
         return False
 
 
-def main():
+if __name__ == "__main__":
 
     PORT = int(os.environ.get("PORT", 5000))
     DEBUG = "NO_DEBUG" not in os.environ
 
-    if __name__ == "__main__":
-        app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
+    app.run(debug=DEBUG, host="0.0.0.0", port=PORT)

@@ -1,3 +1,5 @@
+import os
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import ForeignKey
 from sqlalchemy import create_engine
@@ -10,7 +12,9 @@ from sqlalchemy.orm import relationship, backref
 # ENGINE = None
 # Session = None
 
-engine = create_engine("postgresql://localhost/glazehubPG",
+DATABASE_URL = os.environ.get("DATABASE_URL",
+                              "postgresql:///glazehubPG")
+engine = create_engine(DATABASE_URL,
                        echo=False)
 session = scoped_session(sessionmaker(bind=engine, autocommit=False,
                          autoflush=False))
