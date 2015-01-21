@@ -3,11 +3,11 @@ GlazeHub
 
 My Glaze Calculator Project
 
-GlazeHub is a specialized tool for ceramic artists to calculate and save glaze recipes. 
-Glaze testing, notetaking, getting price quotes of mixed glazes as well as ordering from Clay Planet 
-is made simple with this app. 
+GlazeHub is a specialized tool for ceramic artists to calculate and save glaze recipes.
+Glaze testing, notetaking, getting price quotes of mixed glazes as well as ordering from Clay Planet
+is made simple with this app.
 
-When a user creates a free account, they can then save their most-used recipes or test 
+When a user creates a free account, they can then save their most-used recipes or test
 recipes as well as make notes.
 
 This is a Flask app. Back end is written in Python, SQLite and SQLAlchemy for the ORM. Front end makes use of HTML, CSS, JavaScript, JQuery and Bootstrap.
@@ -54,7 +54,7 @@ Once the data model was created and set up, it was time to start with some basic
 Oh, I created the GlazeHub logo as well. Playing on the Clay Planet theme, the GlazeHub logo is an alien in a spaceship, the font is Impress BT (also used by Clay Planet). The purple is similar in shade and tone to the blue of Clay Planet logo. The GH logo itself was done in Adobe Illustrator and exported as an SVG. Future versions will have the logo as a PNG so that it has more of a cross platform compatibility and so that the Impress BT font will be seen in all browsers.
 
 ![Enter Recipe-not logged in](/screencaps/GH_enterrecipe_nologin.png)
-This page allows a user to calculate their recipe. However, they are not able to save their recipe nor order the glaze from Clay Planet. This page is basically the same thing as the Add Recipe page that logged in users see. 
+This page allows a user to calculate their recipe. However, they are not able to save their recipe nor order the glaze from Clay Planet. This page is basically the same thing as the Add Recipe page that logged in users see.
 
 Glazes have different numbers of components. I didn't want to hard code the number of components a user can add, so I created a hidden template that would cloned every time the "Add Component" button was clicked or deleted whenever the "Delete" button was clicked. Both of these buttons are controlled by an external JavaScript script. They interrupt the "Get Size" form action and allow for user modification.
 
@@ -82,7 +82,7 @@ This is a screen cap of what the email from GlazeHub looks like to Clay Planet. 
 
 Future Plans
 ========
-GlazeHub will be deployed after a period of testing. I hope to soft launch by the end of December 2014.
+GlazeHub will be deployed after a period of testing. Glazehub is now deployed at: www.glazehub.com.
 
 Future versions will have Facebook/Twitter or other social media log in. I also will add an upload photo feature. This will aid potters/artists who wish to keep a record of test glazes.
 
