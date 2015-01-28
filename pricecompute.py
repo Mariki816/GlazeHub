@@ -50,3 +50,8 @@ def getShipping(batchweight):
     else:
         shipping = 50.00
     return shipping
+
+
+def getBagFee():
+    bag_fee = 5.00
+    return bag_fee

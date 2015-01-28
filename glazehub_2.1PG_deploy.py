@@ -21,8 +21,6 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY",
                                 "HeLium_M4kes_Ur_v01c3_sQ34KY!")
 app.jinja_env.undefined = jinja2.StrictUndefined
 
-
-
 # This is the index page. Later it will show the Calculator itself
 
 
@@ -424,13 +422,13 @@ def batchSizeChange(userViewID, recipeName):
         if units == "kg":
             frctnList.append(int(converter.frctnKilosToGrams(batchComp[i])))
             kgchecked = 'checked = "checked"'
-            kgToPounds = converter.poundsToKilos(batchComp[i])
+            kgToPounds = converter.poundsToKilos(sizeflt)
             chemPrice = pricecompute.getPrice(chemID, kgToPounds)
             priceList.append(chemPrice * batchComp[i])
         else:
             frctnList.append(int(converter.frctnPoundsToOunces(batchComp[i])))
             lbschecked = 'checked = "checked"'
-            chemPrice = pricecompute.getPrice(chemID, batchComp[i])
+            chemPrice = pricecompute.getPrice(chemID, sizeflt)
             priceList.append(chemPrice * batchComp[i])
 
         dict_of_comp = {
@@ -444,7 +442,8 @@ def batchSizeChange(userViewID, recipeName):
         compList.append(dict_of_comp)
         j += 1
 
-    sumprice = sum(priceList)
+    bag_fee = pricecompute.getBagFee()
+    sumprice = sum(priceList) + bag_fee
 
     if units == "kg":
         surcharge = pricecompute.getSurChargeKilos(sizeflt) * len(batchComp)
