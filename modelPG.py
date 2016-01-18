@@ -5,6 +5,7 @@ from sqlalchemy import Column, Float, String, Integer
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import UniqueConstraint
 import os
 
 # import model
@@ -29,7 +30,7 @@ Base.query = session.query_property()
 class Chem(Base):
     __tablename__ = "chemicals"
     id = Column(Integer, primary_key=True)
-    chem_name = Column(String(120))
+    chem_name = Column(String(120), unique=True)
     quarter = Column(Float)
     half = Column(Float)
     onelb = Column(Float)
