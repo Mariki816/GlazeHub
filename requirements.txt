@@ -2,7 +2,7 @@ Flask==0.9
 Flask-Mail==0.9.1
 Flask-SQLAlchemy==0.16
 Flask-WTF==0.8
-Jinja2==2.6
+Jinja2==2.10.1
 SQLAlchemy==0.7.9
 Werkzeug==0.8.3
 passlib==1.6.2
